@@ -1,1 +1,9 @@
-export { default } from "components/views/Login.jsx"
+import Login from "../components/views/Login";
+
+function Landing() {
+    return(
+        <Login />
+    );
+}
+
+export default Landing;
