@@ -36,3 +36,40 @@ async def cab_booking(info: Request):
     queries.add_traveller(conn, id=booking_id, user_email=email)
 
     conn.commit()
+    # code to find matching slots and send notification
+    
+@app.get("/getuser")
+async def same_user_details():
+    email = "cs20btech11056@iith.ac.in"
+    a = queries.get_user_bookings(conn, email=email)
+    user_bookings_dict = {}
+    user_bookings_list = []
+    for tup in a:
+        booking = {"date": tup[0],
+                   "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
+                   "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+                   "from": tup[3],
+                   "to": tup[4],
+                   "capacity": tup[5],
+                   "comments": tup[6],}
+        user_bookings_list.append(booking)
+    user_bookings_dict["user_bookings"] = user_bookings_list
+    return user_bookings_dict
+
+@app.get("/getalluser")
+async def all_user_details():
+    a = queries.get_all_user_bookings(conn)
+    user_bookings_dict = {}
+    user_bookings_list = []
+    for tup in a:
+        booking = {"date": tup[0],
+                   "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
+                   "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+                   "from": tup[3],
+                   "to": tup[4],
+                   "capacity": tup[5],
+                   "comments": tup[6],}
+        user_bookings_list.append(booking)
+    user_bookings_dict["user_bookings"] = user_bookings_list
+    return user_bookings_dict
+    # need to trim details and add list of users for each booking
