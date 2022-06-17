@@ -2,10 +2,21 @@ from typing import Union
 import psycopg2
 from fastapi import FastAPI, Request
 import aiosql
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SQL_PATH = os.getenv('SQL_PATH')
+DATABASE = os.getenv('DATABASE')
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASS = os.getenv('POSTGRES_PASS')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+POSTGRES_PORT = os.getenv('POSTGRES_PORT')
 
 app = FastAPI()
-queries = aiosql.from_path("sql","psycopg2")
-conn = psycopg2.connect(database="cabsharing", user="postgres", password="postgres", host="127.0.0.1", port="5432")
+queries = aiosql.from_path(SQL_PATH,"psycopg2")
+conn = psycopg2.connect(database=DATABASE, user=POSTGRES_USER, password=POSTGRES_PASS, host=POSTGRES_HOST, port=POSTGRES_PORT)
 # print("Opened database successfully!")
 
 
