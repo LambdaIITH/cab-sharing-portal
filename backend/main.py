@@ -88,3 +88,17 @@ async def all_user_details():
     user_bookings_dict["user_bookings"] = user_bookings_list
     return user_bookings_dict
     # need to trim details and add list of users for each booking
+
+@app.delete("/deletebooking/{booking_id}")
+async def delete_existing_booking(booking_id: int):
+    print(booking_id)
+    queries.delete_booking_associated_traveller(conn,id=booking_id)
+    queries.delete_booking(conn,id=booking_id)
+    conn.commit()
+
+@app.delete("/deleteuser/{booking_id}")
+async def delete_user_from_booking(booking_id: int):
+        email = "cs20btech11056@iith.ac.in"
+        queries.delete_particular_traveller(conn, id=booking_id,email= email)
+        conn.commit()
+
