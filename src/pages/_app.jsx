@@ -1,7 +1,5 @@
-import '../styles/globals.css';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-
-
+import "../styles/globals.css";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -11,4 +9,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default MyApp
+export default MyApp;
