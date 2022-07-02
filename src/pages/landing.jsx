@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Button,
+  Box,
   Container,
   Typography,
   FormControl,
@@ -12,6 +13,7 @@ import {
   TextField,
   MenuItem,
   Select,
+  Divider,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -24,9 +26,10 @@ const locations = [
   "Lingampally",
 ];
 
-export default function Landing() {
+function NewBookingDialog() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [date, setDate] = useState(new Date());
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -39,22 +42,14 @@ export default function Landing() {
   const handleFromChange = (event) => {
     setFrom(event.target.value);
   };
+  const handleToChange = (event) => {
+    setTo(event.target.value);
+  };
   const destinations = locations.map((loc) => (
     <MenuItem value={loc}>{loc}</MenuItem>
   ));
   return (
-    <Container
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-      }}
-    >
-      <Container fluid style={{ alignItems: "center" }}>
-        <Typography variant="h3">Welcome, Rachit Keerti Das!</Typography>
-      </Container>
-      <Typography variant="h4">My Bookings</Typography>
-
+    <Box>
       <Button variant="outlined" onClick={handleDialogOpen} disableElevation>
         New Booking
       </Button>
@@ -68,7 +63,9 @@ export default function Landing() {
               padding: "1rem",
             }}
           >
-            Please fill form to create a new booking. <br />
+            Please fill the form to create a new booking. <br />
+            Your email address will be automatically associated with your
+            booking.
             <FormControl>
               <InputLabel id="new-book-from">From</InputLabel>
               <Select
@@ -76,6 +73,16 @@ export default function Landing() {
                 label="From"
                 labelId="new-book-from"
                 onChange={handleFromChange}
+              >
+                {destinations}
+              </Select>
+
+              <InputLabel id="new-book-to">To</InputLabel>
+              <Select
+                value={to}
+                label="To"
+                labelId="new-book-to"
+                onChange={handleToChange}
               >
                 {destinations}
               </Select>
@@ -98,6 +105,27 @@ export default function Landing() {
           <Button onClick={handleDialogClose}>Book</Button>
         </DialogActions>
       </Dialog>
+    </Box>
+  );
+}
+
+export default function Landing() {
+  return (
+    <Container
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+      }}
+    >
+      <Container fluid style={{ alignItems: "center" }}>
+        <Typography variant="h3">Welcome, Rachit Keerti Das!</Typography>
+        <Divider />
+      </Container>
+      <Typography variant="h4">My Bookings</Typography>
+
+      {/* In future, we might want to have the button for opening the dialog here. */}
+      <NewBookingDialog />
     </Container>
   );
 }
