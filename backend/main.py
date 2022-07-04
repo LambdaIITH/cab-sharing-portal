@@ -4,6 +4,9 @@ from fastapi import FastAPI, Request
 import aiosql
 import os
 from dotenv import load_dotenv
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 load_dotenv()
 
@@ -35,7 +38,7 @@ async def new_user(info : Request):
 @app.post("/book")
 async def cab_booking(info: Request):
     details = await info.json()
-    email = "cs20btech11059@iith.ac.in"
+    email = "cs19btech11034@iith.ac.in"
     from_id = queries.get_loc_id(conn, place=details['from'])
     to_id = queries.get_loc_id(conn, place=details['to'])
     from_id = int(from_id[0])
@@ -51,6 +54,35 @@ async def cab_booking(info: Request):
     # code to find matching slots and send notification
     matches = queries.match_booking(conn, from_loc=from_id, to_loc=to_id, start_time=start_time, end_time=end_time, id=booking_id)
     print(matches)
+
+    gmail_user = 'cs20btech11056@iith.ac.in'
+    gmail_password = os.getenv('APP_PASSWORD')
+
+    for match in matches:
+        receiver = match[0]
+        message = MIMEMultipart("alternative")
+        message["Subject"] = "Cab sharing match!"
+        message["From"] = gmail_user
+        message["To"] = receiver
+        text = """
+Hello there :)
+Cab sharing test email from backend.    
+        """
+        # need to compose a proper email with accept and reject options
+        part1 = MIMEText(text, "plain")
+        message.attach(part1)
+
+        try:
+            smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+            smtp_server.ehlo()
+            smtp_server.login(gmail_user, gmail_password)
+            smtp_server.sendmail(gmail_user, receiver, message.as_string())
+            smtp_server.close()
+            # print ("Email sent successfully!")
+        except Exception as ex:
+            print ("Something went wrong",ex)
+    
+    
 
 
 @app.get("/user")
