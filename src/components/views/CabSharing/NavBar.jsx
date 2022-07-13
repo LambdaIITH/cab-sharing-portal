@@ -14,10 +14,12 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { NewBookingDialog } from "./NewBookingDialog";
+import { useState } from "react";
 
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 export function NavBar() {
+	const [value, setValue] = useState(new Date());
 	return (
 		<>
 			<Box sx={{ flexGrow: 1 }}>
@@ -70,6 +72,7 @@ export function NavBar() {
 					<LocalizationProvider dateAdapter={AdapterDateFns}>
 						<TimePicker
 							label="Time"
+							value={value}
 							onChange={(newValue) => {
 								setValue(newValue);
 							}}
