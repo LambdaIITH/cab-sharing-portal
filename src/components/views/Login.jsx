@@ -7,6 +7,7 @@ import { GoogleLogin } from "@react-oauth/google";
 const responseGoogleSuccess = (response) => {
   console.log("Successful Log in");
   //response has profile object and stuff
+
   console.log(response);
   localStorage.setItem("profile", JSON.stringify(response));
 };

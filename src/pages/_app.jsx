@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+import {GoogleOAuthProvider } from "@react-oauth/google";
 
 function MyApp({ Component, pageProps }) {
   return (
