@@ -1,12 +1,14 @@
 from typing import Union
 import psycopg2
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, Header, HTTPException
 import aiosql
 import os
 from dotenv import load_dotenv
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from auth import authn_user 
+from functools import wraps
 
 load_dotenv()
 
@@ -22,10 +24,22 @@ queries = aiosql.from_path(SQL_PATH,"psycopg2")
 conn = psycopg2.connect(database=DATABASE, user=POSTGRES_USER, password=POSTGRES_PASS, host=POSTGRES_HOST, port=POSTGRES_PORT)
 # print("Opened database successfully!")
 
+def verify_auth_token(Authorization: str = Header()):
+    email = authn_user(Authorization)
+    if email is None: 
+        raise HTTPException(status_code=401, detail='We are not able to authenticate you.')
+    return email
 
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
+
+@app.get("/auth")
+async def auth(email: str = Depends(verify_auth_token)):
+    """
+    Test Endpoint to validate user identity
+    """
+    return {"email":email}
 
 @app.post("/user")
 async def new_user(info : Request):
@@ -82,9 +96,6 @@ Cab sharing test email from backend.
         except Exception as ex:
             print ("Something went wrong",ex)
     
-    
-
-
 @app.get("/user")
 async def same_user_details():
     email = "cs20btech11056@iith.ac.in"
@@ -130,7 +141,10 @@ async def delete_existing_booking(booking_id: int):
 
 @app.delete("/deleteuser/{booking_id}")
 async def delete_user_from_booking(booking_id: int):
-        email = "cs20btech11056@iith.ac.in"
-        queries.delete_particular_traveller(conn, id=booking_id,email= email)
-        conn.commit()
+    email = "cs20btech11056@iith.ac.in"
+    queries.delete_particular_traveller(conn, id=booking_id,email= email)
+    conn.commit()
 
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=8000)
