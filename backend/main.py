@@ -10,6 +10,7 @@ import aiosql
 import psycopg2
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 from auth import authn_user
 
@@ -22,6 +23,23 @@ POSTGRES_HOST = os.getenv("POSTGRES_HOST")
 POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 
 app = FastAPI()
+
+origins = [
+    "https://iith.dev",
+    "https://iithdashboard.com"
+    "http://localhost",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 queries = aiosql.from_path("sql", "psycopg2")
 conn = psycopg2.connect(
     database=DATABASE,
@@ -65,7 +83,7 @@ async def new_user(info: Request):
     except Exception as err:
         conn.rollback()
         print(err)
-        raise HTTPException(status_cde=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
 @app.post("/book")

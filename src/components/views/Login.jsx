@@ -10,6 +10,19 @@ const responseGoogleSuccess = (response) => {
 
   console.log(response);
   localStorage.setItem("profile", JSON.stringify(response));
+
+  fetch("http://localhost:8000/auth", {
+    headers: {
+      Authorization: response.credential,
+    },
+  })
+    .then((res) => res.json())
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 const responseGoogleFailure = (response, details) => {
   console.log("Log in UnSuccessful");
@@ -36,7 +49,7 @@ function Login() {
       />
       <p>Sign in to continue to IITH Commisions Portal.</p>
 
-      <GoogleLogin onSuccess={responseGoogleSuccess} shape="pill" />
+      <GoogleLogin useOneTap onSuccess={responseGoogleSuccess} shape="pill" />
     </Container>
   );
 }
