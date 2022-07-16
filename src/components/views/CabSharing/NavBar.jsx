@@ -62,7 +62,7 @@ export function NavBar() {
       >
         <Stack direction="row" spacing={1} sx={{ display: "flex" }}>
           <NewBookingDialog />
-          <Button variant="contained">My Bookings</Button>
+          {/* <Button variant="contained">My Bookings</Button> */}
         </Stack>
         <Stack
           direction="row"

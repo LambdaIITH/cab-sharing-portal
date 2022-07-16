@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import {
   Button,
   Box,
-  Container,
-  Typography,
   FormControl,
   Dialog,
   DialogActions,
@@ -13,7 +11,6 @@ import {
   TextField,
   MenuItem,
   Select,
-  Divider,
   Stack,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -56,7 +53,7 @@ export function NewBookingDialog() {
       headers: {
         "Content-Type": "application/json",
       },
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
         from: from,
         to: to,
@@ -67,11 +64,12 @@ export function NewBookingDialog() {
         end_time: date.toISOString(),
       }),
     })
-      .then((res) => res.json()).then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         console.log(data);
         setDialogOpen(false);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   const destinations = locations.map((loc, i) => (

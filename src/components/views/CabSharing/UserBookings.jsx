@@ -31,7 +31,7 @@ function createData(date, name, from, to, time, capacity) {
           "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
       },
       {
-        email: "test@iith.ac.in",
+        email: "test@test.com",
         comments:
           "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
       },
@@ -110,40 +110,24 @@ const rows = [
     "4"
   ),
   createData(
-    "02-03-2020",
-    "Ronald Roe",
+    "29-07-2022",
+    "John Doe",
     "IITH",
-    "Secunderabad Railway Station",
-    "8:30",
-    "4"
-  ),
-  createData(
-    "02-03-2020",
-    "Student",
-    "IITH",
-    "Secunderabad Railway Station",
-    "8:30",
-    "4"
-  ),
-  createData(
-    "02-03-2020",
-    "Student",
-    "IITH",
-    "Secunderabad Railway Station",
-    "8:30",
-    "4"
-  ),
-  createData(
-    "02-03-2020",
-    "Student",
-    "IITH",
-    "Secunderabad Railway Station",
+    "RGIA",
     "8:30",
     "4"
   ),
 ];
 
-export function DataTable() {
+export function UserBookings() {
+  const [bookings, setBookings] = useState("");
+  const fetchUserBookings = () => {
+    fetch("http://localhost:/8000/user")
+      .then((res) => res.json())
+      .then((data) => {
+          setBookings(data);
+      });
+  };
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
