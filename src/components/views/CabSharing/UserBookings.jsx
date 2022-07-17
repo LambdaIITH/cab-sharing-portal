@@ -117,7 +117,13 @@ const rows = [
 export function UserBookings() {
   const [bookings, setBookings] = useState([]);
   const fetchUserBookings = () => {
-    fetch("http://localhost:8000/user")
+    const authToken = localStorage.getItem("credential");
+    fetch("http://localhost:8000/user", {
+      headers: {
+        Authorization: authToken,
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

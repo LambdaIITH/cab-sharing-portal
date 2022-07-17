@@ -1,16 +1,22 @@
 import { Box, Tab, Typography } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "./DataTable";
 import { NavBar } from "./NavBar";
 import { UserBookings } from "./UserBookings";
+import { useRouter } from "next/router";
+import retrieveAuthToken from "../../utils/retrieveAuthToken";
 
 export default function CabSharing() {
   const [tab, setTab] = useState("1");
-
+  const router = useRouter();
   const handleTabChange = (event, value) => {
     setTab(value);
   };
+  const username = localStorage.getItem('user_name');
+  useEffect(() => {
+    retrieveAuthToken(router);
+  }, []);
   return (
     <>
       <NavBar />
@@ -18,7 +24,7 @@ export default function CabSharing() {
         margin={3}
         sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
       >
-        <Typography variant="h5">Welcome, John Doe!</Typography>
+        <Typography variant="h5">Welcome, {username}!</Typography>
         <p>Click The Register Button to create a new booking </p>
         <Box sx={{ width: "80%" }}>
           <TabContext value={tab}>
