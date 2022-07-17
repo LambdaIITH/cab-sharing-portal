@@ -1,6 +1,7 @@
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
+  Autocomplete,
   Box,
   Button,
   Collapse,
@@ -12,9 +13,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
+  Stack,
 } from "@mui/material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useState } from "react";
+
+const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 function createData(date, name, from, to, time, capacity) {
   return {
@@ -144,26 +152,67 @@ const rows = [
 ];
 
 export function DataTable() {
+  const [value, setValue] = useState(new Date());
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Date</TableCell>
-            <TableCell align="right">Name</TableCell>
-            <TableCell align="right">From</TableCell>
-            <TableCell align="right">To</TableCell>
-            <TableCell align="right">Time</TableCell>
-            <TableCell align="right">Capacity</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}
+      >
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <TimePicker
+            label="Time"
+            value={value}
+            onChange={(newValue) => {
+              setValue(newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                sx={{
+                  width: "175px",
+                }}
+                {...params}
+              />
+            )}
+          />
+        </LocalizationProvider>
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={places}
+          sx={{ width: "300px", marginTop: "20px" }}
+          renderInput={(params) => <TextField {...params} label="From" />}
+        />
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={places}
+          sx={{ width: "300px", marginTop: "20px" }}
+          renderInput={(params) => <TextField {...params} label="To" />}
+        />
+        <Button variant="contained">Search</Button>
+      </Stack>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Date</TableCell>
+              <TableCell align="right">Name</TableCell>
+              <TableCell align="right">From</TableCell>
+              <TableCell align="right">To</TableCell>
+              <TableCell align="right">Time</TableCell>
+              <TableCell align="right">Capacity</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <Row key={row.name} row={row} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }

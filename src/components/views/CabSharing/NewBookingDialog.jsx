@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Button,
-  Box,
   FormControl,
   Dialog,
   DialogActions,
@@ -79,7 +78,12 @@ export function NewBookingDialog() {
   ));
   return (
     <>
-      <Button variant="contained" onClick={handleDialogOpen} disableElevation>
+      <Button
+        variant="contained"
+        onClick={handleDialogOpen}
+        disableElevation
+        sx={{ marginBottom: "10px" }}
+      >
         Register Booking
       </Button>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>

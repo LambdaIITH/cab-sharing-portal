@@ -14,11 +14,12 @@ export default function CabSharing() {
   return (
     <>
       <NavBar />
-      <Box margin={3} sx={{ display:'flex', alignItems: "center", flexDirection:'column' }}>
-        <Typography variant="h5">
-          Welcome, John Doe! 
-        </Typography>
-		<p>Click The Register Button to create a new booking{" "}</p>
+      <Box
+        margin={3}
+        sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
+      >
+        <Typography variant="h5">Welcome, John Doe!</Typography>
+        <p>Click The Register Button to create a new booking </p>
         <Box sx={{ width: "80%" }}>
           <TabContext value={tab}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

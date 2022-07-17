@@ -13,7 +13,9 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Stack,
 } from "@mui/material";
+import { NewBookingDialog } from "./NewBookingDialog";
 import { useState } from "react";
 
 function createData(date, name, from, to, time, capacity) {
@@ -109,14 +111,7 @@ const rows = [
     "8:30",
     "4"
   ),
-  createData(
-    "29-07-2022",
-    "John Doe",
-    "IITH",
-    "RGIA",
-    "8:30",
-    "4"
-  ),
+  createData("29-07-2022", "John Doe", "IITH", "RGIA", "8:30", "4"),
 ];
 
 export function UserBookings() {
@@ -125,29 +120,39 @@ export function UserBookings() {
     fetch("http://localhost:/8000/user")
       .then((res) => res.json())
       .then((data) => {
-          setBookings(data);
+        setBookings(data);
       });
   };
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Date</TableCell>
-            <TableCell align="right">Name</TableCell>
-            <TableCell align="right">From</TableCell>
-            <TableCell align="right">To</TableCell>
-            <TableCell align="right">Time</TableCell>
-            <TableCell align="right">Capacity</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ display: "flex", width: "100%", justifyContent: "flex-end" }}
+      >
+        <NewBookingDialog />
+        {/* <Button variant="contained">My Bookings</Button> */}
+      </Stack>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Date</TableCell>
+              <TableCell align="right">Name</TableCell>
+              <TableCell align="right">From</TableCell>
+              <TableCell align="right">To</TableCell>
+              <TableCell align="right">Time</TableCell>
+              <TableCell align="right">Capacity</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row) => (
+              <Row key={row.name} row={row} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
