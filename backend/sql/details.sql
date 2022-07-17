@@ -17,4 +17,5 @@ ON c.id = t.id
 INNER JOIN locations fl
 ON fl.id = c.from_loc
 INNER JOIN locations tl
-ON tl.id = c.to_loc;
+ON tl.id = c.to_loc
+WHERE fl.place = :from_loc AND tl.place = :to_loc;

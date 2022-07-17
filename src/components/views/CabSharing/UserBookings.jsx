@@ -16,7 +16,7 @@ import {
   Stack,
 } from "@mui/material";
 import { NewBookingDialog } from "./NewBookingDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function createData(date, name, from, to, time, capacity) {
   return {
@@ -63,7 +63,7 @@ function Row(props) {
         <TableCell align="right">{row.name}</TableCell>
         <TableCell align="right">{row.from}</TableCell>
         <TableCell align="right">{row.to}</TableCell>
-        <TableCell align="right">{row.time}</TableCell>
+        <TableCell align="right">{row.start_time}</TableCell>
         <TableCell align="right">{row.capacity}</TableCell>
       </TableRow>
       <TableRow>
@@ -81,14 +81,14 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.details.map((historyRow) => (
+                  {/* {row.details.map((historyRow) => (
                     <TableRow key={historyRow.index}>
                       <TableCell component="th" scope="row">
                         {historyRow.email}
                       </TableCell>
                       <TableCell>{historyRow.comments}</TableCell>
                     </TableRow>
-                  ))}
+                  ))} */}
                   <Button variant="contained" sx={{ marginTop: "10px" }}>
                     Join Booking
                   </Button>
@@ -115,14 +115,19 @@ const rows = [
 ];
 
 export function UserBookings() {
-  const [bookings, setBookings] = useState("");
+  const [bookings, setBookings] = useState([]);
   const fetchUserBookings = () => {
-    fetch("http://localhost:/8000/user")
+    fetch("http://localhost:8000/user")
       .then((res) => res.json())
       .then((data) => {
-        setBookings(data);
+        console.log(data);
+        setBookings(data["user_bookings"]);
       });
   };
+
+  useEffect(() => {
+    fetchUserBookings();
+  }, []);
   return (
     <Box>
       <Stack
@@ -147,7 +152,7 @@ export function UserBookings() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {bookings.map((row) => (
               <Row key={row.name} row={row} />
             ))}
           </TableBody>

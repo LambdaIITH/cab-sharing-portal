@@ -69,7 +69,7 @@ function Row(props) {
         <TableCell align="right">{row.name}</TableCell>
         <TableCell align="right">{row.from}</TableCell>
         <TableCell align="right">{row.to}</TableCell>
-        <TableCell align="right">{row.time}</TableCell>
+        <TableCell align="right">{row.start_time}</TableCell>
         <TableCell align="right">{row.capacity}</TableCell>
       </TableRow>
       <TableRow>
@@ -87,14 +87,14 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.details.map((historyRow) => (
+                  {/* {row.details.map((historyRow) => (
                     <TableRow key={historyRow.index}>
                       <TableCell component="th" scope="row">
                         {historyRow.email}
                       </TableCell>
                       <TableCell>{historyRow.comments}</TableCell>
                     </TableRow>
-                  ))}
+                  ))} */}
                   <Button variant="contained" sx={{ marginTop: "10px" }}>
                     Join Booking
                   </Button>
@@ -125,34 +125,22 @@ const rows = [
     "8:30",
     "4"
   ),
-  createData(
-    "02-03-2020",
-    "Student",
-    "IITH",
-    "Secunderabad Railway Station",
-    "8:30",
-    "4"
-  ),
-  createData(
-    "02-03-2020",
-    "Student",
-    "IITH",
-    "Secunderabad Railway Station",
-    "8:30",
-    "4"
-  ),
-  createData(
-    "02-03-2020",
-    "Student",
-    "IITH",
-    "Secunderabad Railway Station",
-    "8:30",
-    "4"
-  ),
 ];
 
 export function DataTable() {
   const [value, setValue] = useState(new Date());
+  const [fromValue, setFromValue] = useState(places[0]);
+  const [toValue, setToValue] = useState(places[1]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const fetchFilteredBookings = () => {
+    fetch(
+      `http://localhost:8000/allbookings?from_loc=${fromValue}&to_loc=${toValue}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setFilteredBookings(data["user_bookings"]);
+      });
+  };
   return (
     <Box>
       <Stack
@@ -181,6 +169,10 @@ export function DataTable() {
           disablePortal
           id="combo-box-demo"
           options={places}
+          value={fromValue}
+          onChange={(event, newValue) => {
+            setFromValue(newValue);
+          }}
           sx={{ width: "300px", marginTop: "20px" }}
           renderInput={(params) => <TextField {...params} label="From" />}
         />
@@ -188,31 +180,39 @@ export function DataTable() {
           disablePortal
           id="combo-box-demo"
           options={places}
+          value={toValue}
+          onChange={(event, newValue) => {
+            setToValue(newValue);
+          }}
           sx={{ width: "300px", marginTop: "20px" }}
           renderInput={(params) => <TextField {...params} label="To" />}
         />
-        <Button variant="contained">Search</Button>
+        <Button variant="contained" onClick={fetchFilteredBookings}>
+          Search
+        </Button>
       </Stack>
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Date</TableCell>
-              <TableCell align="right">Name</TableCell>
-              <TableCell align="right">From</TableCell>
-              <TableCell align="right">To</TableCell>
-              <TableCell align="right">Time</TableCell>
-              <TableCell align="right">Capacity</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <Row key={row.name} row={row} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {filteredBookings.length !== 0 && (
+        <TableContainer component={Paper}>
+          <Table aria-label="collapsible table">
+            <TableHead>
+              <TableRow>
+                <TableCell />
+                <TableCell align="right">Date</TableCell>
+                <TableCell align="right">Name</TableCell>
+                <TableCell align="right">From</TableCell>
+                <TableCell align="right">To</TableCell>
+                <TableCell align="right">Time</TableCell>
+                <TableCell align="right">Capacity</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredBookings.map((row) => (
+                <Row key={row.name} row={row} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 }

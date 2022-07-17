@@ -160,7 +160,7 @@ async def user_bookings():
     """
     Get Bookings for the authenticated user
     """
-    email = "cs20btech11056@iith.ac.in"
+    email = "cs19btech11034@iith.ac.in"
     res = queries.get_user_bookings(conn, email=email)
     user_bookings_dict = {}
     user_bookings_list = []
@@ -179,12 +179,12 @@ async def user_bookings():
     return user_bookings_dict
 
 
-@app.get("/alluser")
-async def all_bookings():
+@app.get("/allbookings")
+async def all_bookings(from_loc: str, to_loc: str):
     """
     Get All Bookings
     """
-    a = queries.get_all_user_bookings(conn)
+    a = queries.get_all_user_bookings(conn, from_loc=from_loc, to_loc=to_loc)
     user_bookings_dict = {}
     user_bookings_list = []
     for tup in a:
