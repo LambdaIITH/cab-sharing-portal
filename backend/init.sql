@@ -18,7 +18,6 @@ CREATE TABLE cab_booking
   date DATE NOT NULL,
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP NOT NULL,
-  comments VARCHAR,
   capacity INT NOT NULL DEFAULT 4,
   from_loc INT,
   to_loc INT,
@@ -31,6 +30,7 @@ CREATE TABLE traveller
 (
   user_email VARCHAR NOT NULL,
   id INT NOT NULL,
+  comments VARCHAR,
   PRIMARY KEY (user_email, id),
   FOREIGN KEY (user_email) REFERENCES users(user_email),
   FOREIGN KEY (id) REFERENCES cab_booking(id)

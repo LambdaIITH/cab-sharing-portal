@@ -54,7 +54,7 @@ function Row(props) {
 
   return (
     <>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow key={row.id} sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -210,7 +210,7 @@ export function DataTable() {
             </TableHead>
             <TableBody>
               {filteredBookings.map((row) => (
-                <Row key={row.name} row={row} />
+                <Row key={row.id} row={row} />
               ))}
             </TableBody>
           </Table>

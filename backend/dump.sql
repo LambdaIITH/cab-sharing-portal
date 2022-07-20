@@ -51,7 +51,6 @@ CREATE TABLE public.cab_booking (
     date date NOT NULL,
     start_time timestamp without time zone NOT NULL,
     end_time timestamp without time zone NOT NULL,
-    comments character varying,
     capacity integer DEFAULT 4 NOT NULL,
     from_loc integer,
     to_loc integer
@@ -133,7 +132,8 @@ ALTER TABLE public.request OWNER TO postgres;
 
 CREATE TABLE public.traveller (
     user_email character varying NOT NULL,
-    id integer NOT NULL
+    id integer NOT NULL,
+    comments character varying
 );
 
 
@@ -169,13 +169,12 @@ ALTER TABLE ONLY public.locations ALTER COLUMN id SET DEFAULT nextval('public.lo
 -- Data for Name: cab_booking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.cab_booking (id, date, start_time, end_time, comments, capacity, from_loc, to_loc) FROM stdin;
-2	2022-07-29	2022-07-29 16:30:00	2022-07-29 17:30:00	Make this optional	4	0	1
-3	2022-07-29	2022-07-29 10:56:55	2022-07-29 10:56:55		4	1	0
-4	2022-07-29	2022-07-29 10:56:55	2022-07-29 10:56:55		4	1	0
-5	2022-07-29	2022-07-29 10:56:55	2022-07-29 10:56:55		4	1	0
-6	2022-07-22	2022-07-22 11:49:58	2022-07-22 11:49:58		4	1	1
-7	2022-07-29	2022-07-29 10:45:21	2022-07-29 10:45:21		4	1	0
+COPY public.cab_booking (id, date, start_time, end_time, capacity, from_loc, to_loc) FROM stdin;
+2	2022-07-29	2022-07-29 13:00:43	2022-07-29 13:00:43	4	1	1
+3	2022-07-29	2022-07-29 13:00:43	2022-07-29 13:00:43	4	1	1
+4	2022-07-29	2022-07-29 13:00:37	2022-07-29 13:00:37	4	1	1
+5	2022-07-29	2022-07-29 13:00:37	2022-07-29 13:00:37	4	1	1
+6	2022-07-29	2022-07-29 00:14:42	2022-07-29 00:14:42	3	1	0
 \.
 
 
@@ -184,8 +183,10 @@ COPY public.cab_booking (id, date, start_time, end_time, comments, capacity, fro
 --
 
 COPY public.locations (place, id) FROM stdin;
-IITH	0
 RGIA	1
+IITH	0
+Secunderabad Railway Station	2
+Lingampally	3
 \.
 
 
@@ -201,13 +202,12 @@ COPY public.request (status, booking_id, request_id) FROM stdin;
 -- Data for Name: traveller; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.traveller (user_email, id) FROM stdin;
-cs19btech11034@iith.ac.in	2
-cs19btech11034@iith.ac.in	3
-cs19btech11034@iith.ac.in	4
-cs19btech11034@iith.ac.in	5
-cs19btech11034@iith.ac.in	6
-cs19btech11034@iith.ac.in	7
+COPY public.traveller (user_email, id, comments) FROM stdin;
+cs19btech11034@iith.ac.in	2	\N
+cs19btech11034@iith.ac.in	3	\N
+cs19btech11034@iith.ac.in	4	\N
+cs19btech11034@iith.ac.in	5	\N
+cs19btech11034@iith.ac.in	6	
 \.
 
 
@@ -224,7 +224,7 @@ cs19btech11034@iith.ac.in	8529748475
 -- Name: cab_booking_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.cab_booking_id_seq', 7, true);
+SELECT pg_catalog.setval('public.cab_booking_id_seq', 6, true);
 
 
 --

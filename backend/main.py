@@ -26,7 +26,7 @@ app = FastAPI()
 
 origins = [
     "https://iith.dev",
-    "https://iithdashboard.com"
+    "https://iithdashboard.com",
     "http://localhost",
     "http://localhost:3000",
 ]
@@ -102,13 +102,15 @@ async def new_booking(info: Request):
         date=details["date"],
         start_time=details["start_time"],
         end_time=details["end_time"],
-        comments=details["comments"],
+        # comments=details["comments"],
         capacity=details["capacity"],
         from_loc=from_id,
         to_loc=to_id,
     )
 
-    queries.add_traveller(conn, id=booking_id, user_email=email)
+    queries.add_traveller(
+        conn, id=booking_id, user_email=email, comments=details["comments"]
+    )
     start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
     end_time = end_time.strftime("%Y-%m-%d %H:%M:%S")
     try:
@@ -166,13 +168,14 @@ async def user_bookings():
     user_bookings_list = []
     for tup in res:
         booking = {
-            "date": tup[0],
-            "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
-            "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
-            "from": tup[3],
-            "to": tup[4],
-            "capacity": tup[5],
-            "comments": tup[6],
+            "id": tup[0],
+            "date": tup[1],
+            "start_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+            "end_time": tup[3].strftime("%Y-%m-%d %H:%M:%S"),
+            "from": tup[4],
+            "to": tup[5],
+            "capacity": tup[6],
+            # "comments": tup[6],
         }
         user_bookings_list.append(booking)
     user_bookings_dict["user_bookings"] = user_bookings_list
@@ -189,13 +192,14 @@ async def all_bookings(from_loc: str, to_loc: str):
     user_bookings_list = []
     for tup in a:
         booking = {
-            "date": tup[0],
-            "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
-            "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
-            "from": tup[3],
-            "to": tup[4],
-            "capacity": tup[5],
-            "comments": tup[6],
+            "id": tup[0],
+            "date": tup[1],
+            "start_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+            "end_time": tup[3].strftime("%Y-%m-%d %H:%M:%S"),
+            "from": tup[4],
+            "to": tup[5],
+            "capacity": tup[6],
+            # "comments": tup[6],
         }
         user_bookings_list.append(booking)
     user_bookings_dict["user_bookings"] = user_bookings_list

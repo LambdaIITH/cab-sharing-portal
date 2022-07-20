@@ -47,7 +47,7 @@ function Row(props) {
 
   return (
     <>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }} key={row.id}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -159,7 +159,7 @@ export function UserBookings() {
           </TableHead>
           <TableBody>
             {bookings.map((row) => (
-              <Row key={row.name} row={row} />
+              <Row key={row.id} row={row} />
             ))}
           </TableBody>
         </Table>
