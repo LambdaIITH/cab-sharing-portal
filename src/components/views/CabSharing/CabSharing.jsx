@@ -9,14 +9,17 @@ import retrieveAuthToken from "../../utils/retrieveAuthToken";
 
 export default function CabSharing() {
   const [tab, setTab] = useState("1");
+  const [username, setUsername] = useState("");
   const router = useRouter();
   const handleTabChange = (event, value) => {
     setTab(value);
   };
-  const username = localStorage.getItem('user_name');
+
   useEffect(() => {
+    setUsername(localStorage.getItem("user_name"));
     retrieveAuthToken(router);
   }, []);
+
   return (
     <>
       <NavBar />
