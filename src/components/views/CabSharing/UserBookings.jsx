@@ -116,6 +116,7 @@ const rows = [
 
 export function UserBookings() {
   const [bookings, setBookings] = useState([]);
+
   const fetchUserBookings = () => {
     const authToken = localStorage.getItem("credential");
     fetch("http://localhost:8000/user", {
@@ -128,12 +129,14 @@ export function UserBookings() {
       .then((data) => {
         console.log(data);
         setBookings(data["user_bookings"]);
-      });
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
     fetchUserBookings();
   }, []);
+
   return (
     <Box>
       <Stack

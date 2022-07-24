@@ -48,8 +48,11 @@ export function NewBookingDialog() {
     setCapacity(event.target.value);
   };
   const RegisterNewBooking = async () => {
+    const authToken = localStorage.getItem("credential");
+    // console.log(authToken);
     fetch("http://localhost:8000/book", {
       headers: {
+        Authorization: `${authToken}`,
         "Content-Type": "application/json",
       },
       method: "POST",
