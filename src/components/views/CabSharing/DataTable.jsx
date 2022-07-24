@@ -133,6 +133,7 @@ export function DataTable() {
   const [fromValue, setFromValue] = useState(places[0]);
   const [toValue, setToValue] = useState(places[1]);
   const [filteredBookings, setFilteredBookings] = useState([]);
+
   const fetchFilteredBookings = () => {
     const authtoken = retrieveAuthToken();
     console.log(authtoken);
@@ -144,12 +145,17 @@ export function DataTable() {
         setFilteredBookings(data["user_bookings"]);
       });
   };
+
   return (
     <Box>
       <Stack
-        direction="row"
-        spacing={1}
-        sx={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}
+        direction={{ xs: "column", sm: "row" }}
+        spacing={{ xs: 1, sm: 2, md: 4 }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "10px",
+        }}
       >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <TimePicker
@@ -162,6 +168,7 @@ export function DataTable() {
               <TextField
                 sx={{
                   width: "175px",
+                  marginTop: "10px",
                 }}
                 {...params}
               />
@@ -176,7 +183,7 @@ export function DataTable() {
           onChange={(event, newValue) => {
             setFromValue(newValue);
           }}
-          sx={{ width: "300px", marginTop: "20px" }}
+          sx={{ width: "175px", marginTop: "20px" }}
           renderInput={(params) => <TextField {...params} label="From" />}
         />
         <Autocomplete
@@ -187,7 +194,7 @@ export function DataTable() {
           onChange={(event, newValue) => {
             setToValue(newValue);
           }}
-          sx={{ width: "300px", marginTop: "20px" }}
+          sx={{ width: "175px", marginTop: "20px" }}
           renderInput={(params) => <TextField {...params} label="To" />}
         />
         <Button variant="contained" onClick={fetchFilteredBookings}>
