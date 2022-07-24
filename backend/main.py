@@ -117,7 +117,7 @@ async def new_booking(info: Request):
         conn.commit()
     except:
         conn.rollback()
-        raise HTTPException(status_cde=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Some Error Occured")
     # code to find matching slots and send notification
     matches = queries.match_booking(
         conn,
