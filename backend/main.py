@@ -184,23 +184,26 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
 
 
 @app.get("/allbookings")
-async def all_bookings(from_loc: str, to_loc: str):
+async def all_bookings():
     """
     Get All Bookings
     """
-    a = queries.get_all_user_bookings(conn, from_loc=from_loc, to_loc=to_loc)
+    a = queries.get_all_bookings(conn)
     user_bookings_dict = {}
     user_bookings_list = []
     for tup in a:
+        travellers = queries.get_booking_users(conn, id=tup[0])
+        travellers_list = []
+        for people in travellers:
+            travellers_list.append(people[0])
         booking = {
             "id": tup[0],
-            "date": tup[1],
-            "start_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
-            "end_time": tup[3].strftime("%Y-%m-%d %H:%M:%S"),
-            "from": tup[4],
-            "to": tup[5],
-            "capacity": tup[6],
-            # "comments": tup[6],
+            "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
+            "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+            "from": tup[3],
+            "to": tup[4],
+            "capacity": tup[5],
+            "travellers": travellers_list
         }
         user_bookings_list.append(booking)
     user_bookings_dict["user_bookings"] = user_bookings_list
