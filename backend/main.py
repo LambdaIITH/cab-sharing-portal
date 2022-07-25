@@ -60,6 +60,27 @@ def verify_auth_token(Authorization: str = Header()):
         )
     return email
 
+def get_bookings(a):
+    
+    user_bookings_dict = {}
+    user_bookings_list = []
+    for tup in a:
+        travellers = queries.get_booking_users(conn, id=tup[0])
+        travellers_list = []
+        for people in travellers:
+            travellers_list.append(people[0])
+        booking = {
+            "id": tup[0],
+            "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
+            "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+            "from": tup[3],
+            "to": tup[4],
+            "capacity": tup[5],
+            "travellers": travellers_list
+        }
+        user_bookings_list.append(booking)
+    user_bookings_dict["user_bookings"] = user_bookings_list
+    return user_bookings_dict
 
 @app.get("/")
 async def read_root():
@@ -72,20 +93,6 @@ async def auth(email: str = Depends(verify_auth_token)):
     Test Endpoint to validate user identity
     """
     return {"email": email}
-
-
-@app.post("/user")
-async def new_user(info: Request):
-    details = await info.json()
-    email = "cs20btech11056@iith.ac.in"
-    queries.insert_user(conn, user_email=email, phone_number=details["phone_number"])
-    try:
-        conn.commit()
-    except Exception as err:
-        conn.rollback()
-        print(err)
-        raise HTTPException(status_code=500, detail="Some Error Occured")
-
 
 @app.post("/book")
 async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
@@ -182,34 +189,55 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
     user_bookings_dict["user_bookings"] = user_bookings_list
     return user_bookings_dict
 
+@app.post("/user")
+async def new_user(info: Request):
+    details = await info.json()
+    email = "cs20btech11056@iith.ac.in"
+    queries.insert_user(conn, user_email=email, phone_number=details["phone_number"])
+    try:
+        conn.commit()
+    except Exception as err:
+        conn.rollback()
+        print(err)
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 @app.get("/allbookings")
-async def all_bookings():
+async def all_bookings(info: Request):
     """
     Get All Bookings
     """
     a = queries.get_all_bookings(conn)
-    user_bookings_dict = {}
-    user_bookings_list = []
-    for tup in a:
-        travellers = queries.get_booking_users(conn, id=tup[0])
-        travellers_list = []
-        for people in travellers:
-            travellers_list.append(people[0])
-        booking = {
-            "id": tup[0],
-            "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
-            "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
-            "from": tup[3],
-            "to": tup[4],
-            "capacity": tup[5],
-            "travellers": travellers_list
-        }
-        user_bookings_list.append(booking)
-    user_bookings_dict["user_bookings"] = user_bookings_list
-    return user_bookings_dict
-    # need to trim details and add list of users for each booking
+    bookings_dict = get_bookings(a)
+    return bookings_dict
+    
 
+@app.get("/allbookings/loc")
+async def all_bookings_loc(info: Request):
+    """
+    Get All Bookings filtered only on from and to locations
+    """
+    details = await info.json()
+    from_id = queries.get_loc_id(conn, place=details["from"])
+    to_id = queries.get_loc_id(conn, place=details["to"])
+    
+    a = queries.filter_locations(conn, from_loc=from_id, to_loc=to_id)
+    bookings_dict = get_bookings(a)
+    return bookings_dict
+
+@app.get("/allbookings/time")
+async def all_bookings_time(info: Request):
+    """
+    Get All Bookings filtered on from location, to location, start time and end time
+    """
+    details = await info.json()
+    from_id = queries.get_loc_id(conn, place=details["from"])
+    to_id = queries.get_loc_id(conn, place=details["to"])
+    start_time = details["start_time"]
+    end_time = details["end_time"]
+    
+    a = queries.filter_times(conn, from_loc=from_id, to_loc=to_id, start_time=start_time, end_time=end_time)
+    bookings_dict = get_bookings(a)
+    return bookings_dict
 
 @app.delete("/deletebooking/{booking_id}")
 async def delete_existing_booking(booking_id: int):
