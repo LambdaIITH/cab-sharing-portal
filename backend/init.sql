@@ -15,7 +15,6 @@ CREATE TABLE locations
 CREATE TABLE cab_booking
 (
   id BIGSERIAL NOT NULL,
-  date DATE NOT NULL,
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP NOT NULL,
   capacity INT NOT NULL DEFAULT 4,
@@ -40,8 +39,8 @@ CREATE TABLE request
 (
   status INT NOT NULL,
   booking_id INT NOT NULL,
-  request_id INT NOT NULL,
+  request_email VARCHAR NOT NULL,
   PRIMARY KEY (booking_id, request_id),
   FOREIGN KEY (booking_id) REFERENCES cab_booking(id),
-  FOREIGN KEY (request_id) REFERENCES cab_booking(id)
+  FOREIGN KEY (request_email) REFERENCES users(user_email)
 );
