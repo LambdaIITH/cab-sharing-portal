@@ -88,15 +88,12 @@ async def new_user(info: Request):
 
 
 @app.post("/book")
-async def new_booking(info: Request):
+async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
     """
     Create a new Booking.
     """
     details = await info.json()
     # email = "cs19btech11034@iith.ac.in"
-    token = info.headers.get("Authorization")
-    email = verify_auth_token(token)
-    
     from_id = queries.get_loc_id(conn, place=details["from"])
     to_id = queries.get_loc_id(conn, place=details["to"])
     from_id = int(from_id[0])
@@ -162,13 +159,11 @@ Cab sharing test email from backend.
 
 
 @app.get("/user")
-async def user_bookings(info: Request):
+async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
     """
     Get Bookings for the authenticated user
     """
     # email = "cs19btech11034@iith.ac.in"
-    token = info.headers.get("Authorization")
-    email = verify_auth_token(token)
     res = queries.get_user_bookings(conn, email=email)
     user_bookings_dict = {}
     user_bookings_list = []
