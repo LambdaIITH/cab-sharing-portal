@@ -72,7 +72,7 @@ def get_bookings(a):
         travellers_list = []
         for people in travellers:
             travellers_list.append(people[0])
-        if len(travellers) >= int(tup[5]):
+        if len(travellers_list) >= int(tup[5]):
             continue
         booking = {
             "id": tup[0],
@@ -107,6 +107,12 @@ def get_user_bookings(res, email):
 
         if(rank == 0):
             requests = queries.show_requests(conn, id=tup[0])
+            requests_list = []
+            for request in requests:
+                request_dict = {}
+                request_dict["email"] = request[0]
+                request_dict["comments"] = request[1]
+                requests_list.append(request_dict)
 
         booking = {
             "id": tup[0],
@@ -116,7 +122,7 @@ def get_user_bookings(res, email):
             "to": tup[4],
             "capacity": tup[5],
             "travellers": travellers_list,
-            "requests": requests
+            "requests": requests_list
         }
         user_bookings_list.append(booking)
         
@@ -269,7 +275,8 @@ async def join_booking(info: Request):
     details = await info.json()
     email = details["email"]
     booking_id = details["id"]
-    queries.join_booking(conn, booking_id=booking_id, email=email)
+    comment = details["comment"]
+    queries.join_booking(conn, booking_id=booking_id, email=email, comment=comment)
     
     try:
         conn.commit()
@@ -285,8 +292,8 @@ async def accept_request(info: Request):
     details = await info.json()
     booking_id = details["id"]
     request_email = details["email"]
-    queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=1)
-    queries.add_traveller(conn, id=booking_id, user_email=request_email, comments="")
+    comment = queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=1)
+    queries.add_traveller(conn, id=booking_id, user_email=request_email, comments=comment)
     
     try:
         conn.commit()
@@ -304,7 +311,7 @@ async def reject_request(info: Request):
     details = await info.json()
     booking_id = details["id"]
     request_email = details["email"]
-    queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=0)
+    comment = queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=0)
     
     try:
         conn.commit()
