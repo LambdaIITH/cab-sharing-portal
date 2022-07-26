@@ -44,3 +44,8 @@ CREATE TABLE request
   FOREIGN KEY (booking_id) REFERENCES cab_booking(id),
   FOREIGN KEY (request_email) REFERENCES users(user_email)
 );
+
+-- status numbers and their corresponding meanings
+-- 2 - pending
+-- 1 - accepted
+-- 0 - rejected

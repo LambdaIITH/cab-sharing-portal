@@ -236,8 +236,8 @@ async def all_bookings_time(info: Request):
     bookings_dict = get_bookings(a)
     return bookings_dict
 
-@app.get("/join")
-async def join_booking(info: Request, email: str = Depends(verify_auth_token)):
+@app.post("/join")
+async def join_booking(info: Request):
     """
     A function for a new person to place a request to join an existing booking
     """
