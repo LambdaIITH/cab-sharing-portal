@@ -46,6 +46,6 @@ CREATE TABLE request
 );
 
 -- status numbers and their corresponding meanings
--- 2 - pending
--- 1 - accepted
--- 0 - rejected
+  -- 2 - pending
+  -- 1 - accepted
+  -- 0 - rejected

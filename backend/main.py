@@ -11,6 +11,7 @@ import psycopg2
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from requests import request
 
 from auth import authn_user
 
@@ -82,17 +83,26 @@ def get_bookings(a):
     user_bookings_dict["user_bookings"] = user_bookings_list
     return user_bookings_dict
 
-def get_user_bookings(res):
+def get_user_bookings(res, email):
     
     user_bookings_list = []
     for tup in res:
         travellers = queries.get_booking_users(conn, id=tup[0])
+        
         travellers_list = []
+        index = 0
+        rank = -1
         for people in travellers:
             person_dict= {}
             person_dict["email"] = people[0]
             person_dict["comments"] = people[1]
             travellers_list.append(person_dict)
+            if(people[0] == email):
+                rank = index
+            index += 1
+
+        if(rank == 0):
+            requests = queries.show_requests(conn, id=tup[0])
 
         booking = {
             "id": tup[0],
@@ -101,7 +111,8 @@ def get_user_bookings(res):
             "from": tup[3],
             "to": tup[4],
             "capacity": tup[5],
-            "travellers": travellers_list
+            "travellers": travellers_list,
+            "requests": requests
         }
         user_bookings_list.append(booking)
         
@@ -192,12 +203,12 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
     """
     Get Bookings for the authenticated user
     """
-    email = "cs20btech11028@iith.ac.in"
+    email = "cs20btech11056@iith.ac.in"
     res1 = queries.get_user_past_bookings(conn, email=email)
     res2 = queries.get_user_future_bookings(conn, email=email)
     user_bookings_dict = {}
-    user_bookings_dict["past_bookings"] = get_user_bookings(res1)
-    user_bookings_dict["future_bookings"] = get_user_bookings(res2)
+    user_bookings_dict["past_bookings"] = get_user_bookings(res1, email)
+    user_bookings_dict["future_bookings"] = get_user_bookings(res2, email)
 
     return user_bookings_dict
 
@@ -257,7 +268,7 @@ async def join_booking(info: Request):
     A function for a new person to place a request to join an existing booking
     """
     details = await info.json()
-    email = "cs20btech11028@iith.ac.in"
+    email = "cs20btech11017@iith.ac.in"
     booking_id = details["id"]
     queries.join_booking(conn, booking_id=booking_id, email=email)
     
