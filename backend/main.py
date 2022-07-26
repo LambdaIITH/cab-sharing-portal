@@ -82,6 +82,31 @@ def get_bookings(a):
     user_bookings_dict["user_bookings"] = user_bookings_list
     return user_bookings_dict
 
+def get_user_bookings(res):
+    
+    user_bookings_list = []
+    for tup in res:
+        travellers = queries.get_booking_users(conn, id=tup[0])
+        travellers_list = []
+        for people in travellers:
+            person_dict= {}
+            person_dict["email"] = people[0]
+            person_dict["comments"] = people[1]
+            travellers_list.append(person_dict)
+
+        booking = {
+            "id": tup[0],
+            "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
+            "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+            "from": tup[3],
+            "to": tup[4],
+            "capacity": tup[5],
+            "travellers": travellers_list
+        }
+        user_bookings_list.append(booking)
+        
+    return user_bookings_list
+
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
@@ -105,8 +130,8 @@ async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
     to_id = queries.get_loc_id(conn, place=details["to"])
     booking_id = queries.cab_booking(
         conn,
-        start_time=details["start_time"].strftime("%Y-%m-%d %H:%M:%S"),
-        end_time=details["end_time"].strftime("%Y-%m-%d %H:%M:%S"),
+        start_time=details["start_time"],
+        end_time=details["end_time"],
         # comments=details["comments"],
         capacity=details["capacity"],
         from_loc=from_id,
@@ -167,23 +192,13 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
     """
     Get Bookings for the authenticated user
     """
-    # email = "cs19btech11034@iith.ac.in"
-    res = queries.get_user_bookings(conn, email=email)
+    email = "cs20btech11028@iith.ac.in"
+    res1 = queries.get_user_past_bookings(conn, email=email)
+    res2 = queries.get_user_future_bookings(conn, email=email)
     user_bookings_dict = {}
-    user_bookings_list = []
-    for tup in res:
-        booking = {
-            "id": tup[0],
-            "date": tup[1],
-            "start_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
-            "end_time": tup[3].strftime("%Y-%m-%d %H:%M:%S"),
-            "from": tup[4],
-            "to": tup[5],
-            "capacity": tup[6],
-            # "comments": tup[6],
-        }
-        user_bookings_list.append(booking)
-    user_bookings_dict["user_bookings"] = user_bookings_list
+    user_bookings_dict["past_bookings"] = get_user_bookings(res1)
+    user_bookings_dict["future_bookings"] = get_user_bookings(res2)
+
     return user_bookings_dict
 
 @app.post("/user")
