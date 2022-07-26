@@ -1,3 +1,4 @@
+from datetime import date
 import os
 import smtplib
 import ssl
@@ -12,7 +13,7 @@ from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from requests import request
-from soupsieve import comments
+
 
 from auth import authn_user
 
@@ -171,7 +172,7 @@ async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
     Create a new Booking.
     """
     details = await info.json()
-    email = "cs20btech11028@iith.ac.in"
+    email = email
     from_id = queries.get_loc_id(conn, place=details["from"])
     to_id = queries.get_loc_id(conn, place=details["to"])
     booking_id = queries.cab_booking(
@@ -201,7 +202,7 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
     """
     Get Bookings for the authenticated user
     """
-    email = "cs20btech11056@iith.ac.in"
+    email = email
     res1 = queries.get_user_past_bookings(conn, email=email)
     res2 = queries.get_user_future_bookings(conn, email=email)
     user_bookings_dict = {}
@@ -213,7 +214,7 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
 @app.post("/user")
 async def new_user(info: Request):
     details = await info.json()
-    email = "cs20btech11056@iith.ac.in"
+    email = details["email"]
     queries.insert_user(conn, user_email=email, phone_number=details["phone_number"])
     try:
         conn.commit()
@@ -223,7 +224,7 @@ async def new_user(info: Request):
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
 @app.get("/allbookings")
-async def all_bookings(info: Request):
+async def all_bookings():
     """
     Get All Bookings
     """
@@ -233,7 +234,7 @@ async def all_bookings(info: Request):
     
 
 @app.get("/allbookings/loc/{from_loc}/{to_loc}")
-async def all_bookings_loc(info: Request, from_loc: str, to_loc: str):
+async def all_bookings_loc(from_loc: str, to_loc: str):
     """
     Get All Bookings filtered only on from and to locations
     """
@@ -244,16 +245,15 @@ async def all_bookings_loc(info: Request, from_loc: str, to_loc: str):
     bookings_dict = get_bookings(a)
     return bookings_dict
 
-@app.get("/allbookings/time")
-async def all_bookings_time(info: Request):
+@app.get("/allbookings/time/{start_time}/{end_time}")
+async def all_bookings_time(from_loc: str, to_loc:str, start_time:date, end_time:date):
     """
     Get All Bookings filtered on from location, to location, start time and end time
     """
-    details = await info.json()
-    from_id = queries.get_loc_id(conn, place=details["from"])
-    to_id = queries.get_loc_id(conn, place=details["to"])
-    start_time = details["start_time"]
-    end_time = details["end_time"]
+    from_id = queries.get_loc_id(conn, place=from_loc)
+    to_id = queries.get_loc_id(conn, place=to_loc)
+    start_time = start_time
+    end_time = end_time
     
     a = queries.filter_times(conn, from_loc=from_id, to_loc=to_id, start_time=start_time, end_time=end_time)
     bookings_dict = get_bookings(a)
@@ -265,7 +265,7 @@ async def join_booking(info: Request):
     A function for a new person to place a request to join an existing booking
     """
     details = await info.json()
-    email = "cs20btech11017@iith.ac.in"
+    email = details["email"]
     booking_id = details["id"]
     queries.join_booking(conn, booking_id=booking_id, email=email)
     

@@ -1,6 +1,7 @@
 -- name: join_booking!
-INSERT INTO request (status, booking_id, request_email)
-VALUES (2, :booking_id, :email);
+INSERT INTO request (status, booking_id, request_email) 
+VALUES (2, :booking_id, :email)
+ON CONFLICT DO NOTHING;
 
 -- name: show_requests
 SELECT request_email FROM request
