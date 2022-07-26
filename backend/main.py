@@ -72,6 +72,8 @@ def get_bookings(a):
         travellers_list = []
         for people in travellers:
             travellers_list.append(people[0])
+        if len(travellers) >= int(tup[5]):
+            continue
         booking = {
             "id": tup[0],
             "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
