@@ -232,14 +232,13 @@ async def all_bookings(info: Request):
     return bookings_dict
     
 
-@app.get("/allbookings/loc")
-async def all_bookings_loc(info: Request):
+@app.get("/allbookings/loc/{from_loc}/{to_loc}")
+async def all_bookings_loc(info: Request, from_loc: str, to_loc: str):
     """
     Get All Bookings filtered only on from and to locations
     """
-    details = await info.json()
-    from_id = queries.get_loc_id(conn, place=details["from"])
-    to_id = queries.get_loc_id(conn, place=details["to"])
+    from_id = queries.get_loc_id(conn, place=from_loc)
+    to_id = queries.get_loc_id(conn, place=to_loc)
     
     a = queries.filter_locations(conn, from_loc=from_id, to_loc=to_id)
     bookings_dict = get_bookings(a)
