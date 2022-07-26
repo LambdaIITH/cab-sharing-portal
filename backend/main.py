@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from requests import request
+from soupsieve import comments
 
 from auth import authn_user
 
@@ -118,6 +119,40 @@ def get_user_bookings(res, email):
         
     return user_bookings_list
 
+def send_email(email, status):
+    gmail_user = "cs20btech11056@iith.ac.in"
+    gmail_password = os.getenv("APP_PASSWORD")
+
+    
+    receiver = email
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Cab sharing update"
+    message["From"] = gmail_user
+    message["To"] = receiver
+    if(status == 1):
+
+        text = """
+Join request accepted :)  
+        """
+    
+    elif(status == 0):
+        text = """
+Join request rejected :(  
+        """
+        # need to compose a proper email with accept and reject options
+    part1 = MIMEText(text, "plain")
+    message.attach(part1)
+    try:
+        smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        smtp_server.ehlo()
+        smtp_server.login(gmail_user, gmail_password)
+        smtp_server.sendmail(gmail_user, receiver, message.as_string())
+        smtp_server.close()
+        # print ("Email sent successfully!")
+    except Exception as ex:
+        print("Something went wrong", ex)
+
+
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
@@ -159,43 +194,6 @@ async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
     except:
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
-#     # code to find matching slots and send notification
-#     matches = queries.match_booking(
-#         conn,
-#         from_loc=from_id,
-#         to_loc=to_id,
-#         start_time=start_time,
-#         end_time=end_time,
-#         id=booking_id,
-#     )
-#     print(matches)
-
-#     gmail_user = "cs20btech11056@iith.ac.in"
-#     gmail_password = os.getenv("APP_PASSWORD")
-
-#     for match in matches:
-#         receiver = match[0]
-#         message = MIMEMultipart("alternative")
-#         message["Subject"] = "Cab sharing match!"
-#         message["From"] = gmail_user
-#         message["To"] = receiver
-#         text = """
-# Hello there :)
-# Cab sharing test email from backend.    
-#         """
-#         # need to compose a proper email with accept and reject options
-#         part1 = MIMEText(text, "plain")
-#         message.attach(part1)
-
-#         try:
-#             smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-#             smtp_server.ehlo()
-#             smtp_server.login(gmail_user, gmail_password)
-#             smtp_server.sendmail(gmail_user, receiver, message.as_string())
-#             smtp_server.close()
-#             # print ("Email sent successfully!")
-#         except Exception as ex:
-#             print("Something went wrong", ex)
 
 
 @app.get("/user")
@@ -277,6 +275,43 @@ async def join_booking(info: Request):
     except:
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
+
+@app.post("/accept")
+async def accept_request(info: Request):
+    """
+    To accept a person's request to join booking
+    """
+    details = await info.json()
+    booking_id = details["id"]
+    request_email = details["email"]
+    queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=1)
+    queries.add_traveller(conn, id=booking_id, user_email=request_email, comments="")
+    
+    try:
+        conn.commit()
+    except:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail="Some Error Occured")
+
+    send_email(request_email, 1)
+
+@app.post("/reject")
+async def reject_request(info: Request):
+    """
+    To accept a person's request to join booking
+    """
+    details = await info.json()
+    booking_id = details["id"]
+    request_email = details["email"]
+    queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=0)
+    
+    try:
+        conn.commit()
+    except:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail="Some Error Occured")
+
+    send_email(request_email, 0)
 
 @app.delete("/deletebooking/{booking_id}")
 async def delete_existing_booking(booking_id: int):
