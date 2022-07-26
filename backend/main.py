@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime, date
 import os
 import smtplib
 import ssl
@@ -254,7 +254,7 @@ async def all_bookings_loc(from_loc: str, to_loc: str):
     return bookings_dict
 
 @app.get("/allbookings/time/{start_time}/{end_time}")
-async def all_bookings_time(from_loc: str, to_loc:str, start_time:date, end_time:date):
+async def all_bookings_time(from_loc: str, to_loc:str, start_time:datetime, end_time:datetime):
     """
     Get All Bookings filtered on from location, to location, start time and end time
     """
