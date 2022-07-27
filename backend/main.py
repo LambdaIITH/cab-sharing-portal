@@ -128,29 +128,47 @@ def get_user_bookings(res, email):
         
     return user_bookings_list
 
-def send_email(email, status):
-    gmail_user = "cs20btech11056@iith.ac.in"
-    gmail_password = os.getenv("APP_PASSWORD")
-
-    
+def send_email(email, status,booking_id):
+    gmail_user = os.getenv("GMAIL")
+    gmail_password = os.getenv("GMAIL_PASSWORD")
+    print(gmail_user)
+    print(gmail_password)
     receiver = email
     message = MIMEMultipart("alternative")
-    message["Subject"] = "Cab sharing update"
     message["From"] = gmail_user
     message["To"] = receiver
     if(status == 1):
-
-        text = """
-Join request accepted :)  
+        subject = f"Accepted Cab sharing request on booking id {booking_id}"
+        text = """\
+        Yayy, your request has been accepted
         """
-    
+        html = """\
+        <html>
+            <body>
+                <h1> Yayy! &#128512;</h1>
+                <h2> Your request has been accepted </h2>
+            </body>
+        </html>
+        """
     elif(status == 0):
-        text = """
-Join request rejected :(  
+        subject = f"Rejected Cab sharing request on booking id {booking_id}"
+        text = """\
+        Sorry, your request has been rehected
         """
+        html = """
+        <html>
+            <body>
+                <h1> Sorry! &#128533;</h1>
+                <h2> Your request has been rejected </h2>
+            </body>
+        </html>
+        """
+    message["Subject"] = subject
         # need to compose a proper email with accept and reject options
     part1 = MIMEText(text, "plain")
+    part2 = MIMEText(html,"html")
     message.attach(part1)
+    message.attach(part2)
     try:
         smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         smtp_server.ehlo()
@@ -220,9 +238,9 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
     return user_bookings_dict
 
 @app.post("/user")
-async def new_user(info: Request):
+async def new_user(info: Request, email: str = Depends(verify_auth_token)):
     details = await info.json()
-    email = details["email"]
+    email = email
     queries.insert_user(conn, user_email=email, phone_number=details["phone_number"])
     try:
         conn.commit()
@@ -301,7 +319,7 @@ async def accept_request(info: Request, email: str = Depends(verify_auth_token))
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
-    send_email(request_email, 1)
+    send_email(request_email, 1, booking_id)
 
 @app.post("/reject")
 async def reject_request(info: Request, email: str = Depends(verify_auth_token)):
@@ -319,7 +337,7 @@ async def reject_request(info: Request, email: str = Depends(verify_auth_token))
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
-    send_email(request_email, 0)
+    send_email(request_email, 0, booking_id)
 
 @app.delete("/deletebooking/{booking_id}")
 async def delete_existing_booking(booking_id: int):
