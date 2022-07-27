@@ -340,22 +340,26 @@ async def reject_request(info: Request, email: str = Depends(verify_auth_token))
     send_email(request_email, 0, booking_id)
 
 @app.delete("/deletebooking/{booking_id}")
-async def delete_existing_booking(booking_id: int):
+async def delete_existing_booking(booking_id: int, email: str = Depends(verify_auth_token)):
     """
     Delete a Particular booking
     """
-    print(booking_id)
-    queries.delete_booking_associated_traveller(conn, id=booking_id)
-    queries.delete_booking(conn, id=booking_id)
-    conn.commit()
+    travellers = queries.get_booking_users(conn,id=booking_id)
+    if travellers[0][0]==email: 
+        queries.delete_booking_associated_request(conn,id=booking_id)
+        queries.delete_booking_associated_traveller(conn, id=booking_id)
+        queries.delete_booking(conn, id=booking_id)
+    try:
+        conn.commit()
+    except:
+        conn.rollback()
 
 
 @app.delete("/deleteuser/{booking_id}")
-async def delete_user_from_booking(booking_id: int):
+async def delete_user_from_booking(booking_id: int, email: str = Depends(verify_auth_token)):
     """
     Delete a particular user from a particular booking
     """
-    email = "cs20btech11056@iith.ac.in"
     queries.delete_particular_traveller(conn, id=booking_id, email=email)
     try:
         conn.commit()
