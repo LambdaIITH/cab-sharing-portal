@@ -84,7 +84,7 @@ def get_bookings(a):
             "travellers": travellers_list
         }
         user_bookings_list.append(booking)
-    user_bookings_dict["user_bookings"] = user_bookings_list
+    user_bookings_dict["all_bookings"] = user_bookings_list
     return user_bookings_dict
 
 def get_user_bookings(res, email):
@@ -232,7 +232,7 @@ async def new_user(info: Request):
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
 @app.get("/allbookings")
-async def all_bookings():
+async def all_bookings(email: str = Depends(verify_auth_token)):
     """
     Get All Bookings
     """
@@ -241,8 +241,8 @@ async def all_bookings():
     return bookings_dict
     
 
-@app.get("/allbookings/loc/{from_loc}/{to_loc}")
-async def all_bookings_loc(from_loc: str, to_loc: str):
+@app.get("/allbookings/loc/")
+async def all_bookings_loc(from_loc: str, to_loc: str, email: str = Depends(verify_auth_token)):
     """
     Get All Bookings filtered only on from and to locations
     """
@@ -253,8 +253,8 @@ async def all_bookings_loc(from_loc: str, to_loc: str):
     bookings_dict = get_bookings(a)
     return bookings_dict
 
-@app.get("/allbookings/time/{start_time}/{end_time}")
-async def all_bookings_time(from_loc: str, to_loc:str, start_time:datetime, end_time:datetime):
+@app.get("/allbookings/time/")
+async def all_bookings_time(from_loc: str, to_loc:str, start_time:datetime, end_time:datetime, email: str = Depends(verify_auth_token)):
     """
     Get All Bookings filtered on from location, to location, start time and end time
     """
@@ -268,12 +268,12 @@ async def all_bookings_time(from_loc: str, to_loc:str, start_time:datetime, end_
     return bookings_dict
 
 @app.post("/join")
-async def join_booking(info: Request):
+async def join_booking(info: Request, email: str = Depends(verify_auth_token)):
     """
     A function for a new person to place a request to join an existing booking
     """
     details = await info.json()
-    email = details["email"]
+    # email = details["email"]
     booking_id = details["id"]
     comment = details["comment"]
     queries.join_booking(conn, booking_id=booking_id, email=email, comment=comment)
@@ -285,7 +285,7 @@ async def join_booking(info: Request):
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
 @app.post("/accept")
-async def accept_request(info: Request):
+async def accept_request(info: Request, email: str = Depends(verify_auth_token)):
     """
     To accept a person's request to join booking
     """
@@ -304,7 +304,7 @@ async def accept_request(info: Request):
     send_email(request_email, 1)
 
 @app.post("/reject")
-async def reject_request(info: Request):
+async def reject_request(info: Request, email: str = Depends(verify_auth_token)):
     """
     To accept a person's request to join booking
     """
