@@ -1,10 +1,10 @@
-from google.oauth2 import id_token
 from google.auth.transport import requests
+from google.oauth2 import id_token
 
 
 def authn_user(token):
     GSUITE_DOMAIN_NAME = "iith.ac.in"
-    CLIENT_ID = ""
+    # CLIENT_ID = ""
     try:
         # Specify the CLIENT_ID of the app that accesses the backend:
         # TODO: Source client ID from config and verfiy here
@@ -23,7 +23,7 @@ def authn_user(token):
             raise ValueError("Wrong hosted domain. Only IITH Users are allowed")
 
         # ID token is valid. Get the user's Google Account ID from the decoded token.
-        userid = idinfo["sub"]
+        userid = idinfo["sub"]  # noqa: F841
 
         return email
     except ValueError:

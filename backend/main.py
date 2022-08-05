@@ -1,19 +1,14 @@
-from datetime import datetime, date
 import os
 import smtplib
-import ssl
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from functools import wraps
-from typing import Union
 
 import aiosql
 import psycopg2
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from requests import request
-
 
 from auth import authn_user
 
@@ -63,8 +58,9 @@ def verify_auth_token(Authorization: str = Header()):
         )
     return email
 
+
 def get_bookings(a):
-    
+
     user_bookings_dict = {}
     user_bookings_list = []
     for tup in a:
@@ -81,31 +77,32 @@ def get_bookings(a):
             "from": tup[3],
             "to": tup[4],
             "capacity": tup[5],
-            "travellers": travellers_list
+            "travellers": travellers_list,
         }
         user_bookings_list.append(booking)
     user_bookings_dict["all_bookings"] = user_bookings_list
     return user_bookings_dict
 
+
 def get_user_bookings(res, email):
-    
+
     user_bookings_list = []
     for tup in res:
         travellers = queries.get_booking_users(conn, id=tup[0])
-        
+
         travellers_list = []
         index = 0
         rank = -1
         for people in travellers:
-            person_dict= {}
+            person_dict = {}
             person_dict["email"] = people[0]
             person_dict["comments"] = people[1]
             travellers_list.append(person_dict)
-            if(people[0] == email):
+            if people[0] == email:
                 rank = index
             index += 1
 
-        if(rank == 0):
+        if rank == 0:
             requests = queries.show_requests(conn, id=tup[0])
             requests_list = []
             for request in requests:
@@ -122,13 +119,14 @@ def get_user_bookings(res, email):
             "to": tup[4],
             "capacity": tup[5],
             "travellers": travellers_list,
-            "requests": requests_list
+            "requests": requests_list,
         }
         user_bookings_list.append(booking)
-        
+
     return user_bookings_list
 
-def send_email(email, status,booking_id):
+
+def send_email(email, status, booking_id):
     gmail_user = os.getenv("GMAIL")
     gmail_password = os.getenv("GMAIL_PASSWORD")
     print(gmail_user)
@@ -137,7 +135,7 @@ def send_email(email, status,booking_id):
     message = MIMEMultipart("alternative")
     message["From"] = gmail_user
     message["To"] = receiver
-    if(status == 1):
+    if status == 1:
         subject = f"Accepted Cab sharing request on booking id {booking_id}"
         text = """\
         Yayy, your request has been accepted
@@ -150,7 +148,7 @@ def send_email(email, status,booking_id):
             </body>
         </html>
         """
-    elif(status == 0):
+    elif status == 0:
         subject = f"Rejected Cab sharing request on booking id {booking_id}"
         text = """\
         Sorry, your request has been rehected
@@ -164,9 +162,9 @@ def send_email(email, status,booking_id):
         </html>
         """
     message["Subject"] = subject
-        # need to compose a proper email with accept and reject options
+    # need to compose a proper email with accept and reject options
     part1 = MIMEText(text, "plain")
-    part2 = MIMEText(html,"html")
+    part2 = MIMEText(html, "html")
     message.attach(part1)
     message.attach(part2)
     try:
@@ -191,6 +189,7 @@ async def auth(email: str = Depends(verify_auth_token)):
     Test Endpoint to validate user identity
     """
     return {"email": email}
+
 
 @app.post("/book")
 async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
@@ -218,7 +217,8 @@ async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
     # end_time = end_time.strftime("%Y-%m-%d %H:%M:%S")
     try:
         conn.commit()
-    except:
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
@@ -237,6 +237,7 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
 
     return user_bookings_dict
 
+
 @app.post("/user")
 async def new_user(info: Request, email: str = Depends(verify_auth_token)):
     details = await info.json()
@@ -249,6 +250,7 @@ async def new_user(info: Request, email: str = Depends(verify_auth_token)):
         print(err)
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
+
 @app.get("/allbookings")
 async def all_bookings(email: str = Depends(verify_auth_token)):
     """
@@ -257,22 +259,31 @@ async def all_bookings(email: str = Depends(verify_auth_token)):
     a = queries.get_all_bookings(conn)
     bookings_dict = get_bookings(a)
     return bookings_dict
-    
+
 
 @app.get("/allbookings/loc/")
-async def all_bookings_loc(from_loc: str, to_loc: str, email: str = Depends(verify_auth_token)):
+async def all_bookings_loc(
+    from_loc: str, to_loc: str, email: str = Depends(verify_auth_token)
+):
     """
     Get All Bookings filtered only on from and to locations
     """
     from_id = queries.get_loc_id(conn, place=from_loc)
     to_id = queries.get_loc_id(conn, place=to_loc)
-    
+
     a = queries.filter_locations(conn, from_loc=from_id, to_loc=to_id)
     bookings_dict = get_bookings(a)
     return bookings_dict
 
+
 @app.get("/allbookings/time/")
-async def all_bookings_time(from_loc: str, to_loc:str, start_time:datetime, end_time:datetime, email: str = Depends(verify_auth_token)):
+async def all_bookings_time(
+    from_loc: str,
+    to_loc: str,
+    start_time: datetime,
+    end_time: datetime,
+    email: str = Depends(verify_auth_token),
+):
     """
     Get All Bookings filtered on from location, to location, start time and end time
     """
@@ -280,10 +291,13 @@ async def all_bookings_time(from_loc: str, to_loc:str, start_time:datetime, end_
     to_id = queries.get_loc_id(conn, place=to_loc)
     start_time = start_time
     end_time = end_time
-    
-    a = queries.filter_times(conn, from_loc=from_id, to_loc=to_id, start_time=start_time, end_time=end_time)
+
+    a = queries.filter_times(
+        conn, from_loc=from_id, to_loc=to_id, start_time=start_time, end_time=end_time
+    )
     bookings_dict = get_bookings(a)
     return bookings_dict
+
 
 @app.post("/join")
 async def join_booking(info: Request, email: str = Depends(verify_auth_token)):
@@ -295,12 +309,14 @@ async def join_booking(info: Request, email: str = Depends(verify_auth_token)):
     booking_id = details["id"]
     comment = details["comment"]
     queries.join_booking(conn, booking_id=booking_id, email=email, comment=comment)
-    
+
     try:
         conn.commit()
-    except:
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
+
 
 @app.post("/accept")
 async def accept_request(info: Request, email: str = Depends(verify_auth_token)):
@@ -310,16 +326,22 @@ async def accept_request(info: Request, email: str = Depends(verify_auth_token))
     details = await info.json()
     booking_id = details["id"]
     request_email = details["email"]
-    comment = queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=1)
-    queries.add_traveller(conn, id=booking_id, user_email=request_email, comments=comment)
-    
+    comment = queries.modify_booking(
+        conn, booking_id=booking_id, request_email=request_email, val=1
+    )
+    queries.add_traveller(
+        conn, id=booking_id, user_email=request_email, comments=comment
+    )
+
     try:
         conn.commit()
-    except:
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
     send_email(request_email, 1, booking_id)
+
 
 @app.post("/reject")
 async def reject_request(info: Request, email: str = Depends(verify_auth_token)):
@@ -329,43 +351,53 @@ async def reject_request(info: Request, email: str = Depends(verify_auth_token))
     details = await info.json()
     booking_id = details["id"]
     request_email = details["email"]
-    comment = queries.modify_booking(conn, booking_id=booking_id, request_email=request_email, val=0)
-    
+    comment = queries.modify_booking(  # noqa: F841
+        conn, booking_id=booking_id, request_email=request_email, val=0
+    )
+
     try:
         conn.commit()
-    except:
-        conn.rollback()
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
     send_email(request_email, 0, booking_id)
 
+
 @app.delete("/deletebooking/{booking_id}")
-async def delete_existing_booking(booking_id: int, email: str = Depends(verify_auth_token)):
+async def delete_existing_booking(
+    booking_id: int, email: str = Depends(verify_auth_token)
+):
     """
     Delete a Particular booking
     """
-    travellers = queries.get_booking_users(conn,id=booking_id)
-    if travellers[0][0]==email: 
-        queries.delete_booking_associated_request(conn,id=booking_id)
+    travellers = queries.get_booking_users(conn, id=booking_id)
+    if travellers[0][0] == email:
+        queries.delete_booking_associated_request(conn, id=booking_id)
         queries.delete_booking_associated_traveller(conn, id=booking_id)
         queries.delete_booking(conn, id=booking_id)
     try:
         conn.commit()
-    except:
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
         conn.rollback()
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
 @app.delete("/deleteuser/{booking_id}")
-async def delete_user_from_booking(booking_id: int, email: str = Depends(verify_auth_token)):
+async def delete_user_from_booking(
+    booking_id: int, email: str = Depends(verify_auth_token)
+):
     """
     Delete a particular user from a particular booking
     """
     queries.delete_particular_traveller(conn, id=booking_id, email=email)
     try:
         conn.commit()
-    except:
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
         conn.rollback()
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # noqa: F821
