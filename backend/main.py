@@ -7,10 +7,11 @@ from email.mime.text import MIMEText
 import aiosql
 import psycopg2
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from auth import authn_user
+from db import schemas
 
 load_dotenv()
 
@@ -192,26 +193,27 @@ async def auth(email: str = Depends(verify_auth_token)):
 
 
 @app.post("/book")
-async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
+async def new_booking(
+    booking: schemas.Booking, email: str = Depends(verify_auth_token)
+):
     """
     Create a new Booking.
     """
-    details = await info.json()
     email = email
-    from_id = queries.get_loc_id(conn, place=details["from"])
-    to_id = queries.get_loc_id(conn, place=details["to"])
+    from_id = queries.get_loc_id(conn, place=booking.from_)
+    to_id = queries.get_loc_id(conn, place=booking.to)
     booking_id = queries.cab_booking(
         conn,
-        start_time=details["start_time"],
-        end_time=details["end_time"],
+        start_time=booking.start_time,
+        end_time=booking.end_time,
         # comments=details["comments"],
-        capacity=details["capacity"],
+        capacity=booking.capacity,
         from_loc=from_id,
         to_loc=to_id,
     )
 
     queries.add_traveller(
-        conn, id=booking_id, user_email=email, comments=details["comments"]
+        conn, id=booking_id, user_email=email, comments=booking.comments
     )
     # start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
     # end_time = end_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -224,7 +226,7 @@ async def new_booking(info: Request, email: str = Depends(verify_auth_token)):
 
 
 @app.get("/user")
-async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
+async def user_bookings(email: str = Depends(verify_auth_token)):
     """
     Get Bookings for the authenticated user
     """
@@ -239,10 +241,10 @@ async def user_bookings(info: Request, email: str = Depends(verify_auth_token)):
 
 
 @app.post("/user")
-async def new_user(info: Request, email: str = Depends(verify_auth_token)):
-    details = await info.json()
+async def new_user(user: schemas.User, email: str = Depends(verify_auth_token)):
+    phone_number = user.phone_number
     email = email
-    queries.insert_user(conn, user_email=email, phone_number=details["phone_number"])
+    queries.insert_user(conn, user_email=email, phone_number=phone_number)
     try:
         conn.commit()
     except Exception as err:
@@ -300,15 +302,18 @@ async def all_bookings_time(
 
 
 @app.post("/join")
-async def join_booking(info: Request, email: str = Depends(verify_auth_token)):
+async def join_booking(
+    join_booking: schemas.JoinBooking, email: str = Depends(verify_auth_token)
+):
     """
     A function for a new person to place a request to join an existing booking
     """
-    details = await info.json()
-    # email = details["email"]
-    booking_id = details["id"]
-    comment = details["comment"]
-    queries.join_booking(conn, booking_id=booking_id, email=email, comment=comment)
+    queries.join_booking(
+        conn,
+        booking_id=join_booking.booking_id,
+        email=email,
+        comment=join_booking.comment,
+    )
 
     try:
         conn.commit()
@@ -319,18 +324,23 @@ async def join_booking(info: Request, email: str = Depends(verify_auth_token)):
 
 
 @app.post("/accept")
-async def accept_request(info: Request, email: str = Depends(verify_auth_token)):
+async def accept_request(
+    accept_booking: schemas.AcceptRejectBooking, email: str = Depends(verify_auth_token)
+):
     """
     To accept a person's request to join booking
     """
-    details = await info.json()
-    booking_id = details["id"]
-    request_email = details["email"]
     comment = queries.modify_booking(
-        conn, booking_id=booking_id, request_email=request_email, val=1
+        conn,
+        booking_id=accept_booking.booking_id,
+        request_email=accept_booking.request_email,
+        val=1,
     )
     queries.add_traveller(
-        conn, id=booking_id, user_email=request_email, comments=comment
+        conn,
+        id=accept_booking.booking_id,
+        user_email=accept_booking.booking_id,
+        comments=comment,
     )
 
     try:
@@ -340,19 +350,21 @@ async def accept_request(info: Request, email: str = Depends(verify_auth_token))
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
-    send_email(request_email, 1, booking_id)
+    send_email(accept_booking.request_email, 1, accept_booking.booking_id)
 
 
 @app.post("/reject")
-async def reject_request(info: Request, email: str = Depends(verify_auth_token)):
+async def reject_request(
+    reject_booking: schemas.AcceptRejectBooking, email: str = Depends(verify_auth_token)
+):
     """
     To accept a person's request to join booking
     """
-    details = await info.json()
-    booking_id = details["id"]
-    request_email = details["email"]
     comment = queries.modify_booking(  # noqa: F841
-        conn, booking_id=booking_id, request_email=request_email, val=0
+        conn,
+        booking_id=reject_booking.booking_id,
+        request_email=reject_booking.request_email,
+        val=0,
     )
 
     try:
@@ -361,7 +373,7 @@ async def reject_request(info: Request, email: str = Depends(verify_auth_token))
         print(e)  # TODO: Replace with logger
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
-    send_email(request_email, 0, booking_id)
+    send_email(reject_booking.request_email, 0, reject_booking.booking_id)
 
 
 @app.delete("/deletebooking/{booking_id}")
