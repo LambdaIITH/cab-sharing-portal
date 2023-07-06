@@ -60,8 +60,8 @@ function Row(props) {
         <TableCell component="th" scope="row">
           {row.date}
         </TableCell>
-        <TableCell align="right">{row.name}</TableCell>
-        <TableCell align="right">{row.from}</TableCell>
+        <TableCell align="right">{props.username}</TableCell>
+        <TableCell align="right">{row.from_}</TableCell>
         <TableCell align="right">{row.to}</TableCell>
         <TableCell align="right">{row.start_time}</TableCell>
         <TableCell align="right">{row.capacity}</TableCell>
@@ -116,6 +116,7 @@ const rows = [
 
 export function UserBookings() {
   const [bookings, setBookings] = useState([]);
+  const [username, setUsername] = useState("");
 
   const fetchUserBookings = () => {
     const authToken = localStorage.getItem("credential");
@@ -127,15 +128,19 @@ export function UserBookings() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        console.log('this is user bookings data from UserBooking.jsx', data);
+        data['user_bookings'] =[...data['past_bookings'], ...data['future_bookings']];
         setBookings(data["user_bookings"]);
+        console.log(data)
       })
       .catch((err) => console.log(err));
   };
 
   useEffect(() => {
+    setUsername(localStorage.getItem("user_name"));
     fetchUserBookings();
   }, []);
+
 
   return (
     <Box>
@@ -161,9 +166,9 @@ export function UserBookings() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {bookings.map((row) => (
-              <Row key={row.id} row={row} />
-            ))}
+              {bookings?.map((row) => (
+                <Row key={row.id} row={row} username={username} />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

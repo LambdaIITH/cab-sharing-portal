@@ -48,7 +48,7 @@ conn = psycopg2.connect(
     host=POSTGRES_HOST,
     port=POSTGRES_PORT,
 )
-# print("Opened database successfully!")
+print("Opened database successfully!")
 
 
 def verify_auth_token(Authorization: str = Header()):
@@ -116,7 +116,7 @@ def get_user_bookings(res, email):
             "id": tup[0],
             "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
             "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
-            "from": tup[3],
+            "from_": tup[3],
             "to": tup[4],
             "capacity": tup[5],
             "travellers": travellers_list,
@@ -206,6 +206,7 @@ async def new_booking(
         conn,
         start_time=booking.start_time,
         end_time=booking.end_time,
+        date=booking.date,
         # comments=details["comments"],
         capacity=booking.capacity,
         from_loc=from_id,

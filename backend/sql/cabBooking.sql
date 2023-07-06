@@ -1,6 +1,6 @@
 -- name:cab_booking<!
-insert into cab_booking (start_time, end_time, capacity, from_loc, to_loc)
-values (:start_time, :end_time, :capacity, :from_loc, :to_loc)
+insert into cab_booking (start_time, end_time, capacity, date, from_loc, to_loc)
+values (:start_time, :end_time, :capacity, :date, :from_loc, :to_loc)
 returning id;
 
 -- name:add_traveller!

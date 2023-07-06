@@ -57,11 +57,11 @@ export function NewBookingDialog() {
       },
       method: "POST",
       body: JSON.stringify({
-        from: from,
+        from_: from,
         to: to,
         comments: "",
         capacity: capacity,
-        date: date.toDateString(),
+        date: date.toISOString().slice(0,10),
         start_time: date.toISOString(),
         end_time: date.toISOString(),
       }),

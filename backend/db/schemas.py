@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -8,12 +8,13 @@ class User(BaseModel):
 
 
 class Booking(BaseModel):
-    from_: int
-    to: int
+    from_: str
+    to: str
     start_time: datetime
     end_time: datetime
     capacity: int
-    comment: str
+    comments: str
+    date: date
 
 
 class JoinBooking(BaseModel):
