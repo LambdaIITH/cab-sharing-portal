@@ -129,14 +129,25 @@ const rows = [
 ];
 
 export function DataTable() {
-  const [value, setValue] = useState(new Date());
-  const [fromValue, setFromValue] = useState(places[0]);
-  const [toValue, setToValue] = useState(places[1]);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [fromValue, setFromValue] = useState();
+  const [toValue, setToValue] = useState();
   const [filteredBookings, setFilteredBookings] = useState([]);
 
   const fetchFilteredBookings = () => {
     const authToken = retrieveAuthToken();
-    fetch(`http://localhost:8000/allbookings`, {
+    let apiURL = `http://localhost:8000/allbookings`;
+
+    if(fromValue && toValue) {
+      if(startTime && endTime) {
+        apiURL += `/time?from_loc=${fromValue}&to_loc=${toValue}&start_time=${startTime}&end_time=${endTime}`;
+      } else {
+        apiURL += `/loc?from_loc=${fromValue}&to_loc=${toValue}`;
+      }
+    }
+    
+    fetch(apiURL, {
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
@@ -163,17 +174,31 @@ export function DataTable() {
         }}
       >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <TimePicker
-            label="Time"
-            value={value}
+        <TimePicker
+            label="Start Time"
+            value={startTime}
             onChange={(newValue) => {
-              setValue(newValue);
+              setStartTime(newValue);
             }}
             renderInput={(params) => (
               <TextField
                 sx={{
                   width: "175px",
-                  marginTop: "10px",
+                }}
+                {...params}
+              />
+            )}
+          />
+          <TimePicker
+            label="End Time"
+            value={endTime}
+            onChange={(newValue) => {
+              setEndTime(newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                sx={{
+                  width: "175px",
                 }}
                 {...params}
               />
