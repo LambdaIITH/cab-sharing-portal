@@ -20,7 +20,7 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import retrieveAuthToken from "../../utils/retrieveAuthToken";
 
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
@@ -135,16 +135,21 @@ export function DataTable() {
   const [filteredBookings, setFilteredBookings] = useState([]);
 
   const fetchFilteredBookings = () => {
-    const authtoken = retrieveAuthToken();
-    console.log(authtoken);
-    fetch(
-      `http://localhost:8000/allbookings?from_loc=${fromValue}&to_loc=${toValue}`
-    )
+    const authToken = retrieveAuthToken();
+    fetch(`http://localhost:8000/allbookings`, {
+      headers: {
+        Authorization: authToken,
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
-        setFilteredBookings(data["user_bookings"]);
+        console.log(data);
+        setFilteredBookings(data["all_bookings"]);
       });
   };
+
+  useEffect(() => fetchFilteredBookings(), [])
 
   return (
     <Box>
@@ -201,7 +206,7 @@ export function DataTable() {
           Search
         </Button>
       </Stack>
-      {filteredBookings.length !== 0 && (
+      {filteredBookings?.length !== 0 && (
         <TableContainer component={Paper}>
           <Table aria-label="collapsible table">
             <TableHead>
@@ -216,7 +221,7 @@ export function DataTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredBookings.map((row) => (
+              {filteredBookings?.map((row) => (
                 <Row key={row.id} row={row} />
               ))}
             </TableBody>
