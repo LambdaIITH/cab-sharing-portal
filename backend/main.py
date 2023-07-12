@@ -75,7 +75,7 @@ def get_bookings(a):
             "id": tup[0],
             "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
             "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
-            "from": tup[3],
+            "from_": tup[3],
             "to": tup[4],
             "capacity": tup[5],
             "travellers": travellers_list,
@@ -259,8 +259,11 @@ async def all_bookings(email: str = Depends(verify_auth_token)):
     """
     Get All Bookings
     """
+    email = email
     a = queries.get_all_bookings(conn)
     bookings_dict = get_bookings(a)
+    bookings_dict["email"] = email
+
     return bookings_dict
 
 

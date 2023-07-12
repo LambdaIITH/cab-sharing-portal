@@ -81,14 +81,14 @@ export function NewBookingDialog() {
   ));
   return (
     <>
-      <Button
-        variant="contained"
+      <button
+        // variant="contained"
         onClick={handleDialogOpen}
-        disableElevation
-        sx={{ marginBottom: "10px" }}
+        // sx={{ marginBottom: "10px" }}
+        className="border btn border-black p-3 rounded-lg my-3 shadow-lg transition-all hover:-translate-y-1"
       >
         Register Booking
-      </Button>
+      </button>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>New booking</DialogTitle>
         <DialogContent>
