@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -27,8 +27,31 @@ export function NewBookingDialog() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(null);
   const [capacity, setCapacity] = useState(4);
+  const initData = {
+    from_: null,
+    to: null,
+    startDateTime: null,
+    endDateTime: null,
+    capacity: 4,
+  };
+  const initState = { isLoading: false, error: "", values: initData };
+  const [registerData, setRegesterData] = useState(initState);
+  const [touched, setTouched] = useState({});
+  const { values, isLoading, error } = registerData;
+
+  // handlers
+
+  const onBlur = ({ target }) =>
+    setTouched((prev) => ({ ...prev, [target.name]: true }));
+
+  const handleChange = ({ target }) =>
+    setRegesterData((prev) => ({
+      ...prev,
+      values: { ...prev.values, [target.name]: target.value },
+    }));
+
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
@@ -61,7 +84,7 @@ export function NewBookingDialog() {
         to: to,
         comments: "",
         capacity: capacity,
-        date: date.toISOString().slice(0,10),
+        date: date.toISOString().slice(0, 10),
         start_time: date.toISOString(),
         end_time: date.toISOString(),
       }),
@@ -73,6 +96,8 @@ export function NewBookingDialog() {
       })
       .catch((err) => console.log(err));
   };
+
+  useEffect(() => console.log(registerData.values), [registerData]);
 
   const destinations = locations.map((loc, i) => (
     <MenuItem key={i} value={loc}>
@@ -96,29 +121,48 @@ export function NewBookingDialog() {
             Please fill the form to create a new booking. <br />
             Your email address will be automatically associated with your
             booking.
+            {values.from_ !== null && values.from_ === values.to && (
+              <span className="label-text-alt mt-1 text-red-600">
+                To and From Location cannot be the same
+              </span>
+            )}
             <FormControl>
               <InputLabel id="new-book-from">From</InputLabel>
               <Select
-                value={from}
+                value={values.from_}
+                name="from_"
+                onBlur={onBlur}
                 label="From"
                 labelId="new-book-from"
-                onChange={handleFromChange}
+                onChange={handleChange}
                 required
               >
                 {destinations}
               </Select>
+              {touched.from_ && !values.from_ && (
+                <span className="label-text-alt mt-1 text-red-600">
+                  Required
+                </span>
+              )}
             </FormControl>
             <FormControl>
               <InputLabel id="new-book-to">To</InputLabel>
               <Select
-                value={to}
+                value={values.to}
+                name="to"
+                onBlur={onBlur}
                 label="To"
                 labelId="new-book-to"
-                onChange={handleToChange}
+                onChange={handleChange}
                 required
               >
                 {destinations}
               </Select>
+              {touched.to && !values.to && (
+                <span className="label-text-alt mt-1 text-red-600">
+                  Required
+                </span>
+              )}
             </FormControl>{" "}
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -126,6 +170,7 @@ export function NewBookingDialog() {
                   renderInput={(props) => <TextField {...props} />}
                   label="Booking Date"
                   value={date}
+                  // name="to"
                   minDateTime={new Date()}
                   onChange={(newValue) => {
                     setDate(newValue);

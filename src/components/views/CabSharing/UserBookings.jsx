@@ -41,7 +41,7 @@ const UserBookings = () => {
       >
         <NewBookingDialog /> 
       </Stack>
-        {bookings?.map((item, index) => <CabShareSmall key={index} bookingData={item} username={username} email={email}  />)}
+        {bookings?.map((item, index) => <CabShareSmall userSpectific={true} key={index} bookingData={item} username={username} email={email}  />)}
 
    </div>
   )
