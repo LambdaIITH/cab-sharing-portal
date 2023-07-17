@@ -12,9 +12,10 @@ import {
   Select,
   Stack,
 } from "@mui/material";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const locations = [
   "IITH",
@@ -25,19 +26,17 @@ const locations = [
 
 export function NewBookingDialog() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [date, setDate] = useState(null);
-  const [capacity, setCapacity] = useState(4);
+
   const initData = {
     from_: null,
     to: null,
-    startDateTime: null,
-    endDateTime: null,
-    capacity: 4,
+    capacity: null,
   };
   const initState = { isLoading: false, error: "", values: initData };
-  const [registerData, setRegesterData] = useState(initState);
+  const [registerData, setRegisterData] = useState(initState);
+  const [date, setDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const [touched, setTouched] = useState({});
   const { values, isLoading, error } = registerData;
 
@@ -46,11 +45,12 @@ export function NewBookingDialog() {
   const onBlur = ({ target }) =>
     setTouched((prev) => ({ ...prev, [target.name]: true }));
 
-  const handleChange = ({ target }) =>
-    setRegesterData((prev) => ({
+  const handleChange = ({ target }) => {
+    setRegisterData((prev) => ({
       ...prev,
       values: { ...prev.values, [target.name]: target.value },
     }));
+  };
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -60,19 +60,14 @@ export function NewBookingDialog() {
     setDialogOpen(false);
   };
 
-  const handleFromChange = (event) => {
-    setFrom(event.target.value);
-  };
-  const handleToChange = (event) => {
-    setTo(event.target.value);
-  };
-
-  const handleCapacityChange = (event) => {
-    setCapacity(event.target.value);
-  };
   const RegisterNewBooking = async () => {
     const authToken = localStorage.getItem("credential");
     // console.log(authToken);
+    console.log(
+      new Date(
+        date.toISOString().slice(0, 10) + startTime.toISOString().slice(10)
+      )
+    );
     fetch("http://localhost:8000/book", {
       headers: {
         Authorization: `${authToken}`,
@@ -80,13 +75,15 @@ export function NewBookingDialog() {
       },
       method: "POST",
       body: JSON.stringify({
-        from_: from,
-        to: to,
+        ...values,
+        start_time: new Date(
+          date.toISOString().slice(0, 10) + startTime.toISOString().slice(10)
+        ),
+        end_time: new Date(
+          date.toISOString().slice(0, 10) + endTime.toISOString().slice(10)
+        ),
+        date: date,
         comments: "",
-        capacity: capacity,
-        date: date.toISOString().slice(0, 10),
-        start_time: date.toISOString(),
-        end_time: date.toISOString(),
       }),
     })
       .then((res) => res.json())
@@ -166,29 +163,46 @@ export function NewBookingDialog() {
             </FormControl>{" "}
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
+                <DatePicker
                   renderInput={(props) => <TextField {...props} />}
                   label="Booking Date"
                   value={date}
-                  // name="to"
                   minDateTime={new Date()}
-                  onChange={(newValue) => {
-                    setDate(newValue);
-                  }}
+                  onChange={setDate}
+                />
+              </LocalizationProvider>
+            </FormControl>
+            <FormControl>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <TimePicker
+                  label="Start Time"
+                  name="startTime"
+                  value={startTime}
+                  onChange={setStartTime}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </FormControl>
+            <FormControl>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <TimePicker
+                  label="End Time"
+                  value={endTime}
+                  name="endTime"
+                  onChange={setEndTime}
+                  renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
             </FormControl>
             <FormControl>
               <TextField
                 id="capacity"
+                name="capacity"
                 label="Capacity"
                 labelId="capacity-label"
                 type="number"
-                value={capacity}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={handleCapacityChange}
+                value={values.capacity}
+                onChange={handleChange}
               />
             </FormControl>{" "}
           </Stack>

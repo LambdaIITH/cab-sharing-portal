@@ -9,6 +9,7 @@ import psycopg2
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pytz import timezone
 
 from auth import authn_user
 from db import schemas
@@ -204,9 +205,9 @@ async def new_booking(
     to_id = queries.get_loc_id(conn, place=booking.to)
     booking_id = queries.cab_booking(
         conn,
-        start_time=booking.start_time,
-        end_time=booking.end_time,
-        date=booking.date,
+        start_time=booking.start_time.astimezone(timezone("Asia/Kolkata")),
+        end_time=booking.end_time.astimezone(timezone("Asia/Kolkata")),
+        date=booking.date.astimezone(timezone("Asia/Kolkata")).strftime("%Y-%m-%d"),
         # comments=details["comments"],
         capacity=booking.capacity,
         from_loc=from_id,
@@ -216,14 +217,12 @@ async def new_booking(
     queries.add_traveller(
         conn, id=booking_id, user_email=email, comments=booking.comments
     )
-    # start_time = start_time.strftime("%Y-%m-%d %H:%M:%S")
-    # end_time = end_time.strftime("%Y-%m-%d %H:%M:%S")
     try:
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
 @app.get("/user")

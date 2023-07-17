@@ -30,12 +30,11 @@ const CabShareSmall = ({
             </div>
             <div className="flex flex-row gap-5">
               <div className="flex flex-row gap-2">
-                <p className="text-secondary-pink text-[1.15rem]">
-                  Created at:
+                <p className="text-secondary-pink text-[1.15rem]">Date:</p>
+                <p className=" text-[1.15rem]">
+                  {bookingData.start_time.slice(0, 10)}
                 </p>
-                <p className=" text-[1.15rem]">2023-07-09</p>
               </div>
-              <p className=" text-[1.15rem]">6:00 PM</p>
             </div>
           </div>
           <div className="flex flex-row mt-2 gap-10 ">
@@ -47,6 +46,12 @@ const CabShareSmall = ({
             </p>
             <p className=" tracking-wider text-[1rem] truncate">
               Capacity: {bookingData.capacity}
+            </p>
+            <p className=" tracking-wider text-[1rem] truncate">
+              Waiting Time:{" "}
+              {new Date(bookingData.start_time).toLocaleTimeString() +
+                " - " +
+                new Date(bookingData.end_time).toLocaleTimeString()}
             </p>
           </div>
         </div>
