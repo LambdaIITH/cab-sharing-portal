@@ -261,7 +261,6 @@ async def all_bookings(email: str = Depends(verify_auth_token)):
     email = email
     a = queries.get_all_bookings(conn)
     bookings_dict = get_bookings(a)
-    bookings_dict["email"] = email
 
     return bookings_dict
 
@@ -342,7 +341,7 @@ async def accept_request(
     queries.add_traveller(
         conn,
         id=accept_booking.booking_id,
-        user_email=accept_booking.booking_id,
+        user_email=accept_booking.request_email,
         comments=comment,
     )
 

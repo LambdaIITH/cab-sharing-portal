@@ -47,7 +47,7 @@ const CabShareSmall = ({
             Capacity: {bookingData.capacity}
           </p>
         </div>
-        <div className="flex flex-row mt-2 gap-10 ">
+        <div className="flex flex-row mt-2 items-center  gap-10 ">
           <div className="flex flex-row gap-5">
             <div className="flex flex-row gap-2">
               <p className=" text-[1.1rem]">Booking Date:</p>
