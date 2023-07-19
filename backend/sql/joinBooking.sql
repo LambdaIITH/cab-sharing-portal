@@ -4,7 +4,7 @@ VALUES (2, :booking_id, :email, :comment)
 ON CONFLICT DO NOTHING;
 
 -- name: show_requests
-SELECT request_id FROM request
+SELECT request_email, comments FROM request
 WHERE status = 2
 AND booking_id = :id;
 -- SELECT request_email, comments FROM request

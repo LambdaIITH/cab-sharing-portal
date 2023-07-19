@@ -32,20 +32,21 @@ const AllUserBookings = () => {
   const [fromValue, setFromValue] = useState();
   const [toValue, setToValue] = useState();
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const [tab, setTab] = useState(0)
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
   const fetchFilteredBookings = () => {
     const authToken = retrieveAuthToken();
     let apiURL = `http://localhost:8000/allbookings`;
 
-    if(fromValue && toValue) {
-      if(startTime && endTime) {
+    if (fromValue && toValue) {
+      if (startTime && endTime) {
         apiURL += `/time?from_loc=${fromValue}&to_loc=${toValue}&start_time=${startTime}&end_time=${endTime}`;
       } else {
         apiURL += `/loc?from_loc=${fromValue}&to_loc=${toValue}`;
       }
     }
-    
+
     fetch(apiURL, {
       headers: {
         Authorization: authToken,
@@ -59,46 +60,57 @@ const AllUserBookings = () => {
       });
   };
 
-  useEffect(() => fetchFilteredBookings(), [])
+  useEffect(() => {
+    setUsername(localStorage.getItem("user_name"));
+    setEmail(localStorage.getItem("user_email"));
+    fetchFilteredBookings();
+  }, []);
 
   return (
     <div className="flex flex-col  overflow-auto rounded-box py-10 mx-auto">
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={{ xs: 1, sm: 2, md: 4 }}
-        sx={{ display: "flex", width: "100%", alignItems:'center', marginX: 'auto', justifyContent: 'center', marginBottom: '2rem' }}
+        sx={{
+          display: "flex",
+          width: "100%",
+          alignItems: "center",
+          marginX: "auto",
+          justifyContent: "center",
+          marginBottom: "2rem",
+        }}
       >
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <TimePicker
+          <TimePicker
             label="Start Time"
             value={startTime}
             onChange={(newValue) => {
-                setStartTime(newValue);
+              setStartTime(newValue);
             }}
             renderInput={(params) => (
-                <TextField
+              <TextField
                 sx={{
-                    width: "175px",
+                  width: "175px",
                 }}
                 {...params}
-                />
+              />
             )}
           />
           <TimePicker
             label="End Time"
             value={endTime}
             onChange={(newValue) => {
-                setEndTime(newValue);
+              setEndTime(newValue);
             }}
             renderInput={(params) => (
               <TextField
-              sx={{
+                sx={{
                   width: "175px",
                 }}
                 {...params}
               />
-              )}
-              />
+            )}
+          />
         </LocalizationProvider>
         <Autocomplete
           disablePortal
@@ -107,32 +119,42 @@ const AllUserBookings = () => {
           value={fromValue}
           onChange={(event, newValue) => {
             setFromValue(newValue);
-        }}
-        sx={{ width: "175px", marginTop: "20px" }}
+          }}
+          sx={{ width: "175px", marginTop: "20px" }}
           renderInput={(params) => <TextField {...params} label="From" />}
-          />
+        />
         <Autocomplete
           disablePortal
           id="combo-box-demo"
           options={places}
           value={toValue}
           onChange={(event, newValue) => {
-              setToValue(newValue);
-            }}
-            sx={{ width: "175px", marginTop: "20px" }}
-            renderInput={(params) => <TextField {...params} label="To" />}
-            />
-        <button   className="border btn border-black p-3 rounded-lg my-3 shadow-lg transition-all hover:-translate-y-1" onClick={fetchFilteredBookings}>
+            setToValue(newValue);
+          }}
+          sx={{ width: "175px", marginTop: "20px" }}
+          renderInput={(params) => <TextField {...params} label="To" />}
+        />
+        <button
+          className="border btn border-black p-3 rounded-lg my-3 shadow-lg transition-all hover:-translate-y-1"
+          onClick={fetchFilteredBookings}
+        >
           Search
         </button>
-
       </Stack>
       <div className="my-10">
-
-      {filteredBookings?.map((item, index) => <CabShareSmall key={index} index={index} bookingData={item} username={null} email={null}  />)}
+        {filteredBookings?.map((item, index) => (
+          <CabShareSmall
+            userSpecific={false}
+            key={index}
+            index={index}
+            bookingData={item}
+            username={username}
+            email={email}
+          />
+        ))}
       </div>
-</div>
-  )
-}
+    </div>
+  );
+};
 
-export default AllUserBookings
+export default AllUserBookings;

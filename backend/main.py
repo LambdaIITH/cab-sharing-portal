@@ -112,7 +112,6 @@ def get_user_bookings(res, email):
                 request_dict["email"] = request[0]
                 request_dict["comments"] = request[1]
                 requests_list.append(request_dict)
-
         booking = {
             "id": tup[0],
             "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
@@ -236,6 +235,7 @@ async def user_bookings(email: str = Depends(verify_auth_token)):
     user_bookings_dict = {}
     user_bookings_dict["past_bookings"] = get_user_bookings(res1, email)
     user_bookings_dict["future_bookings"] = get_user_bookings(res2, email)
+    # user_bookings['email'] = email
 
     return user_bookings_dict
 

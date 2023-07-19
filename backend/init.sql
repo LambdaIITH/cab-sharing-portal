@@ -39,7 +39,7 @@ CREATE TABLE request
 (
   status INT NOT NULL,
   booking_id INT NOT NULL,
-  request_email VARCHAR NOT NULL,
+  request_email VARCHAR NOT NULL, 
   comments VARCHAR,
   PRIMARY KEY (booking_id, request_email),
   FOREIGN KEY (booking_id) REFERENCES cab_booking(id),
