@@ -1,10 +1,9 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import UserCardExpanded from "./UserCardExpanded";
-import AllUserCardExpanded from "./AllUserCardExpanded";
+import UserTravellers from "./UserTravellers";
 
-const CabShareSmall = ({
+const TravellerCard = ({
   userSpecific,
   bookingData,
   username,
@@ -72,17 +71,12 @@ const CabShareSmall = ({
         </div>
       </div>
       <div className="collapse-content">
-        {userSpecific ? (
-          <UserCardExpanded
-            bookingData={bookingData}
-            fetchUserBookings={fetchUserBookings}
-          />
-        ) : (
-          <AllUserCardExpanded bookingData={bookingData} email={email} />
+        {bookingData.travellers.length > 0 && (
+          <UserTravellers travellers={bookingData.travellers} />
         )}
       </div>
     </div>
   );
 };
 
-export default CabShareSmall;
+export default TravellerCard;

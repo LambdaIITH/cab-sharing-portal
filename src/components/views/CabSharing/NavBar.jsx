@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 
 const NavBar = () => {
   const links = {
-    HOME: '/',
-    ABOUT: '/about',
+    HOME: "/",
+    ABOUT: "/about",
   };
   const router = useRouter();
 
@@ -39,8 +39,8 @@ const NavBar = () => {
                   key={index}
                   className={`${
                     `${links[linkKey].toLowerCase()}` === router.pathname
-                      ? ' font-[600] text-black/70 bg-black/10 rounded-md'
-                      : ''
+                      ? " font-[600] text-black/70 bg-black/10 rounded-md"
+                      : ""
                   } cursor-pointer hover:-translate-y-1 transition-all`}
                 >
                   <Link href={links[linkKey]}>{linkKey}</Link>
@@ -62,8 +62,8 @@ const NavBar = () => {
                 key={index}
                 className={`${
                   `${links[linkKey].toLowerCase()}` === router.pathname
-                    ? 'border-b-black/80 border-b-4 font-[600] text-black/70 -translate-y-[2px]'
-                    : ''
+                    ? "border-b-black/80 border-b-4 font-[600] text-black/70 -translate-y-[2px]"
+                    : ""
                 } cursor-pointer hover:-translate-y-1 transition-all`}
               >
                 <Link href={links[linkKey]}>{linkKey}</Link>
@@ -79,4 +79,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default NavBar;

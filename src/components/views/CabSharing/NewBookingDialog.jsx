@@ -15,7 +15,7 @@ import {
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, DateTimePicker } from "@mui/x-date-pickers";
 
 const locations = [
   "IITH",
@@ -24,13 +24,13 @@ const locations = [
   "Lingampally",
 ];
 
-export function NewBookingDialog() {
+export function NewBookingDialog({ fetchUserBookings }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const initData = {
-    from_: null,
-    to: null,
-    capacity: null,
+    from_: "",
+    to: "",
+    capacity: "",
   };
   const initState = { isLoading: false, error: "", values: initData };
   const [registerData, setRegisterData] = useState(initState);
@@ -62,12 +62,7 @@ export function NewBookingDialog() {
 
   const RegisterNewBooking = async () => {
     const authToken = localStorage.getItem("credential");
-    // console.log(authToken);
-    console.log(
-      new Date(
-        date.toISOString().slice(0, 10) + startTime.toISOString().slice(10)
-      )
-    );
+    // console.log("start time", new Date());
     fetch("http://localhost:8000/book", {
       headers: {
         Authorization: `${authToken}`,
@@ -76,13 +71,9 @@ export function NewBookingDialog() {
       method: "POST",
       body: JSON.stringify({
         ...values,
-        start_time: new Date(
-          date.toISOString().slice(0, 10) + startTime.toISOString().slice(10)
-        ),
-        end_time: new Date(
-          date.toISOString().slice(0, 10) + endTime.toISOString().slice(10)
-        ),
-        date: date,
+        start_time: startTime,
+        end_time: endTime,
+        date: new Date(),
         comments: "",
       }),
     })
@@ -90,11 +81,12 @@ export function NewBookingDialog() {
       .then((data) => {
         console.log(data);
         setDialogOpen(false);
+        fetchUserBookings();
       })
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => console.log(registerData.values), [registerData]);
+  useEffect(() => console.log(date), [date]);
 
   const destinations = locations.map((loc, i) => (
     <MenuItem key={i} value={loc}>
@@ -107,7 +99,7 @@ export function NewBookingDialog() {
         // variant="contained"
         onClick={handleDialogOpen}
         // sx={{ marginBottom: "10px" }}
-        className="border btn border-black p-3 rounded-lg my-3 shadow-lg transition-all hover:-translate-y-1"
+        className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
       >
         Register Booking
       </button>
@@ -118,7 +110,7 @@ export function NewBookingDialog() {
             Please fill the form to create a new booking. <br />
             Your email address will be automatically associated with your
             booking.
-            {values.from_ !== null && values.from_ === values.to && (
+            {values.from_ !== "" && values.from_ === values.to && (
               <span className="label-text-alt mt-1 text-red-600">
                 To and From Location cannot be the same
               </span>
@@ -130,7 +122,7 @@ export function NewBookingDialog() {
                 name="from_"
                 onBlur={onBlur}
                 label="From"
-                labelId="new-book-from"
+                labelid="new-book-from"
                 onChange={handleChange}
                 required
               >
@@ -149,7 +141,7 @@ export function NewBookingDialog() {
                 name="to"
                 onBlur={onBlur}
                 label="To"
-                labelId="new-book-to"
+                labelid="new-book-to"
                 onChange={handleChange}
                 required
               >
@@ -160,21 +152,10 @@ export function NewBookingDialog() {
                   Required
                 </span>
               )}
-            </FormControl>{" "}
-            <FormControl>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  renderInput={(props) => <TextField {...props} />}
-                  label="Booking Date"
-                  value={date}
-                  minDateTime={new Date()}
-                  onChange={setDate}
-                />
-              </LocalizationProvider>
             </FormControl>
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <TimePicker
+                <DateTimePicker
                   label="Start Time"
                   name="startTime"
                   value={startTime}
@@ -185,7 +166,7 @@ export function NewBookingDialog() {
             </FormControl>
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <TimePicker
+                <DateTimePicker
                   label="End Time"
                   value={endTime}
                   name="endTime"
@@ -199,7 +180,6 @@ export function NewBookingDialog() {
                 id="capacity"
                 name="capacity"
                 label="Capacity"
-                labelId="capacity-label"
                 type="number"
                 value={values.capacity}
                 onChange={handleChange}

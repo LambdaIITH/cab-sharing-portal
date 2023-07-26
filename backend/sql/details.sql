@@ -55,7 +55,8 @@ OR (c.end_time >= :end_time AND c.start_time <= :end_time)
 OR (:start_time <= c.start_time AND :end_time >= c.end_time));
 
 -- name: get_booking_users
-SELECT user_email, comments
-FROM traveller 
-WHERE id = :id;
+SELECT t.user_email, t.comments, u.name, u.phone_number
+FROM traveller t
+JOIN users u ON t.user_email = u.user_email
+WHERE t.id = :id;
 

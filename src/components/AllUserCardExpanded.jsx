@@ -24,7 +24,6 @@ const AllUserCardExpanded = ({ bookingData, email }) => {
       console.log(err);
     }
   };
-  console.log("from AlluserBookingXE", bookingData.travellers, email);
   return (
     <div>
       {bookingData.travellers?.indexOf(email) === -1 && (

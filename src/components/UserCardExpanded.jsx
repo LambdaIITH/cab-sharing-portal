@@ -1,7 +1,13 @@
 import React from "react";
 import axios from "axios";
 
-const UserCardExpanded = ({ bookingData }) => {
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import UserRequests from "./views/CabSharing/UserRequests";
+import UserTravellers from "./views/CabSharing/UserTravellers";
+
+const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   // handlers
 
   const DeleteBooking = async (e) => {
@@ -17,9 +23,8 @@ const UserCardExpanded = ({ bookingData }) => {
           },
         }
       );
-      console.log(
-        `successfully deleted the user booking of id ${bookingData?.id}`
-      );
+      fetchUserBookings();
+      toast("Succesfully Removed");
     } catch (err) {
       console.log(err);
     }
@@ -39,48 +44,53 @@ const UserCardExpanded = ({ bookingData }) => {
           },
         }
       );
-      console.log(`successfully accepted booking of id ${bookingData?.id}`);
+      toast("Succesfully Accepted");
+      fetchUserBookings();
     } catch (err) {
       console.log(err);
     }
   };
 
-  console.log(bookingData.requests?.[0]);
+  const RejectBooking = async (e, request_email) => {
+    e.stopPropagation();
+    const authToken = localStorage.getItem("credential");
+    try {
+      const data = await axios.post(
+        `http://localhost:8000/reject`,
+        { booking_id: bookingData?.id, request_email },
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast("Succesfully Rejected");
+      fetchUserBookings();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="flex flex-col">
       <button
-        className="btn btn-outline flex-start w-fit"
+        className="btn btn-outline ml-auto mr-[2rem] w-fit"
         onClick={(e) => DeleteBooking(e)}
       >
         Delete Booking
       </button>
-      {bookingData.requests.length > 0 &&
-        bookingData.requests.map((item, index) => (
-          <div
-            className="flex flex-col gap-3 items-center p-2 border-2 border-black"
-            key={index}
-          >
-            <div className="flex flex-row gap-3 items-center">
-              <div className="">{item.email}</div>
-              <div className="">{item.comments}</div>
-            </div>
-            <div className="flex flex-row gap-3 items-center">
-              <button
-                className="btn btn-success btn-outline flex-start w-fit"
-                onClick={(e) => AcceptBooking(e, item.email)}
-              >
-                Accept Booking
-              </button>
-              <button
-                className="btn btn-error btn-outline flex-start w-fit"
-                onClick={(e) => DeleteBooking(e)}
-              >
-                Reject Booking
-              </button>
-            </div>
-          </div>
-        ))}
+      <ToastContainer />
+      {bookingData.requests.length > 0 && (
+        <UserRequests
+          requests={bookingData.requests}
+          AcceptBooking={AcceptBooking}
+          RejectBooking={RejectBooking}
+        />
+      )}
+      {bookingData.travellers.length > 0 && (
+        <UserTravellers travellers={bookingData.travellers} />
+      )}
     </div>
   );
 };

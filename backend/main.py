@@ -67,6 +67,7 @@ def get_bookings(a):
     user_bookings_list = []
     for tup in a:
         travellers = queries.get_booking_users(conn, id=tup[0])
+        print(travellers)
         travellers_list = []
         for people in travellers:
             travellers_list.append(people[0])
@@ -91,7 +92,6 @@ def get_user_bookings(res, email):
     user_bookings_list = []
     for tup in res:
         travellers = queries.get_booking_users(conn, id=tup[0])
-
         travellers_list = []
         index = 0
         rank = -1
@@ -99,18 +99,22 @@ def get_user_bookings(res, email):
             person_dict = {}
             person_dict["email"] = people[0]
             person_dict["comments"] = people[1]
+            person_dict["name"] = people[2]
+            person_dict["phone_number"] = people[3]
             travellers_list.append(person_dict)
             if people[0] == email:
                 rank = index
             index += 1
 
+        requests_list = []
         if rank == 0:
             requests = queries.show_requests(conn, id=tup[0])
-            requests_list = []
             for request in requests:
                 request_dict = {}
                 request_dict["email"] = request[0]
                 request_dict["comments"] = request[1]
+                request_dict["name"] = request[2]
+                request_dict["phone_number"] = request[3]
                 requests_list.append(request_dict)
         booking = {
             "id": tup[0],
@@ -200,8 +204,12 @@ async def new_booking(
     Create a new Booking.
     """
     email = email
+    print("post route of book api")
+    # get respected ids for locations
     from_id = queries.get_loc_id(conn, place=booking.from_)
     to_id = queries.get_loc_id(conn, place=booking.to)
+    print(booking.start_time)
+    print(booking.start_time.astimezone(timezone("Asia/Kolkata")))
     booking_id = queries.cab_booking(
         conn,
         start_time=booking.start_time.astimezone(timezone("Asia/Kolkata")),

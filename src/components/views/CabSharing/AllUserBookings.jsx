@@ -23,14 +23,15 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useEffect, useState } from "react";
 import retrieveAuthToken from "../../utils/retrieveAuthToken";
 import CabShareSmall from "components/CabShareSmall";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 const AllUserBookings = () => {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [fromValue, setFromValue] = useState();
-  const [toValue, setToValue] = useState();
+  const [fromValue, setFromValue] = useState(null);
+  const [toValue, setToValue] = useState(null);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -60,6 +61,9 @@ const AllUserBookings = () => {
       });
   };
 
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 10);
+
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
     setEmail(localStorage.getItem("user_email"));
@@ -68,22 +72,13 @@ const AllUserBookings = () => {
 
   return (
     <div className="flex flex-col  overflow-auto rounded-box py-10 mx-auto">
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={{ xs: 1, sm: 2, md: 4 }}
-        sx={{
-          display: "flex",
-          width: "100%",
-          alignItems: "center",
-          marginX: "auto",
-          justifyContent: "center",
-          marginBottom: "2rem",
-        }}
-      >
+      <div className="flex flex-row gap-2 items-center justify-center rounded-lg">
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <TimePicker
+          <DateTimePicker
             label="Start Time"
             value={startTime}
+            minDate={new Date()}
+            maxDate={maxDate}
             onChange={(newValue) => {
               setStartTime(newValue);
             }}
@@ -91,14 +86,20 @@ const AllUserBookings = () => {
               <TextField
                 sx={{
                   width: "175px",
+                  backgroundColor: "#F2D2BD",
+                  borderRadius: "8px",
                 }}
                 {...params}
               />
             )}
           />
-          <TimePicker
+        </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DateTimePicker
             label="End Time"
             value={endTime}
+            minDate={new Date()}
+            maxDate={maxDate}
             onChange={(newValue) => {
               setEndTime(newValue);
             }}
@@ -106,12 +107,15 @@ const AllUserBookings = () => {
               <TextField
                 sx={{
                   width: "175px",
+                  backgroundColor: "#F2D2BD",
+                  borderRadius: "8px",
                 }}
                 {...params}
               />
             )}
           />
         </LocalizationProvider>
+
         <Autocomplete
           disablePortal
           id="combo-box-demo"
@@ -120,7 +124,11 @@ const AllUserBookings = () => {
           onChange={(event, newValue) => {
             setFromValue(newValue);
           }}
-          sx={{ width: "175px", marginTop: "20px" }}
+          sx={{
+            width: "175px",
+            backgroundColor: "#F2D2BD",
+            borderRadius: "8px",
+          }}
           renderInput={(params) => <TextField {...params} label="From" />}
         />
         <Autocomplete
@@ -131,16 +139,20 @@ const AllUserBookings = () => {
           onChange={(event, newValue) => {
             setToValue(newValue);
           }}
-          sx={{ width: "175px", marginTop: "20px" }}
+          sx={{
+            width: "175px",
+            backgroundColor: "#F2D2BD",
+            borderRadius: "8px",
+          }}
           renderInput={(params) => <TextField {...params} label="To" />}
         />
         <button
-          className="border btn border-black p-3 rounded-lg my-3 shadow-lg transition-all hover:-translate-y-1"
+          className="btn btn-primary my-3 shadow-lg transition-all hover:-translate-y-1"
           onClick={fetchFilteredBookings}
         >
           Search
         </button>
-      </Stack>
+      </div>
       <div className="my-10">
         {filteredBookings?.map((item, index) => (
           <CabShareSmall

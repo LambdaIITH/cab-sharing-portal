@@ -25,23 +25,27 @@ export default function CabSharing() {
     <>
       {/* <NavBar /> */}
       {/* controlling width */}
-      <div className="w-[60rem] mx-auto py-[2rem]">
-        <div className="tabs w-fit mx-auto shadow-lg my-[2rem] border border-black rounded-lg">
+      <div className="w-[90%] lg:w-[60rem] mx-auto py-[2rem]">
+        <div className="tabs w-fit mx-auto shadow-lg my-[2rem]  border border-black rounded-lg">
           <a
-            className={`tab tab-lg transition-all ${
-              tab == 0 ? "tab-active" : ""
+            className={`tab tab-lg text-[1rem] md:text-lg transition-all rounded-l-lg ${
+              tab == 0
+                ? "tab-active bg-primary text-black"
+                : "bg-[#F2D2BD] text-black/40"
             }`}
             onClick={() => setTab(0)}
           >
-            {username}&apos;s Bookings
+            Your Bookings
           </a>
           <a
-            className={`tab transition-all tab-lg ${
-              tab == 1 ? "tab-active" : ""
+            className={`tab transition-all text-[1rem] md:text-lg rounded-r-lg tab-lg ${
+              tab == 1
+                ? "tab-active bg-primary text-black"
+                : " bg-[#F2D2BD] text-black/40"
             }`}
             onClick={() => setTab(1)}
           >
-            All User Bookings
+            All Bookings
           </a>
         </div>
         {tab === 0 && <UserBookings />}
