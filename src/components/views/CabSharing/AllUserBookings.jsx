@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useEffect, useState } from "react";
 import retrieveAuthToken from "../../utils/retrieveAuthToken";
 import CabShareSmall from "components/CabShareSmall";
@@ -42,7 +41,9 @@ const AllUserBookings = () => {
 
     if (fromValue && toValue) {
       if (startTime && endTime) {
-        apiURL += `/time?from_loc=${fromValue}&to_loc=${toValue}&start_time=${startTime}&end_time=${endTime}`;
+        const isoStartTime = startTime.toISOString();
+        const isoEndTime = endTime.toISOString();
+        apiURL += `/time?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}&end_time=${isoEndTime}`;
       } else {
         apiURL += `/loc?from_loc=${fromValue}&to_loc=${toValue}`;
       }
@@ -56,7 +57,6 @@ const AllUserBookings = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setFilteredBookings(data["all_bookings"]);
       });
   };
@@ -156,6 +156,7 @@ const AllUserBookings = () => {
       <div className="my-10">
         {filteredBookings?.map((item, index) => (
           <CabShareSmall
+            fetchFilteredBookings={fetchFilteredBookings}
             userSpecific={false}
             key={index}
             index={index}

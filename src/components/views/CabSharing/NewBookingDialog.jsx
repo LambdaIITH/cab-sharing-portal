@@ -31,6 +31,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
     from_: "",
     to: "",
     capacity: "",
+    comments: "",
   };
   const initState = { isLoading: false, error: "", values: initData };
   const [registerData, setRegisterData] = useState(initState);
@@ -74,7 +75,6 @@ export function NewBookingDialog({ fetchUserBookings }) {
         start_time: startTime,
         end_time: endTime,
         date: new Date(),
-        comments: "",
       }),
     })
       .then((res) => res.json())
@@ -86,7 +86,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
       .catch((err) => console.log(err));
   };
 
-  useEffect(() => console.log(date), [date]);
+  useEffect(() => console.log(values), [values]);
 
   const destinations = locations.map((loc, i) => (
     <MenuItem key={i} value={loc}>
@@ -184,7 +184,17 @@ export function NewBookingDialog({ fetchUserBookings }) {
                 value={values.capacity}
                 onChange={handleChange}
               />
-            </FormControl>{" "}
+            </FormControl>
+            <FormControl>
+              <TextField
+                id="comments"
+                name="comments"
+                label="Comments"
+                type="text"
+                value={values.comments}
+                onChange={handleChange}
+              />
+            </FormControl>
           </Stack>
         </DialogContent>
         <DialogActions>

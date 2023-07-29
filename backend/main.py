@@ -67,12 +67,34 @@ def get_bookings(a):
     user_bookings_list = []
     for tup in a:
         travellers = queries.get_booking_users(conn, id=tup[0])
-        print(travellers)
+        print("get_bookings", travellers)
         travellers_list = []
+        index = 0
+        rank = -1
+
         for people in travellers:
-            travellers_list.append(people[0])
+            person_dict = {}
+            person_dict["email"] = people[0]
+            person_dict["comments"] = people[1]
+            person_dict["name"] = people[2]
+            travellers_list.append(person_dict)
+            if index == 0:
+                rank = index
+            index += 1
+
+        requests_list = []
+        if rank == 0:
+            requests = queries.show_requests(conn, id=tup[0])
+            for request in requests:
+                request_dict = {}
+                request_dict["email"] = request[0]
+                request_dict["comments"] = request[1]
+                request_dict["name"] = request[2]
+                request_dict["phone_number"] = request[3]
+                requests_list.append(request_dict)
         if len(travellers_list) >= int(tup[5]):
             continue
+
         booking = {
             "id": tup[0],
             "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
@@ -81,6 +103,7 @@ def get_bookings(a):
             "to": tup[4],
             "capacity": tup[5],
             "travellers": travellers_list,
+            "requests": requests_list,
         }
         user_bookings_list.append(booking)
     user_bookings_dict["all_bookings"] = user_bookings_list

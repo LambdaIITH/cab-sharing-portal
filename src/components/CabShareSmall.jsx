@@ -11,6 +11,7 @@ const CabShareSmall = ({
   email,
   index,
   fetchUserBookings,
+  fetchFilteredBookings,
 }) => {
   const router = useRouter();
 
@@ -31,40 +32,37 @@ const CabShareSmall = ({
       onClick={() => setExpand((prev) => !prev)}
     >
       <div className="collapse-title font-medium flex flex-col  rounded-md bg-secondary cursor-pointer">
-        <div className="flex flex-row justify-center items-center mr-auto gap-3">
-          <h3 className=" tracking-widest text-[1.15rem]">
-            {userSpecific
-              ? bookingData.travellers[0].name
-              : bookingData.travellers[0]}
+        {/* <div className="flex flex-row justify-center items-center mr-auto gap-3">
+          <h3 className="tracking-widest text-[1.15rem]">
+            {bookingData.travellers[0].name}
           </h3>
           <p className="text-primary text-[1rem] ">
-            {userSpecific
-              ? bookingData.travellers[0].email
-              : bookingData.travellers[0]}
+            {bookingData.travellers[0].email}
           </p>
-        </div>
+        </div> */}
         <div className="flex flex-row mt-2 gap-10 ">
           <p className=" tracking-wider text-[1rem] truncate">
-            From: {bookingData.from_}
+            <BoldedHeading text="From:" /> {bookingData.from_}
           </p>
           <p className=" tracking-wider text-[1rem] truncate">
-            To: {bookingData.to}
+            <BoldedHeading text="To:" /> {bookingData.to}
           </p>
           <p className=" tracking-wider text-[1rem] truncate">
-            Need: {bookingData.travellers?.length - 1}/{bookingData.capacity}
+            <BoldedHeading text="Occupied:" /> {bookingData.travellers?.length}/
+            {bookingData.capacity}
           </p>
         </div>
         <div className="flex flex-row mt-2 items-center  gap-10 ">
           <div className="flex flex-row gap-5">
             <div className="flex flex-row gap-2">
-              <p className=" text-[1.1rem]">Booking Date:</p>
+              <BoldedHeading text="Booking Date:" />
               <p className=" text-[1.15rem]">
                 {bookingData.start_time.slice(0, 10)}
               </p>
             </div>
           </div>
           <p className=" tracking-wider text-[1rem] truncate">
-            Waiting Time:{" "}
+            <BoldedHeading text="Waiting time:" />{" "}
             {new Date(bookingData.start_time).toLocaleTimeString() +
               " - " +
               new Date(bookingData.end_time).toLocaleTimeString()}
@@ -78,11 +76,19 @@ const CabShareSmall = ({
             fetchUserBookings={fetchUserBookings}
           />
         ) : (
-          <AllUserCardExpanded bookingData={bookingData} email={email} />
+          <AllUserCardExpanded
+            bookingData={bookingData}
+            email={email}
+            fetchFilteredBookings={fetchFilteredBookings}
+          />
         )}
       </div>
     </div>
   );
 };
+
+const BoldedHeading = ({ text }) => (
+  <span className=" text-primary tracking-widest text-[1.15rem]">{text}</span>
+);
 
 export default CabShareSmall;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -8,13 +8,16 @@ import UserRequests from "./views/CabSharing/UserRequests";
 import UserTravellers from "./views/CabSharing/UserTravellers";
 
 const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
+  const [loading, setLoading] = useState(false);
+
   // handlers
 
   const DeleteBooking = async (e) => {
     e.stopPropagation();
     const authToken = localStorage.getItem("credential");
     try {
-      const data = await axios.delete(
+      setLoading(true);
+      await axios.delete(
         `http://localhost:8000/deletebooking/${bookingData?.id}`,
         {
           headers: {
@@ -23,10 +26,12 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           },
         }
       );
-      fetchUserBookings();
       toast("Succesfully Removed");
+      fetchUserBookings();
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,7 +39,8 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     e.stopPropagation();
     const authToken = localStorage.getItem("credential");
     try {
-      const data = await axios.post(
+      setLoading(true);
+      await axios.post(
         `http://localhost:8000/accept`,
         { booking_id: bookingData?.id, request_email },
         {
@@ -48,6 +54,8 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
       fetchUserBookings();
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,7 +63,8 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     e.stopPropagation();
     const authToken = localStorage.getItem("credential");
     try {
-      const data = await axios.post(
+      setLoading(true);
+      await axios.post(
         `http://localhost:8000/reject`,
         { booking_id: bookingData?.id, request_email },
         {
@@ -69,23 +78,39 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
       fetchUserBookings();
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col">
-      <button
-        className="btn btn-outline ml-auto mr-[2rem] w-fit"
-        onClick={(e) => DeleteBooking(e)}
-      >
-        Delete Booking
-      </button>
+    <div className="flex flex-col " onClick={(e) => e.stopPropagation()}>
+      <div className="flex flex-row justify-between items-center my-5">
+        <div className="flex flex-col justify-center">
+          <div className="flex flex-row justify-center items-center mr-auto gap-3">
+            <h3 className=" tracking-widest text-[1.15rem]">
+              {bookingData.travellers[0].name}
+            </h3>
+            <p className="text-primary tracking-wider font-medium text-[1.1rem] ">
+              {bookingData.travellers[0].email}
+            </p>
+          </div>
+          <div>Note: {bookingData.travellers[0].comments}</div>
+        </div>
+        <button
+          className="btn btn-outline w-fit"
+          onClick={(e) => DeleteBooking(e)}
+        >
+          Delete Booking
+        </button>
+      </div>
       <ToastContainer />
       {bookingData.requests.length > 0 && (
         <UserRequests
           requests={bookingData.requests}
           AcceptBooking={AcceptBooking}
           RejectBooking={RejectBooking}
+          loading={loading}
         />
       )}
       {bookingData.travellers.length > 0 && (
