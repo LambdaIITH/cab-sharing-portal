@@ -49,9 +49,23 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5">
+      <div className="flex flex-col justify-center my-5">
+        <div className="flex flex-row justify-center items-center mr-auto gap-3">
+          <h3 className=" tracking-widest text-[1.15rem]">
+            {bookingData.travellers[0].name}
+          </h3>
+          <p className="text-primary tracking-wider font-medium text-[1.1rem] ">
+            {bookingData.travellers[0].email}
+          </p>
+        </div>
+        <div>
+          <span className="text-primary">Note:</span>{" "}
+          {bookingData.travellers[0].comments}
+        </div>
+      </div>
       {
         <div className="flex flex-row justify-between items-center">
-          {isValidToJoin ? (
+          {isValidToJoin && isInRequest == -1 ? (
             <input
               disabled={!isValidToJoin}
               onClick={(e) => e.stopPropagation()}
@@ -61,13 +75,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
               className="bg-transparent w-[60%] txt-black text-[1.1rem] py-3 pl-2 rounded-sm border-b border-white"
             />
           ) : (
-            <input
-              disabled={true}
-              onClick={(e) => e.stopPropagation()}
-              value={bookingData.travellers[ownerIndex].comments}
-              name="comment"
-              className="bg-transparent placeholder:text-white/80 w-[60%] txt-black text-[1.1rem] py-3 pl-2 rounded-sm border-b border-white"
-            />
+            <p></p>
           )}
           <div>
             {isValidToJoin && isInRequest == -1 && (

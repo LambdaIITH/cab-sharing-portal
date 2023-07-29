@@ -95,7 +95,10 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
               {bookingData.travellers[0].email}
             </p>
           </div>
-          <div>Note: {bookingData.travellers[0].comments}</div>
+          <div>
+            <span className="text-primary">Note:</span>{" "}
+            {bookingData.travellers[0].comments}
+          </div>
         </div>
         <button
           className="btn btn-outline w-fit"

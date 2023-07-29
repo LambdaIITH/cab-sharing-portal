@@ -52,7 +52,7 @@ const TravellerCard = ({
             </div>
           </div>
           <p className=" tracking-wider text-[1rem] truncate">
-            <BoldedHeading text="Waiting time:" />{" "}
+            <BoldedHeading text="Window:" />{" "}
             {new Date(bookingData.start_time).toLocaleTimeString() +
               " - " +
               new Date(bookingData.end_time).toLocaleTimeString()}
@@ -60,8 +60,8 @@ const TravellerCard = ({
         </div>
       </div>
       <div className="collapse-content" onClick={(e) => e.stopPropagation()}>
-        <div className="flex flex-row items-center justify-center my-10">
-          <div className="flex flex-row justify-center items-center gap-3">
+        <div className="flex flex-col justify-center my-10">
+          <div className="flex flex-row justify-center items-center mr-auto gap-3">
             <h3 className=" tracking-widest text-[1.15rem]">
               {bookingData.travellers[0].name}
             </h3>
@@ -69,7 +69,12 @@ const TravellerCard = ({
               {bookingData.travellers[0].email}
             </p>
           </div>
+          <div>
+            <span className="text-primary">Note:</span>{" "}
+            {bookingData.travellers[0].comments}
+          </div>
         </div>
+
         {bookingData.travellers.length > 0 && (
           <UserTravellers travellers={bookingData.travellers} />
         )}

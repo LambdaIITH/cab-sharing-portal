@@ -21,6 +21,8 @@ const CabShareSmall = ({
     if (index === 0) setExpand(true);
   }, []);
 
+  console.log(bookingData);
+
   return (
     <div
       tabIndex={0}
@@ -53,18 +55,22 @@ const CabShareSmall = ({
           </p>
         </div>
         <div className="flex flex-row mt-2 items-center  gap-10 ">
-          <div className="flex flex-row gap-5">
+          {/* <div className="flex flex-row gap-5">
             <div className="flex flex-row gap-2">
               <BoldedHeading text="Booking Date:" />
               <p className=" text-[1.15rem]">
                 {bookingData.start_time.slice(0, 10)}
               </p>
             </div>
-          </div>
+          </div> */}
           <p className=" tracking-wider text-[1rem] truncate">
-            <BoldedHeading text="Waiting time:" />{" "}
-            {new Date(bookingData.start_time).toLocaleTimeString() +
+            <BoldedHeading text="Window:" />{" "}
+            {new Date(bookingData.start_time).toLocaleDateString() +
+              " " +
+              new Date(bookingData.start_time).toLocaleTimeString() +
               " - " +
+              new Date(bookingData.end_time).toLocaleDateString() +
+              " " +
               new Date(bookingData.end_time).toLocaleTimeString()}
           </p>
         </div>

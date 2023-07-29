@@ -15,9 +15,14 @@ const UserRequests = ({ requests, AcceptBooking, RejectBooking, loading }) => {
           key={index}
         >
           <div className="flex flex-row justify-between w-full">
-            <div className="flex flex-row justify-center items-center mr-auto gap-3">
-              <h3 className=" tracking-widest text-[1.15rem]">{item.name}</h3>
-              <p className=" text-[1rem]">{item.email}</p>
+            <div className="flex flex-col justify-center">
+              <div className="flex flex-row justify-center items-center mr-auto gap-3">
+                <h3 className=" tracking-widest text-[1.15rem]">{item.name}</h3>
+                <p className=" text-[1rem]">{item.email}</p>
+              </div>
+              <p>
+                <span className="text-primary">Note:</span> {item.comments}
+              </p>
             </div>
             <div className="flex flex-row gap-3 items-center">
               <button
