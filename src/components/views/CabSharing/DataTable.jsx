@@ -22,7 +22,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useEffect, useState } from "react";
 import retrieveAuthToken from "../../utils/retrieveAuthToken";
-
+import { useRouter } from "next/router";
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 function createData(date, name, from, to, time, capacity) {
@@ -134,17 +134,20 @@ export function DataTable() {
   const [fromValue, setFromValue] = useState();
   const [toValue, setToValue] = useState();
   const [filteredBookings, setFilteredBookings] = useState([]);
-
+  const router = useRouter();
   const fetchFilteredBookings = () => {
-    const authToken = retrieveAuthToken();
-    let apiURL = `http://localhost:8000/allbookings`;
+    const authToken = retrieveAuthToken(router);
+    let apiURL = `http://localhost:8000/bookings`;
 
     if(fromValue && toValue) {
       if(startTime && endTime) {
-        apiURL += `/time?from_loc=${fromValue}&to_loc=${toValue}&start_time=${startTime}&end_time=${endTime}`;
+        apiURL += `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${startTime}&end_time=${endTime}`;
       } else {
-        apiURL += `/loc?from_loc=${fromValue}&to_loc=${toValue}`;
+        apiURL += `?from_loc=${fromValue}&to_loc=${toValue}`;
       }
+    }
+    else if (startTime && endTime) {
+      apiURL += `?start_time=${startTime}&end_time=${endTime}`;
     }
     
     fetch(apiURL, {
@@ -155,8 +158,8 @@ export function DataTable() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setFilteredBookings(data["all_bookings"]);
+        console.log("data",data);
+        setFilteredBookings(data);
       });
   };
 

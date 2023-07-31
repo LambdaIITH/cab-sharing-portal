@@ -48,7 +48,7 @@ CREATE TABLE request
   request_email VARCHAR NOT NULL, 
   comments VARCHAR,
   PRIMARY KEY (booking_id, request_email),
-  FOREIGN KEY (booking_id) REFERENCES cab_booking(id),
+  FOREIGN KEY (booking_id) REFERENCES cab_booking(id) ON DELETE CASCADE,
   FOREIGN KEY (request_email) REFERENCES users(user_email)
 );
 

@@ -1,12 +1,19 @@
-from typing import List, Dict
-
 from datetime import datetime
+from typing import Dict, List
+
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pytz import timezone
 
 import schemas
-from utils import verify_auth_token, verify_auth_token_with_name, conn, queries, get_bookings, send_email
+from utils import (
+    conn,
+    get_bookings,
+    queries,
+    send_email,
+    verify_auth_token,
+    verify_auth_token_with_name,
+)
 
 app = FastAPI()
 
@@ -50,10 +57,7 @@ async def create_user(
     email, name = emailname
     try:
         queries.insert_user(
-            conn,
-            email=email,
-            name=name,
-            phone_number=details.phone_number
+            conn, email=email, name=name, phone_number=details.phone_number
         )
         conn.commit()
     except Exception as e:
@@ -122,7 +126,7 @@ async def search_bookings(
     to_loc: str | None = None,
     start_time: datetime | None = None,
     end_time: datetime | None = None,
-    email: str = Depends(verify_auth_token)
+    email: str = Depends(verify_auth_token),
 ) -> List[Dict]:
     """
     Search Bookings by locations and time
@@ -132,14 +136,22 @@ async def search_bookings(
     end_time = end_time or datetime.fromisoformat("2100-01-01T00:00:00+05:30")
 
     if (from_loc is None) ^ (to_loc is None):
-        raise HTTPException(status_code=400, detail="Cannot search with only one location")
+        raise HTTPException(
+            status_code=400, detail="Cannot search with only one location"
+        )
     elif from_loc is None and to_loc is None:
         res = queries.filter_times(conn, start_time=start_time, end_time=end_time)
     else:
         from_id = queries.get_loc_id(conn, place=from_loc)
         to_id = queries.get_loc_id(conn, place=to_loc)
 
-        res = queries.filter_all(conn, from_loc=from_id, to_loc=to_id, start_time=start_time, end_time=end_time)
+        res = queries.filter_all(
+            conn,
+            from_loc=from_id,
+            to_loc=to_id,
+            start_time=start_time,
+            end_time=end_time,
+        )
 
     bookings = get_bookings(res)
 
@@ -148,7 +160,9 @@ async def search_bookings(
 
 @app.post("/bookings/{booking_id}/request")
 async def join_booking(
-    booking_id: int, join_booking: schemas.JoinBooking, email: str = Depends(verify_auth_token)
+    booking_id: int,
+    join_booking: schemas.JoinBooking,
+    email: str = Depends(verify_auth_token),
 ):
     """
     A function for a new person to place a request to join an existing booking
@@ -170,7 +184,9 @@ async def join_booking(
 
 @app.post("/bookings/{booking_id}/accept")
 async def accept_request(
-    booking_id: int, response: schemas.RequestResponse, email: str = Depends(verify_auth_token)
+    booking_id: int,
+    response: schemas.RequestResponse,
+    email: str = Depends(verify_auth_token),
 ):
     """
     To accept a person's request to join booking
@@ -179,20 +195,19 @@ async def accept_request(
     if owner_email is None:
         raise HTTPException(status_code=400, detail="Booking does not exist")
     elif owner_email != email:
-        raise HTTPException(status_code=403, detail="You are not the owner of this booking")
+        raise HTTPException(
+            status_code=403, detail="You are not the owner of this booking"
+        )
 
     try:
-        res = queries.update_request(
+        comments = queries.update_request(
             conn,
             booking_id=booking_id,
             request_email=response.requester_email,
             val="accepted",
         )
-        if res is None:
+        if comments is None:
             raise HTTPException(status_code=400, detail="There is no request to accept")
-        elif res[1] != "pending":
-            raise HTTPException(status_code=400, detail="Request already accepted/rejected")
-        comments = res[0]
 
         queries.add_traveller(
             conn,
@@ -202,6 +217,8 @@ async def accept_request(
         )
 
         conn.commit()
+    except HTTPException as e:
+        raise e
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
@@ -212,7 +229,9 @@ async def accept_request(
 
 @app.post("/bookings/{booking_id}/reject")
 async def reject_request(
-    booking_id: int, response: schemas.RequestResponse, email: str = Depends(verify_auth_token)
+    booking_id: int,
+    response: schemas.RequestResponse,
+    email: str = Depends(verify_auth_token),
 ):
     """
     To reject a person's request to join booking
@@ -221,7 +240,9 @@ async def reject_request(
     if owner_email is None:
         raise HTTPException(status_code=400, detail="Booking does not exist")
     elif owner_email != email:
-        raise HTTPException(status_code=403, detail="You are not the owner of this booking")
+        raise HTTPException(
+            status_code=403, detail="You are not the owner of this booking"
+        )
 
     try:
         res = queries.update_request(
@@ -232,10 +253,10 @@ async def reject_request(
         )
         if res is None:
             raise HTTPException(status_code=400, detail="There is no request to accept")
-        elif res[1] != "pending":
-            raise HTTPException(status_code=400, detail="Request already accepted/rejected")
 
         conn.commit()
+    except HTTPException as e:
+        raise e
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
@@ -252,10 +273,12 @@ async def delete_existing_booking(
     Delete a Particular booking
     """
     owner_email = queries.get_owner_email(conn, cab_id=booking_id)
-    if owner_email == None:
+    if owner_email is None:
         raise HTTPException(status_code=400, detail="Booking does not exist")
     elif owner_email != email:
-        raise HTTPException(status_code=403, detail="You are not the owner of this booking")
+        raise HTTPException(
+            status_code=403, detail="You are not the owner of this booking"
+        )
 
     try:
         queries.delete_booking(conn, cab_id=booking_id)
@@ -271,32 +294,32 @@ async def delete_existing_booking(
 
 # @app.delete("/bookings/{booking_id}/self")
 # async def delete_user_from_booking(
-    # booking_id: int, email: str = Depends(verify_auth_token)
+# booking_id: int, email: str = Depends(verify_auth_token)
 # ):
-    # """
-    # Delete a particular user from a particular booking
-    # """
-    # queries.delete_particular_traveller(conn, id=booking_id, email=email)
-    # try:
-        # conn.commit()
-    # except Exception as e:
-        # print(e)  # TODO: Replace with logger
-        # conn.rollback()
+# """
+# Delete a particular user from a particular booking
+# """
+# queries.delete_particular_traveller(conn, id=booking_id, email=email)
+# try:
+# conn.commit()
+# except Exception as e:
+# print(e)  # TODO: Replace with logger
+# conn.rollback()
 
 
 # @app.delete("/bookings/{booking_id}/other")
 # async def remove_traveller_from_booking(
-    # booking_id: int, email_to_remove: schemas.Email, email: str = Depends(verify_auth_token)
+# booking_id: int, email_to_remove: schemas.Email, email: str = Depends(verify_auth_token)
 # ):
-    # """
-    # Remove a particular user from a particular booking (only by the owner of the booking)
-    # """
-    # email = email_to_remove.email
-    # queries.remove_traveller(conn, id=booking_id, email=email)
-    # try:
-        # conn.commit()
-    # except Exception as e:
-        # print(e)
+# """
+# Remove a particular user from a particular booking (only by the owner of the booking)
+# """
+# email = email_to_remove.email
+# queries.remove_traveller(conn, id=booking_id, email=email)
+# try:
+# conn.commit()
+# except Exception as e:
+# print(e)
 
 
 if __name__ == "__main__":

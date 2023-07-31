@@ -18,7 +18,6 @@ def authn_user(token):
         # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
         #     raise ValueError('Could not verify audience.')
 
-        print(idinfo)
         email = idinfo["email"]
         name = idinfo["name"]
 

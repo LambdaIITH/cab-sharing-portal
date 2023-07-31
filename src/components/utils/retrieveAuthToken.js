@@ -11,9 +11,7 @@ const retrieveAuthToken = (router) => {
     return null;
   }
   const decode_token = jwt_decode(token);
-  console.log(decode_token);
   const date = new Date();
-  console.log(date.getTime(), decode_token["exp"]);
   if (decode_token["exp"] < date.getTime() / 1000) {
     // token has expired
     localStorage.removeItem("credential");

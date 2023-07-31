@@ -11,14 +11,22 @@ import {
   MenuItem,
   Select,
   Stack,
+  Box,
+  Typography,
 } from "@mui/material";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker, DateTimePicker } from "@mui/x-date-pickers";
+import { MuiTelInput } from "mui-tel-input";
+import { set } from "date-fns";
+import axios from "axios";
+import { useRouter } from "next/router";
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
+
 
 const locations = [
-  "IITH",
   "RGIA",
   "Secunderabad Railway Station",
   "Lingampally",
@@ -28,8 +36,8 @@ export function NewBookingDialog({ fetchUserBookings }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const initData = {
-    from_: "",
-    to: "",
+    from_loc: "IITH",
+    to_loc: "",
     capacity: "",
     comments: "",
   };
@@ -38,33 +46,110 @@ export function NewBookingDialog({ fetchUserBookings }) {
   const [date, setDate] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [touched, setTouched] = useState({});
+  const [touched, setTouched] = useState(false);
   const { values, isLoading, error } = registerData;
+
+  const router = useRouter();
+  const [loaded_phone, setLoadedPhone] = useState("");
+  const [phone, setPhone] = useState("");
+  const [location, setLocation] = useState("");
+  const [toggle, setToggle] = useState('from');
+
+  useEffect(() => {
+    const authToken = retrieveAuthToken(router);
+    let apiURL = `http://localhost:8000/me`;
+    axios.get(apiURL, {
+      headers: {
+        Authorization: authToken,
+      }
+    })
+    .then((data) => {
+      if (data.data['phone_number'] == null){
+        setPhone("")
+        setLoadedPhone("")
+      }
+      else{
+        setPhone(data.data['phone_number'])
+        setLoadedPhone(data.data['phone_number'])
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }, []);
+
+
 
   // handlers
 
+  const handleToggle = (newToggle) => {
+    if (newToggle == "from"){
+      setToggle("from")
+      setRegisterData((prev) => ({
+        ...prev,
+        values: { ...prev.values, from_loc: "IITH", to_loc: location },
+      }));
+    }
+    else{
+      setToggle("to")
+      setRegisterData((prev) => ({
+        ...prev,
+        values: { ...prev.values, to_loc: "IITH", from_loc: location },
+      }));
+    }
+  };
+
   const onBlur = ({ target }) =>
-    setTouched((prev) => ({ ...prev, [target.name]: true }));
+    // setTouched((prev) => ({ ...prev, [target.name]: true }));
+    setTouched(true);
 
   const handleChange = ({ target }) => {
+    if (target.name == "from_loc" || target.name == "to_loc"){
+      setLocation(target.value);
+    }
     setRegisterData((prev) => ({
       ...prev,
       values: { ...prev.values, [target.name]: target.value },
     }));
   };
+  const handlePhoneChange = (value, info) => {
+    setPhone(info.numberValue);
+  }
 
   const handleDialogOpen = () => {
+    if (phone!=loaded_phone){
+      const authToken = retrieveAuthToken(router);
+      let apiURL = `http://localhost:8000/me`;
+      axios.post(apiURL, 
+        JSON.stringify({
+          phone_number: phone,
+        }),
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          }
+        }
+      ).catch((err) => {
+        console.log(err)
+      })
+    }
     setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setDialogOpen(false);
+    setRegisterData(initState);
+    setTouched(false);
+    setStartTime(null);
+    setEndTime(null);
+    setLocation("");
+    setPhone(""); 
   };
 
   const RegisterNewBooking = async () => {
     const authToken = localStorage.getItem("credential");
     // console.log("start time", new Date());
-    fetch("http://localhost:8000/book", {
+    fetch("http://localhost:8000/bookings", {
       headers: {
         Authorization: `${authToken}`,
         "Content-Type": "application/json",
@@ -74,7 +159,6 @@ export function NewBookingDialog({ fetchUserBookings }) {
         ...values,
         start_time: startTime,
         end_time: endTime,
-        date: new Date(),
       }),
     })
       .then((res) => res.json())
@@ -84,6 +168,12 @@ export function NewBookingDialog({ fetchUserBookings }) {
         fetchUserBookings();
       })
       .catch((err) => console.log(err));
+      setRegisterData(initState);
+      setTouched(false);
+      setStartTime(null);
+      setEndTime(null);
+      setLocation("");
+      setPhone(""); 
   };
 
   useEffect(() => console.log(values), [values]);
@@ -95,14 +185,16 @@ export function NewBookingDialog({ fetchUserBookings }) {
   ));
   return (
     <>
-      <button
+    <MuiTelInput defaultCountry="IN" onlyCountries={['IN']} forceCallingCode onChange={handlePhoneChange} value={phone} />
+      <Button
         // variant="contained"
         onClick={handleDialogOpen}
         // sx={{ marginBottom: "10px" }}
         className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
+        disabled={phone.replace("+91", "") ==""}
       >
         Register Booking
-      </button>
+      </Button>
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>New booking</DialogTitle>
         <DialogContent>
@@ -110,53 +202,48 @@ export function NewBookingDialog({ fetchUserBookings }) {
             Please fill the form to create a new booking. <br />
             Your email address will be automatically associated with your
             booking.
-            {values.from_ !== "" && values.from_ === values.to && (
+            {values.from_loc !== "" && values.from_loc === values.to_loc && (
               <span className="label-text-alt mt-1 text-red-600">
                 To and From Location cannot be the same
               </span>
             )}
-            <FormControl>
-              <InputLabel id="new-book-from">From</InputLabel>
+            <Box gap={3} sx={{ display: 'flex', flexDirection: 'row' }}>
+            <Typography component="div" fontSize={15} sx={{ display: 'flex', alignItems: 'center' }}>
+              IITH
+            </Typography>
+            {(toggle=="from")?
+              <Button color="primary" variant="outlined"  onClick={()=>{handleToggle("to")}}>
+                <ArrowForwardIcon/>
+              </Button>
+            :
+            <Button  color="primary" variant="outlined"  onClick={()=>{handleToggle("from")}}>
+              <ArrowBackIcon/>
+            </Button>
+            }
+              <FormControl fullWidth>
+              <InputLabel id="new-book-loc">Location</InputLabel>
               <Select
-                value={values.from_}
-                name="from_"
+                value={location}
+                name={(toggle=="to")?"from_loc":"to_loc"}
                 onBlur={onBlur}
-                label="From"
-                labelid="new-book-from"
+                label="Location"
+                labelid="new-book-loc"
                 onChange={handleChange}
                 required
               >
                 {destinations}
               </Select>
-              {touched.from_ && !values.from_ && (
+              {touched && (!values.from_loc || !values.to_loc) && ( 
                 <span className="label-text-alt mt-1 text-red-600">
                   Required
                 </span>
               )}
             </FormControl>
-            <FormControl>
-              <InputLabel id="new-book-to">To</InputLabel>
-              <Select
-                value={values.to}
-                name="to"
-                onBlur={onBlur}
-                label="To"
-                labelid="new-book-to"
-                onChange={handleChange}
-                required
-              >
-                {destinations}
-              </Select>
-              {touched.to && !values.to && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  Required
-                </span>
-              )}
-            </FormControl>
+            </Box>
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  label="Start Time"
+                  label="Leave After"
                   name="startTime"
                   value={startTime}
                   onChange={setStartTime}
@@ -167,7 +254,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  label="End Time"
+                  label="Leave Before"
                   value={endTime}
                   name="endTime"
                   onChange={setEndTime}
@@ -195,6 +282,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
                 onChange={handleChange}
               />
             </FormControl>
+            
           </Stack>
         </DialogContent>
         <DialogActions>

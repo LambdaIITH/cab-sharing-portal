@@ -13,7 +13,7 @@ const UserBookings = () => {
   const fetchUserBookings = async () => {
     const authToken = localStorage.getItem("credential");
     try {
-      const res = await axios.get("http://localhost:8000/user", {
+      const res = await axios.get("http://localhost:8000/me/bookings", {
         headers: {
           Authorization: authToken,
           "Content-Type": "application/json",

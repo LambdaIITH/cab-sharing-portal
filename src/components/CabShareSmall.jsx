@@ -21,7 +21,6 @@ const CabShareSmall = ({
     if (index === 0) setExpand(true);
   }, []);
 
-  console.log(bookingData);
 
   return (
     <div

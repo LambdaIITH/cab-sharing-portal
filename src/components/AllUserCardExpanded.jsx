@@ -3,18 +3,63 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import UserTravellers from "./views/CabSharing/UserTravellers";
 import { comment } from "postcss";
+import { MuiTelInput } from "mui-tel-input";
+import retrieveAuthToken from "./utils/retrieveAuthToken";
+import { useRouter } from "next/router";
 
 const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const [isValidToJoin, setIsValidToJoin] = useState(false);
-  const [joinComment, setJoinComment] = useState("I am intrested to join.");
+  const [joinComment, setJoinComment] = useState("I am interested to join.");
+
+  const [loaded_phone, setLoadedPhone] = useState("");
+  const [phone, setPhone] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    const authToken = retrieveAuthToken(router);
+    let apiURL = `http://localhost:8000/me`;
+    axios.get(apiURL, {
+      headers: {
+        Authorization: authToken,
+      }
+    })
+    .then((data) => {
+      if (data.data['phone_number'] == null){
+        setPhone("")
+        setLoadedPhone("")
+      }
+      else{
+        setPhone(data.data['phone_number'])
+        setLoadedPhone(data.data['phone_number'])
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  }, []);
 
   // handlers
   const JoinBooking = async () => {
-    const authToken = localStorage.getItem("credential");
+    const authToken = retrieveAuthToken(router);
+    if (phone!=loaded_phone){
+      let apiURL = `http://localhost:8000/me`;
+      await axios.post(apiURL, 
+        JSON.stringify({
+          phone_number: phone,
+        }),
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          }
+        }
+      ).catch((err) => {
+        console.log(err)
+      })
+    }
     try {
       const data = await axios.post(
-        `http://localhost:8000/join`,
-        { booking_id: bookingData.id, comment: joinComment },
+        `http://localhost:8000/bookings/${bookingData.id}/request`,
+        { comments: joinComment },
         {
           headers: {
             Authorization: authToken,
@@ -36,10 +81,14 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   bookingData.travellers.map((item) => travellers_email_list.push(item.email));
 
   const request_email_list = [];
-  bookingData.requests.map((item) => request_email_list.push(item.email));
+  bookingData.requests?.map((item) => request_email_list.push(item.email));
 
   const isInRequest = request_email_list.indexOf(email);
   let ownerIndex = 0;
+
+  const handlePhoneChange = (value, info) => {
+    setPhone(info.numberValue);
+  }
 
   useEffect(() => {
     if (travellers_email_list.indexOf(email) === -1 && isInRequest === -1)
@@ -78,9 +127,10 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
             <p></p>
           )}
           <div>
+          <MuiTelInput defaultCountry="IN" onlyCountries={['IN']} forceCallingCode onChange={handlePhoneChange} value={phone} />
             {isValidToJoin && isInRequest == -1 && (
               <button
-                disabled={!(joinComment.length > 0)}
+                disabled={(joinComment.length == 0) || (phone.replace("+91", "") == "")}
                 className="btn btn-outline"
                 onClick={() => JoinBooking()}
               >

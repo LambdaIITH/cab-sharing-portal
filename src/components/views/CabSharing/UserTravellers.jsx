@@ -37,7 +37,7 @@ const UserTravellers = ({ travellers, hidePhoneNumber = false }) => {
             </div>
             {!hidePhoneNumber && (
               <div className="flex flex-row gap-3 items-center">
-                <p className=" text-[1rem]">+91 {item.phone_number}</p>
+                <p className=" text-[1rem]">{item.phone_number}</p>
                 <CopyToClipboard text={item.phone_number} onCopy={handleCopy}>
                   <button
                     onClick={(e) => e.stopPropagation()}

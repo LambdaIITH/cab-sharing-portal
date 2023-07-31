@@ -22,7 +22,7 @@ function Login() {
     console.log(response);
     localStorage.setItem("credential", response.credential);
 
-    fetch("http://localhost:8000/auth", {
+    fetch("http://localhost:8000/me", {
       headers: {
         Authorization: response.credential,
       },

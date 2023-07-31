@@ -18,7 +18,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     try {
       setLoading(true);
       await axios.delete(
-        `http://localhost:8000/deletebooking/${bookingData?.id}`,
+        `http://localhost:8000/bookings/${bookingData?.id}`,
         {
           headers: {
             Authorization: authToken,
@@ -41,8 +41,9 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8000/accept`,
-        { booking_id: bookingData?.id, request_email },
+        `http://localhost:8000/bookings/${bookingData?.id}/accept`,{
+          requester_email:request_email
+        },
         {
           headers: {
             Authorization: authToken,
@@ -65,8 +66,9 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8000/reject`,
-        { booking_id: bookingData?.id, request_email },
+        `http://localhost:8000/bookings/${bookingData?.id}/reject`,{
+          requester_email:request_email
+        },
         {
           headers: {
             Authorization: authToken,

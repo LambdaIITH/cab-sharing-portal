@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import retrieveAuthToken from "../../utils/retrieveAuthToken";
 import CabShareSmall from "components/CabShareSmall";
 import { DateTimePicker } from "@mui/x-date-pickers";
-
+import { useRouter } from "next/router";
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 const AllUserBookings = () => {
@@ -34,19 +34,25 @@ const AllUserBookings = () => {
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const router = useRouter();
 
   const fetchFilteredBookings = () => {
-    const authToken = retrieveAuthToken();
-    let apiURL = `http://localhost:8000/allbookings`;
+    const authToken = retrieveAuthToken(router);
+    let apiURL = `http://localhost:8000/bookings`;
 
     if (fromValue && toValue) {
       if (startTime && endTime) {
         const isoStartTime = startTime.toISOString();
         const isoEndTime = endTime.toISOString();
-        apiURL += `/time?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}&end_time=${isoEndTime}`;
+        apiURL += `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}&end_time=${isoEndTime}`;
       } else {
-        apiURL += `/loc?from_loc=${fromValue}&to_loc=${toValue}`;
+        apiURL += `?from_loc=${fromValue}&to_loc=${toValue}`;
       }
+    }
+    else if (startTime && endTime) {
+      const isoStartTime = startTime.toISOString();
+      const isoEndTime = endTime.toISOString();
+      apiURL += `?start_time=${isoStartTime}&end_time=${isoEndTime}`;
     }
 
     fetch(apiURL, {
@@ -57,7 +63,8 @@ const AllUserBookings = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setFilteredBookings(data["all_bookings"]);
+        console.log("data", data);
+        setFilteredBookings(data);
       });
   };
 
@@ -67,8 +74,13 @@ const AllUserBookings = () => {
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
     setEmail(localStorage.getItem("user_email"));
-    fetchFilteredBookings();
   }, []);
+
+  useEffect(() => {
+    if (username && email) {
+      fetchFilteredBookings();
+    }
+  }, [username, email]);
 
   return (
     <div className="flex flex-col  overflow-auto rounded-box py-10 mx-auto">

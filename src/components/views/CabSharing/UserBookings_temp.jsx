@@ -120,7 +120,7 @@ export function UserBookings() {
 
   const fetchUserBookings = () => {
     const authToken = localStorage.getItem("credential");
-    fetch("http://localhost:8000/user", {
+    fetch("http://localhost:8000/me/bookings", {
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
