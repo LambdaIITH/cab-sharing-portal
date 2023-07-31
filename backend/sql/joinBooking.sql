@@ -1,17 +1,16 @@
--- name: join_booking!
+-- name: create_request!
 INSERT INTO request (status, booking_id, request_email, comments) 
-VALUES (2, :booking_id, :email, :comment)
-ON CONFLICT DO NOTHING;
+  VALUES ('pending', :booking_id, :email, :comment)
+  ON CONFLICT DO NOTHING;
 
 -- name: show_requests
-SELECT r.request_email, r.comments, u.user_email, u.phone_number
-FROM request r
-INNER JOIN users u ON u.user_email = r.request_email
-WHERE r.status = 2 AND r.booking_id = :id;
+SELECT r.request_email, r.comments, u.name, u.phone_number
+  FROM request r
+    INNER JOIN users u ON u.user_email = r.request_email
+  WHERE r.status = 'pending' AND r.booking_id = :cab_id;
 
--- name: modify_booking<!
+-- name: update_request<!
 UPDATE request
-SET status = :val
-WHERE booking_id = :booking_id AND request_email = :request_email
-returning comments;
-
+  SET status = :val
+  WHERE booking_id = :booking_id AND request_email = :request_email
+  RETURNING comments, status;

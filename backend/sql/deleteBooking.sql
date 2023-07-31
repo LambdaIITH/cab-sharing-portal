@@ -1,11 +1,6 @@
 -- name: delete_booking!
-DELETE FROM cab_booking WHERE id=:id;
-
---name:delete_booking_associated_traveller!
-DELETE FROM traveller WHERE id=:id;
+DELETE FROM cab_booking WHERE id=:cab_id;
 
 --name: delete_particular_traveller!
-DELETE FROM traveller WHERE (id=:id and user_email=:email);
-
---name: delete_booking_associated_request!
-DELETE FROM request WHERE booking_id=:id;
+DELETE FROM traveller WHERE cab_id=:cab_id and user_email=:user_email
+ AND :owner_email IN (SELECT owner_email FROM cab_booking WHERE id=:cab_id);

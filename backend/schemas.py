@@ -3,25 +3,27 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class User(BaseModel):
-    phone: int
+class Email(BaseModel):
+    email: str
+
+
+class UserDetails(BaseModel):
+    phone_number: int
 
 
 class Booking(BaseModel):
-    from_: str
-    to: str
     start_time: datetime
     end_time: datetime
     capacity: int
+    from_loc: str
+    to_loc: str
     comments: str
-    date: datetime
 
 
 class JoinBooking(BaseModel):
-    booking_id: int
-    comment: str
+    comments: str
 
 
-class AcceptRejectBooking(BaseModel):
+class RequestResponse(BaseModel):
     booking_id: int
-    request_email: str
+    requester_email: str

@@ -1,2 +1,3 @@
 -- name: insert_user!
-insert into users (user_email,phone_number) values (:user_email, :phone_number); 
+INSERT INTO users (user_email, name, phone_number) VALUES (:email, :name, :phone_number)
+  ON CONFLICT DO UPDATE SET phone_number = :phone_number;
