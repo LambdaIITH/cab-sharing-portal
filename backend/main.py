@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict
+from typing import List, Dict
 
 from datetime import datetime
 from fastapi import Depends, FastAPI, HTTPException
@@ -48,13 +48,13 @@ async def create_user(
     Create a new User.
     """
     email, name = emailname
-    queries.insert_user(
-        conn,
-        email=email,
-        name=name,
-        phone_number=details.phone_number
-    )
     try:
+        queries.insert_user(
+            conn,
+            email=email,
+            name=name,
+            phone_number=details.phone_number
+        )
         conn.commit()
     except Exception as e:
         print(e)
@@ -79,21 +79,21 @@ async def create_booking(
     print(booking.start_time)
     print(booking.start_time.astimezone(timezone("Asia/Kolkata")))
 
-    booking_id = queries.create_booking(
-        conn,
-        start_time=booking.start_time.astimezone(timezone("Asia/Kolkata")),
-        end_time=booking.end_time.astimezone(timezone("Asia/Kolkata")),
-        capacity=booking.capacity,
-        from_loc=from_id,
-        to_loc=to_id,
-        owner_email=email,
-        comments=booking.comments,
-    )
-
-    queries.add_traveller(
-        conn, cab_id=booking_id, user_email=email, comments=booking.comments
-    )
     try:
+        booking_id = queries.create_booking(
+            conn,
+            start_time=booking.start_time.astimezone(timezone("Asia/Kolkata")),
+            end_time=booking.end_time.astimezone(timezone("Asia/Kolkata")),
+            capacity=booking.capacity,
+            from_loc=from_id,
+            to_loc=to_id,
+            owner_email=email,
+            comments=booking.comments,
+        )
+
+        queries.add_traveller(
+            conn, cab_id=booking_id, user_email=email, comments=booking.comments
+        )
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger
@@ -118,10 +118,10 @@ async def user_bookings(email: str = Depends(verify_auth_token)):
 
 @app.get("/bookings")
 async def search_bookings(
-    from_loc: Optional[str],
-    to_loc: Optional[str],
-    start_time: Optional[datetime],
-    end_time: Optional[datetime],
+    from_loc: str | None = None,
+    to_loc: str | None = None,
+    start_time: datetime | None = None,
+    end_time: datetime | None = None,
     email: str = Depends(verify_auth_token)
 ) -> List[Dict]:
     """
@@ -146,21 +146,21 @@ async def search_bookings(
     return bookings
 
 
-@app.post("/bookings/{booking_id}/request}")
+@app.post("/bookings/{booking_id}/request")
 async def join_booking(
     booking_id: int, join_booking: schemas.JoinBooking, email: str = Depends(verify_auth_token)
 ):
     """
     A function for a new person to place a request to join an existing booking
     """
-    queries.create_request(
-        conn,
-        booking_id=booking_id,
-        email=email,
-        comments=join_booking.comments,
-    )
 
     try:
+        queries.create_request(
+            conn,
+            booking_id=booking_id,
+            email=email,
+            comments=join_booking.comments,
+        )
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger
@@ -181,26 +181,26 @@ async def accept_request(
     elif owner_email != email:
         raise HTTPException(status_code=403, detail="You are not the owner of this booking")
 
-    res = queries.update_request(
-        conn,
-        booking_id=booking_id,
-        request_email=response.requester_email,
-        val="accepted",
-    )
-    if res is None:
-        raise HTTPException(status_code=400, detail="There is no request to accept")
-    elif res[1] != "pending":
-        raise HTTPException(status_code=400, detail="Request already accepted/rejected")
-    comments = res[0]
-
-    queries.add_traveller(
-        conn,
-        cab_id=booking_id,
-        user_email=response.requester_email,
-        comments=comments,
-    )
-
     try:
+        res = queries.update_request(
+            conn,
+            booking_id=booking_id,
+            request_email=response.requester_email,
+            val="accepted",
+        )
+        if res is None:
+            raise HTTPException(status_code=400, detail="There is no request to accept")
+        elif res[1] != "pending":
+            raise HTTPException(status_code=400, detail="Request already accepted/rejected")
+        comments = res[0]
+
+        queries.add_traveller(
+            conn,
+            cab_id=booking_id,
+            user_email=response.requester_email,
+            comments=comments,
+        )
+
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger
@@ -223,18 +223,18 @@ async def reject_request(
     elif owner_email != email:
         raise HTTPException(status_code=403, detail="You are not the owner of this booking")
 
-    res = queries.update_request(
-        conn,
-        booking_id=booking_id,
-        request_email=response.requester_email,
-        val="rejected",
-    )
-    if res is None:
-        raise HTTPException(status_code=400, detail="There is no request to accept")
-    elif res[1] != "pending":
-        raise HTTPException(status_code=400, detail="Request already accepted/rejected")
-
     try:
+        res = queries.update_request(
+            conn,
+            booking_id=booking_id,
+            request_email=response.requester_email,
+            val="rejected",
+        )
+        if res is None:
+            raise HTTPException(status_code=400, detail="There is no request to accept")
+        elif res[1] != "pending":
+            raise HTTPException(status_code=400, detail="Request already accepted/rejected")
+
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger
@@ -257,9 +257,8 @@ async def delete_existing_booking(
     elif owner_email != email:
         raise HTTPException(status_code=403, detail="You are not the owner of this booking")
 
-    queries.delete_booking(conn, cab_id=booking_id)
-
     try:
+        queries.delete_booking(conn, cab_id=booking_id)
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger

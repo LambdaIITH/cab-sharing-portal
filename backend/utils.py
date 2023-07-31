@@ -92,7 +92,7 @@ def get_bookings(res, owner_email=None):
         }
 
         if owner_email == tup[6]:
-            requests = queries.show_requests(conn, id=tup[0])
+            requests = queries.show_requests(conn, cab_id=tup[0])
             requests_list = []
             for request in requests:
                 requests_list.append({

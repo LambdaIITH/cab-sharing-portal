@@ -8,7 +8,7 @@ class Email(BaseModel):
 
 
 class UserDetails(BaseModel):
-    phone_number: int
+    phone_number: str
 
 
 class Booking(BaseModel):
@@ -25,5 +25,4 @@ class JoinBooking(BaseModel):
 
 
 class RequestResponse(BaseModel):
-    booking_id: int
     requester_email: str

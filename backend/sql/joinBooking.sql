@@ -1,6 +1,6 @@
 -- name: create_request!
 INSERT INTO request (status, booking_id, request_email, comments) 
-  VALUES ('pending', :booking_id, :email, :comment)
+  VALUES ('pending', :booking_id, :email, :comments)
   ON CONFLICT DO NOTHING;
 
 -- name: show_requests

@@ -1,8 +1,8 @@
--- name: get_user_phone_number$
+-- name: get_phone_number$
 SELECT phone_number FROM users WHERE user_email = :email;
 
 -- name: get_user_past_bookings
-SELECT c.id, c.start_time, c.end_time, c.capacity, fl.place, tl.place, u.owner_email, u.name, u.phone_number
+SELECT c.id, c.start_time, c.end_time, c.capacity, fl.place, tl.place, c.owner_email, u.name, u.phone_number
   FROM cab_booking c
     INNER JOIN traveller t ON c.id = t.cab_id
     INNER JOIN locations fl ON fl.id = c.from_loc
