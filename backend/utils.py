@@ -1,16 +1,15 @@
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import aiosql
 import psycopg2
+from dotenv import load_dotenv
 from fastapi import Header, HTTPException
 from google.auth import exceptions
-from dotenv import load_dotenv
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import smtplib
 
 from auth import authn_user
-
 
 load_dotenv()
 
@@ -72,13 +71,19 @@ def get_bookings(res, owner_email=None):
         print("get_bookings", travellers)
         travellers_list = []
 
+        owner_email = tup[6]
+
         for traveller in travellers:
-            travellers_list.append({
+            traveller_dict = {
                 "email": traveller[0],
                 "comments": traveller[1],
                 "name": traveller[2],
                 "phone_number": traveller[3],
-            })
+            }
+            if owner_email == traveller_dict["email"]:
+                travellers_list.insert(0, traveller_dict)
+            else:
+                travellers_list.append(traveller_dict)
 
         booking = {
             "id": tup[0],
@@ -87,7 +92,7 @@ def get_bookings(res, owner_email=None):
             "capacity": tup[3],
             "from_": tup[4],
             "to": tup[5],
-            "owner": tup[6],
+            "owner_email": owner_email,
             "travellers": travellers_list,
         }
 
@@ -95,12 +100,14 @@ def get_bookings(res, owner_email=None):
             requests = queries.show_requests(conn, cab_id=tup[0])
             requests_list = []
             for request in requests:
-                requests_list.append({
-                    "email": request[0],
-                    "comments": request[1],
-                    "name": request[2],
-                    "phone_number": request[3],
-                })
+                requests_list.append(
+                    {
+                        "email": request[0],
+                        "comments": request[1],
+                        "name": request[2],
+                        "phone_number": request[3],
+                    }
+                )
             booking["requests"] = requests_list
 
         bookings.append(booking)

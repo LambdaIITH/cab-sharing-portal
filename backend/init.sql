@@ -10,8 +10,14 @@ CREATE TABLE locations
 (
   place VARCHAR NOT NULL,
   id BIGSERIAL NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE (place)
 );
+
+INSERT INTO locations (place) VALUES ('IITH');
+INSERT INTO locations (place) VALUES ('RGIA');
+INSERT INTO locations (place) VALUES ('Secunderabad Railway Station');
+INSERT INTO locations (place) VALUES ('Lingampally');
 
 CREATE TABLE cab_booking
 (
