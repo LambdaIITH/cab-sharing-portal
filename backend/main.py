@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -122,10 +122,10 @@ async def user_bookings(email: str = Depends(verify_auth_token)):
 
 @app.get("/bookings")
 async def search_bookings(
-    from_loc: str | None = None,
-    to_loc: str | None = None,
-    start_time: datetime | None = None,
-    end_time: datetime | None = None,
+    from_loc: Union[str, None] = None,
+    to_loc: Union[str, None] = None,
+    start_time: Union[datetime, None] = None,
+    end_time: Union[datetime, None] = None,
     email: str = Depends(verify_auth_token),
 ) -> List[Dict]:
     """
