@@ -57,3 +57,11 @@ SELECT t.user_email, t.comments, u.name, u.phone_number
   FROM traveller t
     INNER JOIN users u ON t.user_email = u.user_email
   WHERE t.cab_id = :cab_id;
+
+-- name: get_booking_details
+SELECT c.id, c.start_time, c.end_time, fl.place, tl.place, c.owner_email, u.name, u.phone_number
+  FROM cab_booking c
+    INNER JOIN locations fl ON fl.id = c.from_loc
+    INNER JOIN locations tl ON tl.id = c.to_loc
+    INNER JOIN users u ON u.user_email = c.owner_email
+  WHERE c.id = :cab_id;

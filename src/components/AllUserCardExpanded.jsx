@@ -7,6 +7,9 @@ import { MuiTelInput } from "mui-tel-input";
 import retrieveAuthToken from "./utils/retrieveAuthToken";
 import { useRouter } from "next/router";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const [isValidToJoin, setIsValidToJoin] = useState(false);
   const [joinComment, setJoinComment] = useState("I am interested to join.");
@@ -70,6 +73,8 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
       console.log(
         `successfully requested the user booking of id ${bookingData?.id}`
       );
+      toast("Successfully Requested");
+
     } catch (err) {
       console.log(err);
     } finally {
@@ -132,14 +137,14 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
               <button
                 disabled={(joinComment.length == 0) || (phone.replace("+91", "") == "")}
                 className="btn btn-outline"
-                onClick={() => JoinBooking()}
+                onClick={JoinBooking}
               >
                 Join Booking
               </button>
             )}
             {isInRequest != -1 && (
               <button disabled={true} className="btn btn-outline">
-                Reqest Pending
+                Request Pending
               </button>
             )}
           </div>
@@ -154,6 +159,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
           />
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

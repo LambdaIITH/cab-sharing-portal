@@ -124,29 +124,39 @@ def send_email(receiver: str, accepted: bool, booking_id: int):
     message = MIMEMultipart("alternative")
     message["From"] = GMAIL_USER
     message["To"] = receiver
+    booking_info = queries.get_booking_details(conn, cab_id=booking_id)
+    print(booking_info)
+    booking_info = booking_info[0]
     if accepted:
-        subject = f"Accepted Cab sharing request on booking id {booking_id}"
+        subject = (
+            f"Accepted Cab sharing request from {booking_info[3]} to {booking_info[4]}"
+        )
         text = """\
         Yayy, your request has been accepted
         """
-        html = """\
+        html = f"""\
         <html>
             <body>
-                <h1> Yayy! &#128512;</h1>
-                <h2> Your request has been accepted </h2>
+                <h2> Your request has been accepted by {booking_info[6]} ( {booking_info[7]},{booking_info[5]} )</h2>
+                <p>
+                    <b>From:</b> {booking_info[3]}<br>
+                    <b>To:</b> {booking_info[4]}<br>
+                    <b>Cab Window:</b> {booking_info[1]} - {booking_info[2]}<br>
+                </p>
             </body>
         </html>
         """
     else:
-        subject = f"Rejected Cab sharing request on booking id {booking_id}"
+        subject = (
+            f"Rejected Cab sharing request from {booking_info[3]} to {booking_info[4]}"
+        )
         text = """\
-        Sorry, your request has been rehected
+        Sorry, your request has been rejected
         """
         html = """
         <html>
             <body>
-                <h1> Sorry! &#128533;</h1>
-                <h2> Your request has been rejected </h2>
+                <h2> Sorry, your request has been rejected </h2>
             </body>
         </html>
         """

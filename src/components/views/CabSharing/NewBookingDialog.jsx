@@ -165,15 +165,16 @@ export function NewBookingDialog({ fetchUserBookings }) {
       .then((data) => {
         console.log(data);
         setDialogOpen(false);
+        setRegisterData(initState);
+        setTouched(false);
+        setStartTime(null);
+        setEndTime(null);
+        setLocation("");
+        setPhone(""); 
         fetchUserBookings();
       })
       .catch((err) => console.log(err));
-      setRegisterData(initState);
-      setTouched(false);
-      setStartTime(null);
-      setEndTime(null);
-      setLocation("");
-      setPhone(""); 
+      
   };
 
   useEffect(() => console.log(values), [values]);

@@ -110,7 +110,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
         </button>
       </div>
       <ToastContainer />
-      {bookingData.requests.length > 0 && (
+      {bookingData?.requests?.length > 0 && (
         <UserRequests
           requests={bookingData.requests}
           AcceptBooking={AcceptBooking}
