@@ -55,6 +55,31 @@ export function NewBookingDialog({ fetchUserBookings }) {
   const [location, setLocation] = useState("");
   const [toggle, setToggle] = useState('from');
 
+  const [endTimeError, setEndTimeError] = useState(0);
+  // 0 -> no error
+  // 1 -> end time before start time
+  // 2 -> end time before current time
+  // 3 -> start and end time are too separated
+
+  const checkErrors = () => {
+    if (startTime && endTime) {
+      if (startTime >= endTime) {
+        setEndTimeError(1);
+        setStartTime(null);
+        setEndTime(null);
+      } else if (endTime < new Date()) {
+        setEndTimeError(2);
+        setEndTime(null);
+      } else if (endTime - startTime > 1000 * 60 * 60 * 24) {
+        setEndTimeError(3);
+        setStartTime(null);
+        setEndTime(null);
+      } else {
+        setEndTimeError(0);
+      }
+    }
+  }
+
   useEffect(() => {
     const authToken = retrieveAuthToken(router);
     let apiURL = `http://localhost:8000/me`;
@@ -76,7 +101,6 @@ export function NewBookingDialog({ fetchUserBookings }) {
       console.log(err)
     })
   }, []);
-
 
 
   // handlers
@@ -143,12 +167,11 @@ export function NewBookingDialog({ fetchUserBookings }) {
     setStartTime(null);
     setEndTime(null);
     setLocation("");
-    setPhone(""); 
+    setEndTimeError(0);
   };
 
   const RegisterNewBooking = async () => {
     const authToken = localStorage.getItem("credential");
-    // console.log("start time", new Date());
     fetch("http://localhost:8000/bookings", {
       headers: {
         Authorization: `${authToken}`,
@@ -163,21 +186,19 @@ export function NewBookingDialog({ fetchUserBookings }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setDialogOpen(false);
         setRegisterData(initState);
         setTouched(false);
         setStartTime(null);
         setEndTime(null);
         setLocation("");
-        setPhone(""); 
+        setEndTimeError(0);
         fetchUserBookings();
       })
       .catch((err) => console.log(err));
       
   };
 
-  useEffect(() => console.log(values), [values]);
 
   const destinations = locations.map((loc, i) => (
     <MenuItem key={i} value={loc}>
@@ -249,6 +270,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
                   value={startTime}
                   onChange={setStartTime}
                   renderInput={(params) => <TextField {...params} />}
+                  onClose={checkErrors}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -260,8 +282,24 @@ export function NewBookingDialog({ fetchUserBookings }) {
                   name="endTime"
                   onChange={setEndTime}
                   renderInput={(params) => <TextField {...params} />}
+                  onClose={checkErrors}
                 />
               </LocalizationProvider>
+              {endTimeError==1 && (
+              <span className="label-text-alt mt-1 text-red-600">
+                &quot; Leave before &quot; should be more than &quot; Leave after &quot;
+              </span>
+              )}
+              {endTimeError==2 && (
+              <span className="label-text-alt mt-1 text-red-600">
+                &quot; Leave before &quot; should be after current time
+              </span>
+              )}
+              {endTimeError==3 && (
+              <span className="label-text-alt mt-1 text-red-600">
+                Cab window should be within 24 hours
+              </span>
+              )}
             </FormControl>
             <FormControl>
               <TextField
