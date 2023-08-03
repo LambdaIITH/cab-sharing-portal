@@ -110,7 +110,6 @@ async def user_bookings(email: str = Depends(verify_auth_token)):
     """
     Get Bookings where the authenticated user is a traveller
     """
-    email = email
     res1 = queries.get_user_past_bookings(conn, email=email)
     res2 = queries.get_user_future_bookings(conn, email=email)
     user_bookings_dict = {}
@@ -118,6 +117,17 @@ async def user_bookings(email: str = Depends(verify_auth_token)):
     user_bookings_dict["future_bookings"] = get_bookings(res2, email)
 
     return user_bookings_dict
+
+
+@app.get("/me/requests")
+async def user_requests(email: str = Depends(verify_auth_token)):
+    """
+    Get Pending requests sent by the authenticated user
+    """
+    res = queries.get_user_pending_requests(conn, email=email)
+    requested_bookings = get_bookings(res)
+
+    return requested_bookings
 
 
 @app.get("/bookings")
@@ -224,7 +234,7 @@ async def accept_request(
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
-    send_email(response.requester_email, True, booking_id)
+    send_email(response.requester_email, "accept", booking_id)
 
 
 @app.post("/bookings/{booking_id}/reject")
@@ -262,7 +272,7 @@ async def reject_request(
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
-    send_email(response.requester_email, False, booking_id)
+    send_email(response.requester_email, "reject", booking_id)
 
 
 @app.delete("/bookings/{booking_id}")
@@ -289,38 +299,32 @@ async def delete_existing_booking(
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
-# TODO: fix everything below this
+@app.delete("/bookings/{booking_id}/self")
+async def delete_user_from_booking(
+    booking_id: int, email: str = Depends(verify_auth_token)
+):
+    """
+    For a user to delete himself from a booking (owner cannot delete himself)
+    """
+    owner_email = queries.get_owner_email(conn, cab_id=booking_id)
+    if owner_email is None:
+        raise HTTPException(status_code=400, detail="Booking does not exist")
+    elif owner_email == email:
+        raise HTTPException(status_code=400, detail="You are the owner of this booking")
 
+    queries.delete_particular_traveller(conn, id=booking_id, email=email)
 
-# @app.delete("/bookings/{booking_id}/self")
-# async def delete_user_from_booking(
-# booking_id: int, email: str = Depends(verify_auth_token)
-# ):
-# """
-# Delete a particular user from a particular booking
-# """
-# queries.delete_particular_traveller(conn, id=booking_id, email=email)
-# try:
-# conn.commit()
-# except Exception as e:
-# print(e)  # TODO: Replace with logger
-# conn.rollback()
+    try:
+        conn.commit()
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
+        conn.rollback()
 
-
-# @app.delete("/bookings/{booking_id}/other")
-# async def remove_traveller_from_booking(
-# booking_id: int, email_to_remove: schemas.Email, email: str = Depends(verify_auth_token)
-# ):
-# """
-# Remove a particular user from a particular booking (only by the owner of the booking)
-# """
-# email = email_to_remove.email
-# queries.remove_traveller(conn, id=booking_id, email=email)
-# try:
-# conn.commit()
-# except Exception as e:
-# print(e)
+    # TODO: Send email to owner that someone has left the booking
+    send_email(owner_email, "exit", booking_id, email)
 
 
 if __name__ == "__main__":
+    import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)  # noqa: F821

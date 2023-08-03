@@ -2,6 +2,7 @@ import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Literal, Union
 
 import aiosql
 import psycopg2
@@ -114,26 +115,30 @@ def get_bookings(res, owner_email=None):
     return bookings
 
 
+print("Connecting to SMTP server")
 smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 smtp_server.ehlo()
 smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
+print("Connected to SMTP server")
 
 
-def send_email(receiver: str, accepted: bool, booking_id: int):
+def send_email(
+    receiver: str,
+    mail_type: Literal["accept", "reject", "exit"],
+    booking_id: int,
+    exited_email: Union[str, None] = None,
+):
     global smtp_server
     message = MIMEMultipart("alternative")
     message["From"] = GMAIL_USER
     message["To"] = receiver
     booking_info = queries.get_booking_details(conn, cab_id=booking_id)
-    print(booking_info)
-    booking_info = booking_info[0]
-    if accepted:
+
+    if mail_type == "accept":
         subject = (
             f"Accepted Cab sharing request from {booking_info[3]} to {booking_info[4]}"
         )
-        text = """\
-        Yayy, your request has been accepted
-        """
+        text = "Yayy, your request has been accepted"
         html = f"""\
         <html>
             <body>
@@ -146,13 +151,11 @@ def send_email(receiver: str, accepted: bool, booking_id: int):
             </body>
         </html>
         """
-    else:
+    elif mail_type == "reject":
         subject = (
             f"Rejected Cab sharing request from {booking_info[3]} to {booking_info[4]}"
         )
-        text = """\
-        Sorry, your request has been rejected
-        """
+        text = "Sorry, your request has been rejected"
         html = """
         <html>
             <body>
@@ -160,6 +163,18 @@ def send_email(receiver: str, accepted: bool, booking_id: int):
             </body>
         </html>
         """
+    elif mail_type == "exit":
+        assert exited_email is not None
+        subject = f"{exited_email} exited your cab from {booking_info[3]} to {booking_info[4]}"
+        text = "They have exited your cab"
+        html = """
+        <html>
+            <body>
+                <h2> Sorry, they have exited your cab. </h2>
+            </body>
+        </html>
+        """
+
     message["Subject"] = subject
     # need to compose a proper email with accept and reject options
     part1 = MIMEText(text, "plain")
