@@ -6,15 +6,18 @@ import "react-toastify/dist/ReactToastify.css";
 
 import UserRequests from "./views/CabSharing/UserRequests";
 import UserTravellers from "./views/CabSharing/UserTravellers";
+import retrieveAuthToken from "./utils/retrieveAuthToken";
+
+import { useRouter } from "next/router";
 
 const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   // handlers
 
   const DeleteBooking = async (e) => {
     e.stopPropagation();
-    const authToken = localStorage.getItem("credential");
+    const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
       await axios.delete(

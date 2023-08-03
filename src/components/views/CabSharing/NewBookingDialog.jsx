@@ -54,6 +54,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
   const [toggle, setToggle] = useState('from');
+  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(false);
 
   const [endTimeError, setEndTimeError] = useState(0);
   // 0 -> no error
@@ -92,10 +93,12 @@ export function NewBookingDialog({ fetchUserBookings }) {
       if (data.data['phone_number'] == null){
         setPhone("")
         setLoadedPhone("")
+        setIsThereAPhoneNumber(false)
       }
       else{
         setPhone(data.data['phone_number'])
         setLoadedPhone(data.data['phone_number'])
+        setIsThereAPhoneNumber(true)
       }
     }).catch((err) => {
       console.log(err)
@@ -140,23 +143,6 @@ export function NewBookingDialog({ fetchUserBookings }) {
   }
 
   const handleDialogOpen = () => {
-    if (phone!=loaded_phone){
-      const authToken = retrieveAuthToken(router);
-      let apiURL = `http://localhost:8000/me`;
-      axios.post(apiURL, 
-        JSON.stringify({
-          phone_number: phone,
-        }),
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          }
-        }
-      ).catch((err) => {
-        console.log(err)
-      })
-    }
     setDialogOpen(true);
   };
 
@@ -199,6 +185,25 @@ export function NewBookingDialog({ fetchUserBookings }) {
       
   };
 
+  const handlePhoneEdit = async () => {
+    if (phone!=loaded_phone){
+      const authToken = retrieveAuthToken(router);
+      let apiURL = `http://localhost:8000/me`;
+      await axios.post(apiURL, 
+        JSON.stringify({
+          phone_number: phone,
+        }),
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          }
+        }
+      ).catch((err) => {
+        console.log(err)
+      })
+    }
+  }
 
   const destinations = locations.map((loc, i) => (
     <MenuItem key={i} value={loc}>
@@ -210,10 +215,18 @@ export function NewBookingDialog({ fetchUserBookings }) {
     <MuiTelInput defaultCountry="IN" onlyCountries={['IN']} forceCallingCode onChange={handlePhoneChange} value={phone} />
       <Button
         // variant="contained"
+        onClick={handlePhoneEdit}
+        // sx={{ marginBottom: "10px" }}
+        className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
+      >
+        {(loaded_phone=="")?`Register`:`Edit`} Phone
+      </Button>
+      <Button
+        // variant="contained"
         onClick={handleDialogOpen}
         // sx={{ marginBottom: "10px" }}
         className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
-        disabled={phone.replace("+91", "") ==""}
+        disabled={!is_there_a_phone_number}
       >
         Register Booking
       </Button>

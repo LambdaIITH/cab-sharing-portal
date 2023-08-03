@@ -2,6 +2,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import UserTravellers from "./UserTravellers";
+import retrieveEmail from "components/utils/retrieveEmail";
 
 const TravellerCard = ({
   userSpecific,
@@ -14,11 +15,37 @@ const TravellerCard = ({
   const router = useRouter();
 
   const [expand, setExpand] = useState(false);
+  const [user_email,setUserEmail] = useState("");
+
 
   useEffect(() => {
     if (index === 0) setExpand(true);
+    const user_email = retrieveEmail(router);
+    setUserEmail(user_email);
   }, []);
 
+  const ExitBooking = async (e) => {
+    e.stopPropagation();
+    const authToken = retrieveAuthToken(router);
+    try {
+      setLoading(true);
+      await axios.delete(
+        `http://localhost:8000/delete/bookings/${bookingData?.id}/self`,
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast("Succesfully Exited");
+      fetchUserBookings();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <div
       tabIndex={0}
@@ -80,7 +107,7 @@ const TravellerCard = ({
         </div>
 
         {bookingData.travellers.length > 0 && (
-          <UserTravellers travellers={bookingData.travellers} />
+          <UserTravellers travellers={bookingData.travellers} user_email={user_email} ExitBooking={ExitBooking} />
         )}
       </div>
     </div>

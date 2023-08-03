@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const UserTravellers = ({ travellers, hidePhoneNumber = false }) => {
+const UserTravellers = ({ travellers, hidePhoneNumber = false, user_email="", ExitBooking = null }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -19,6 +19,7 @@ const UserTravellers = ({ travellers, hidePhoneNumber = false }) => {
         setCopied(false);
       }, 2000);
   }, [copied]);
+
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
       <p className="border-b-2 text-[1.1rem] text-primary border-primary ">
@@ -34,6 +35,14 @@ const UserTravellers = ({ travellers, hidePhoneNumber = false }) => {
             <div className="flex flex-row justify-center items-center mr-auto gap-3">
               <h3 className=" tracking-widest text-[1.15rem]">{item.name}</h3>
               <p className=" text-[1rem]">{item.email}</p>
+              {item.email === user_email && (
+                <button
+                className="btn btn-outline w-fit"
+                onClick={(e) => ExitBooking(e)}
+              >
+                Exit Booking
+              </button>
+              )}
             </div>
             {!hidePhoneNumber && (
               <div className="flex flex-row gap-3 items-center">
