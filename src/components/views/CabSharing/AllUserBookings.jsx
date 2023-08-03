@@ -176,11 +176,11 @@ const AllUserBookings = () => {
           </button>
       </div>
           <FormGroup sx={{width:"200px", m:"auto"}}> {/* fix this width css*/}
-            <FormControlLabel control={<Switch defaultChecked checked={checked} onChange={handleShowAll}/>} label="Show all Cabs" />
+            <FormControlLabel control={<Switch defaultChecked checked={checked} onChange={handleShowAll}/>} label="Include filled cabs" />
           </FormGroup>
       <div className="my-10">
         {filteredBookings?.map((item, index) => {
-          if (show_all || item.occupied < item.travellers.length){
+          if (show_all || item.capacity > item.travellers.length){
             return(
               <CabShareSmall
                 fetchFilteredBookings={fetchFilteredBookings}

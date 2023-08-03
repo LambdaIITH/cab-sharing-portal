@@ -49,7 +49,7 @@ export default function CabSharing() {
           </a>
         </div>
         {tab === 0 && <UserBookings />}
-        {tab == 1 && <AllUserBookings />}
+        {tab === 1 && <AllUserBookings />}
       </div>
     </>
   );

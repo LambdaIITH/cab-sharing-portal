@@ -2,6 +2,11 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import UserTravellers from "./UserTravellers";
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const TravellerCard = ({
   userSpecific,
@@ -15,7 +20,7 @@ const TravellerCard = ({
 
   const [expand, setExpand] = useState(false);
   const [user_email,setUserEmail] = useState("");
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (index === 0) setExpand(true);
@@ -28,7 +33,7 @@ const TravellerCard = ({
     try {
       setLoading(true);
       await axios.delete(
-        `http://localhost:8000/delete/bookings/${bookingData?.id}/self`,
+        `http://localhost:8000/bookings/${bookingData?.id}/self`,
         {
           headers: {
             Authorization: authToken,
@@ -108,6 +113,7 @@ const TravellerCard = ({
           <UserTravellers travellers={bookingData.travellers} user_email={user_email} ExitBooking={ExitBooking} />
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

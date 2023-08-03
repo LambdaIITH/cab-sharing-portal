@@ -356,7 +356,9 @@ async def delete_user_from_booking(
     elif owner_email == email:
         raise HTTPException(status_code=400, detail="You are the owner of this booking")
 
-    queries.delete_particular_traveller(conn, id=booking_id, email=email)
+    queries.delete_particular_traveller(
+        conn, cab_id=booking_id, user_email=email, owner_email=owner_email
+    )
 
     try:
         conn.commit()
