@@ -3,6 +3,9 @@ INSERT INTO request (status, booking_id, request_email, comments)
   VALUES ('pending', :booking_id, :email, :comments)
   ON CONFLICT DO NOTHING;
 
+-- name: delete_request!
+DELETE FROM request WHERE booking_id=:cab_id AND request_email=:email;
+
 -- name: show_requests
 SELECT r.request_email, r.comments, u.name, u.phone_number
   FROM request r

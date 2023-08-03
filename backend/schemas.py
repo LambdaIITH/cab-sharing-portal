@@ -20,6 +20,11 @@ class Booking(BaseModel):
     comments: str
 
 
+class BookingUpdate(BaseModel):
+    start_time: datetime
+    end_time: datetime
+
+
 class JoinBooking(BaseModel):
     comments: str
 

@@ -105,6 +105,34 @@ async def create_booking(
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
+@app.patch("/bookings/{booking_id}/")
+async def update_booking(
+    booking_id: int,
+    patch: schemas.BookingUpdate,
+    email: str = Depends(verify_auth_token),
+):
+    """
+    Update a Booking.
+    """
+    try:
+        res = queries.update_booking(
+            conn,
+            start_time=patch.start_time,
+            end_time=patch.end_time,
+            cab_id=booking_id,
+            owner_email=email,
+        )
+        if res == 0:
+            raise HTTPException(status_code=400, detail="Invalid Booking ID")
+        conn.commit()
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        print(e)
+        conn.rollback()
+        raise HTTPException(status_code=500, detail="Some Error Occured")
+
+
 @app.get("/me/bookings")
 async def user_bookings(email: str = Depends(verify_auth_token)):
     """
@@ -169,7 +197,7 @@ async def search_bookings(
 
 
 @app.post("/bookings/{booking_id}/request")
-async def join_booking(
+async def request_to_join_booking(
     booking_id: int,
     join_booking: schemas.JoinBooking,
     email: str = Depends(verify_auth_token),
@@ -190,6 +218,22 @@ async def join_booking(
         print(e)  # TODO: Replace with logger
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
+
+
+@app.delete("/bookings/{booking_id}/request")
+async def delete_request(booking_id: int, email: str = Depends(verify_auth_token)):
+    """
+    To delete a person's request to join booking
+    """
+    try:
+        res = queries.delete_request(conn, cab_id=booking_id, email=email)
+        if res == 0:
+            raise HTTPException(status_code=400, detail="Request does not exist")
+        conn.commit()
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        print(e)
 
 
 @app.post("/bookings/{booking_id}/accept")

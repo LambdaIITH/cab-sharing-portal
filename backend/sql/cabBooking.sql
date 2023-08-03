@@ -3,6 +3,11 @@ insert into cab_booking (start_time, end_time, capacity, from_loc, to_loc, owner
 values (:start_time, :end_time, :capacity, :from_loc, :to_loc, :owner_email, :comments)
 returning id;
 
+-- name:update_booking!
+update cab_booking
+  set start_time=:start_time, end_time=:end_time
+  where id=:cab_id and owner_email=:owner_email;
+
 -- name:add_traveller!
 insert into traveller (user_email, cab_id, comments)
   values  (:user_email, :cab_id, :comments); 
