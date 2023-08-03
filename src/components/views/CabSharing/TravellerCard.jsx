@@ -2,7 +2,6 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import UserTravellers from "./UserTravellers";
-import retrieveEmail from "components/utils/retrieveEmail";
 
 const TravellerCard = ({
   userSpecific,
@@ -20,8 +19,7 @@ const TravellerCard = ({
 
   useEffect(() => {
     if (index === 0) setExpand(true);
-    const user_email = retrieveEmail(router);
-    setUserEmail(user_email);
+    setUserEmail(localStorage.getItem("user_email"));
   }, []);
 
   const ExitBooking = async (e) => {

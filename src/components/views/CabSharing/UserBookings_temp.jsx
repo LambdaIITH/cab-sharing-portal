@@ -17,33 +17,13 @@ import {
 } from "@mui/material";
 import { NewBookingDialog } from "./NewBookingDialog";
 import { useEffect, useState } from "react";
-
-function createData(date, name, from, to, time, capacity) {
-  return {
-    date,
-    name,
-    from,
-    to,
-    time,
-    capacity,
-    details: [
-      {
-        email: "test@test.com",
-        comments:
-          "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-      },
-      {
-        email: "test@test.com",
-        comments:
-          "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.",
-      },
-    ],
-  };
-}
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
+import { useRouter } from "next/router";
 
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = useState(false);
+
 
   return (
     <>
@@ -102,24 +82,14 @@ function Row(props) {
   );
 }
 
-const rows = [
-  createData(
-    "02-03-2020",
-    "John Doe",
-    "IITH",
-    "Secunderabad Railway Station",
-    "8:30",
-    "4"
-  ),
-  createData("29-07-2022", "John Doe", "IITH", "RGIA", "8:30", "4"),
-];
-
 export function UserBookings() {
   const [bookings, setBookings] = useState([]);
   const [username, setUsername] = useState("");
 
+  const router = useRouter();
+  
   const fetchUserBookings = () => {
-    const authToken = localStorage.getItem("credential");
+    const authToken = retrieveAuthToken(router);
     fetch("http://localhost:8000/me/bookings", {
       headers: {
         Authorization: authToken,

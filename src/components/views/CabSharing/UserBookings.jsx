@@ -4,14 +4,17 @@ import { NewBookingDialog } from "./NewBookingDialog";
 import { Stack } from "@mui/material";
 import axios from "axios";
 import TravellerCard from "./TravellerCard";
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
+import { useRouter } from "next/router";
 
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const router = useRouter();
 
   const fetchUserBookings = async () => {
-    const authToken = localStorage.getItem("credential");
+    const authToken = retrieveAuthToken(router);
     try {
       const res = await axios.get("http://localhost:8000/me/bookings", {
         headers: {
@@ -19,7 +22,6 @@ const UserBookings = () => {
           "Content-Type": "application/json",
         },
       });
-      console.log(res.data);
       setBookings(res.data.future_bookings);
     } catch (err) {
       console.log(err);

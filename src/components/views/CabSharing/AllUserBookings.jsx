@@ -16,6 +16,9 @@ import {
   TextField,
   Typography,
   Stack,
+  FormControlLabel,
+  FormGroup,
+  Switch,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -35,6 +38,8 @@ const AllUserBookings = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const router = useRouter();
+  const [show_all, setShowAll] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const fetchFilteredBookings = () => {
     const authToken = retrieveAuthToken(router);
@@ -81,6 +86,11 @@ const AllUserBookings = () => {
       fetchFilteredBookings();
     }
   }, [username, email]);
+
+  const handleShowAll = (event) => {
+    setShowAll(!show_all);
+    setChecked(event.target.checked);
+  }
 
   return (
     <div className="flex flex-col  overflow-auto rounded-box py-10 mx-auto">
@@ -158,25 +168,32 @@ const AllUserBookings = () => {
           }}
           renderInput={(params) => <TextField {...params} label="To" />}
         />
-        <button
-          className="btn btn-primary my-3 shadow-lg transition-all hover:-translate-y-1"
-          onClick={fetchFilteredBookings}
-        >
-          Search
-        </button>
+          <button
+            className="btn btn-primary my-3 shadow-lg transition-all hover:-translate-y-1"
+            onClick={fetchFilteredBookings}
+          >
+            Search
+          </button>
       </div>
+          <FormGroup sx={{width:"200px", m:"auto"}}> {/* fix this width css*/}
+            <FormControlLabel control={<Switch defaultChecked checked={checked} onChange={handleShowAll}/>} label="Show all Cabs" />
+          </FormGroup>
       <div className="my-10">
-        {filteredBookings?.map((item, index) => (
-          <CabShareSmall
-            fetchFilteredBookings={fetchFilteredBookings}
-            userSpecific={false}
-            key={index}
-            index={index}
-            bookingData={item}
-            username={username}
-            email={email}
-          />
-        ))}
+        {filteredBookings?.map((item, index) => {
+          if (show_all || item.occupied < item.travellers.length){
+            return(
+              <CabShareSmall
+                fetchFilteredBookings={fetchFilteredBookings}
+                userSpecific={false}
+                key={index}
+                index={index}
+                bookingData={item}
+                username={username}
+                email={email}
+              />
+            )
+          }
+        })}
       </div>
     </div>
   );

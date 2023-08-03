@@ -40,7 +40,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
 
   const AcceptBooking = async (e, request_email) => {
     e.stopPropagation();
-    const authToken = localStorage.getItem("credential");
+    const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
       await axios.post(
@@ -65,7 +65,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
 
   const RejectBooking = async (e, request_email) => {
     e.stopPropagation();
-    const authToken = localStorage.getItem("credential");
+    const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
       await axios.post(

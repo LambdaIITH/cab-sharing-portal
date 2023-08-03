@@ -157,7 +157,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
   };
 
   const RegisterNewBooking = async () => {
-    const authToken = localStorage.getItem("credential");
+    const authToken = retrieveAuthToken(router);
     fetch("http://localhost:8000/bookings", {
       headers: {
         Authorization: `${authToken}`,
