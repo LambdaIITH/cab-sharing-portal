@@ -3,11 +3,21 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import UserCardExpanded from "./UserCardExpanded";
 import AllUserCardExpanded from "./AllUserCardExpanded";
-import { Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Button, Stack, TextField} from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Button,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import retrieveAuthToken from "./utils/retrieveAuthToken";
+import EditIcon from "@mui/icons-material/Edit";
 const CabShareSmall = ({
   userSpecific,
   bookingData,
@@ -25,7 +35,7 @@ const CabShareSmall = ({
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [endTimeError, setEndTimeError] = useState(0);
-  
+
   const checkErrors = () => {
     if (startTime && endTime) {
       if (startTime >= endTime) {
@@ -43,7 +53,7 @@ const CabShareSmall = ({
         setEndTimeError(0);
       }
     }
-  }
+  };
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -75,7 +85,7 @@ const CabShareSmall = ({
     //   console.log(err);
     // }
     console.log(startTime, endTime);
-  }
+  };
 
   useEffect(() => {
     if (index === 0) setExpand(true);
@@ -95,105 +105,117 @@ const CabShareSmall = ({
         index === 0 && expand && "collapse-open"
       }  ${
         expand ? "collapse-open" : "collapse-close"
-      } collapse-close bg-secondary p-5 mx-auto mt-3  rounded-md`}
+      } collapse-close bg-secondary md:p-5 mx-auto mt-3  rounded-md`}
       onClick={() => setExpand((prev) => !prev)}
     >
       <div className="collapse-title font-medium flex flex-col  rounded-md bg-secondary cursor-pointer">
-        {/* <div className="flex flex-row justify-center items-center mr-auto gap-3">
-          <h3 className="tracking-widest text-[1.15rem]">
-            {bookingData.travellers[0].name}
-          </h3>
-          <p className="text-primary text-[1rem] ">
-            {bookingData.travellers[0].email}
-          </p>
-        </div> */}
-        <div className="flex flex-row mt-2 gap-10 ">
-          <p className=" tracking-wider text-[1rem] truncate">
+        <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="From:" /> {bookingData.from_}
           </p>
-          <p className=" tracking-wider text-[1rem] truncate">
-            <BoldedHeading text="To:" /> {bookingData.to}
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
+            <BoldedHeading text="To:" />{" "}
+            {bookingData.to === "Secunderabad Railway Station"
+              ? "SC"
+              : bookingData.to}
           </p>
-          <p className=" tracking-wider text-[1rem] truncate">
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="Occupied:" /> {bookingData.travellers?.length}/
             {bookingData.capacity}
           </p>
         </div>
-        <div className="flex flex-row mt-2 items-center  gap-10 ">
-          {/* <div className="flex flex-row gap-5">
-            <div className="flex flex-row gap-2">
-              <BoldedHeading text="Booking Date:" />
-              <p className=" text-[1.15rem]">
-                {bookingData.start_time.slice(0, 10)}
-              </p>
-            </div>
-          </div> */}
-          <p className=" tracking-wider text-[1rem] truncate">
-            <BoldedHeading text="Window:" />{" "}
-            {new Date(bookingData.start_time).toLocaleDateString() +
-              " " +
-              new Date(bookingData.start_time).toLocaleTimeString() +
-              " - " +
-              new Date(bookingData.end_time).toLocaleDateString() +
-              " " +
-              new Date(bookingData.end_time).toLocaleTimeString()}
+        <div className="flex flex-row mt-2 items-center justify-normal  gap-3 ">
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate mt-2 md:mt-0">
+            <span className="hidden sm:inline">
+              <BoldedHeading text="Window:" />
+            </span>{" "}
+            <span className="sm:inline mt-1 md:mt-0">
+              {new Date(bookingData.start_time).toLocaleDateString() +
+                " " +
+                new Date(bookingData.start_time)
+                  .toLocaleTimeString()
+                  .slice(0, 4) +
+                " " +
+                new Date(bookingData.start_time)
+                  .toLocaleTimeString()
+                  .slice(8, 10) +
+                " - " +
+                new Date(bookingData.end_time).toLocaleDateString() +
+                " " +
+                new Date(bookingData.end_time)
+                  .toLocaleTimeString()
+                  .slice(0, 4) +
+                " " +
+                new Date(bookingData.end_time)
+                  .toLocaleTimeString()
+                  .slice(8, 10)}
+            </span>
           </p>
           <button
-            className="btn btn-outline w-fit"
-            onClick={(e) => {e.stopPropagation();setDialogOpen(true);}}
+            className="btn btn-sm btn-circle btn-ghost"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDialogOpen(true);
+            }}
           >
-          Edit Window
-        </button>
-          <Dialog open={dialogOpen} onClose={handleDialogClose} onClick={(e)=>{e.stopPropagation();}}>
-          <DialogTitle>Edit cab window</DialogTitle>
-          <DialogContent>
-            <Stack gap={3} sx={{mt:"10px"}}>
-              <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    label="Leave After"
-                    name="startTime"
-                    value={startTime}
-                    onChange={setStartTime}
-                    renderInput={(params) => <TextField {...params} />}
-                    onClose={checkErrors}
-                  />
-                </LocalizationProvider>
-              </FormControl>
-              <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    label="Leave Before"
-                    value={endTime}
-                    name="endTime"
-                    onChange={setEndTime}
-                    renderInput={(params) => <TextField {...params} />}
-                    onClose={checkErrors}
-                  />
-                </LocalizationProvider>
-                {endTimeError==1 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be more than &quot; Leave after &quot;
-                </span>
-                )}
-                {endTimeError==2 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be after current time
-                </span>
-                )}
-                {endTimeError==3 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  Cab window should be within 24 hours
-                </span>
-                )}
-              </FormControl>
-              
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
-            <Button onClick={editWindow}>Save</Button>
-          </DialogActions>
+            <EditIcon sx={{ fontSize: 20 }} />
+          </button>
+          <Dialog
+            open={dialogOpen}
+            onClose={handleDialogClose}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <DialogTitle>Edit cab window</DialogTitle>
+            <DialogContent>
+              <Stack gap={3} sx={{ mt: "10px" }}>
+                <FormControl>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="Leave After"
+                      name="startTime"
+                      value={startTime}
+                      onChange={setStartTime}
+                      renderInput={(params) => <TextField {...params} />}
+                      onClose={checkErrors}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+                <FormControl>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="Leave Before"
+                      value={endTime}
+                      name="endTime"
+                      onChange={setEndTime}
+                      renderInput={(params) => <TextField {...params} />}
+                      onClose={checkErrors}
+                    />
+                  </LocalizationProvider>
+                  {endTimeError == 1 && (
+                    <span className="label-text-alt mt-1 text-red-600">
+                      &quot; Leave before &quot; should be more than &quot;
+                      Leave after &quot;
+                    </span>
+                  )}
+                  {endTimeError == 2 && (
+                    <span className="label-text-alt mt-1 text-red-600">
+                      &quot; Leave before &quot; should be after current time
+                    </span>
+                  )}
+                  {endTimeError == 3 && (
+                    <span className="label-text-alt mt-1 text-red-600">
+                      Cab window should be within 24 hours
+                    </span>
+                  )}
+                </FormControl>
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDialogClose}>Cancel</Button>
+              <Button onClick={editWindow}>Save</Button>
+            </DialogActions>
           </Dialog>
         </div>
       </div>
@@ -216,7 +238,9 @@ const CabShareSmall = ({
 };
 
 const BoldedHeading = ({ text }) => (
-  <span className=" text-primary tracking-widest text-[1.15rem]">{text}</span>
+  <span className=" text-primary tracking-widest text-[.9rem] md:text-[1.15rem]">
+    {text}
+  </span>
 );
 
 export default CabShareSmall;

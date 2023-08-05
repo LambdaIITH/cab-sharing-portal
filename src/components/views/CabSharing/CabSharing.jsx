@@ -25,7 +25,7 @@ export default function CabSharing() {
     <>
       {/* <NavBar /> */}
       {/* controlling width */}
-      <div className="w-[90%] lg:w-[60rem] mx-auto py-[2rem]">
+      <div className="w-[95vw] lg:w-[60rem] mx-auto py-[2rem]">
         <div className="tabs w-fit mx-auto shadow-lg my-[2rem]  border border-black rounded-lg">
           <a
             className={`tab tab-lg text-[1rem] md:text-lg transition-all rounded-l-lg ${

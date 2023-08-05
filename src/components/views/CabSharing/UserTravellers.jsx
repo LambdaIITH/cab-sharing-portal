@@ -5,7 +5,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const UserTravellers = ({ travellers, hidePhoneNumber = false, user_email="", ExitBooking = null }) => {
+const UserTravellers = ({
+  travellers,
+  hidePhoneNumber = false,
+  user_email = "",
+  ExitBooking = null,
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -31,22 +36,28 @@ const UserTravellers = ({ travellers, hidePhoneNumber = false, user_email="", Ex
           className="flex flex-col gap-3 items-center p-2 w-full"
           key={index}
         >
-          <div className="flex flex-row justify-between w-full">
-            <div className="flex flex-row justify-center items-center mr-auto gap-3">
-              <h3 className=" tracking-widest text-[1.15rem]">{item.name}</h3>
-              <p className=" text-[1rem]">{item.email}</p>
-              {item.email === user_email && (
+          <div className="flex flex-col sm:flex-row justify-between w-full">
+            <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
+              <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem] mr-auto">
+                {item.name}
+              </h3>
+              <p className="text-[.9rem] sm:text-[1rem] mr-auto">
+                {item.email}
+              </p>
+              {/* {item.email === user_email && (
                 <button
-                className="btn btn-outline w-fit"
-                onClick={(e) => ExitBooking(e)}
-              >
-                Exit Booking
-              </button>
-              )}
+                  className="btn btn-outline w-fit"
+                  onClick={(e) => ExitBooking(e)}
+                >
+                  Exit Booking
+                </button>
+              )} */}
             </div>
             {!hidePhoneNumber && (
               <div className="flex flex-row gap-3 items-center">
-                <p className=" text-[1rem]">{item.phone_number}</p>
+                <p className="text-[.9rem] sm:text-[1rem]">
+                  {item.phone_number}
+                </p>
                 <CopyToClipboard text={item.phone_number} onCopy={handleCopy}>
                   <button
                     onClick={(e) => e.stopPropagation()}

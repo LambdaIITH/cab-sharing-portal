@@ -20,15 +20,12 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
-      await axios.delete(
-        `http://localhost:8000/bookings/${bookingData?.id}`,
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.delete(`http://localhost:8000/bookings/${bookingData?.id}`, {
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+      });
       toast("Succesfully Removed");
       fetchUserBookings();
     } catch (err) {
@@ -44,8 +41,9 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8000/bookings/${bookingData?.id}/accept`,{
-          requester_email:request_email
+        `http://localhost:8000/bookings/${bookingData?.id}/accept`,
+        {
+          requester_email: request_email,
         },
         {
           headers: {
@@ -69,8 +67,9 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8000/bookings/${bookingData?.id}/reject`,{
-          requester_email:request_email
+        `http://localhost:8000/bookings/${bookingData?.id}/reject`,
+        {
+          requester_email: request_email,
         },
         {
           headers: {
@@ -89,27 +88,32 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   };
 
   return (
-    <div className="flex flex-col " onClick={(e) => e.stopPropagation()}>
+    <div
+      className="flex flex-col w-[100%]  "
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="flex flex-row justify-between items-center my-5">
         <div className="flex flex-col justify-center">
-          <div className="flex flex-row justify-center items-center mr-auto gap-3">
-            <h3 className=" tracking-widest text-[1.15rem]">
+          <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
+            <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
               {bookingData.travellers[0].name}
             </h3>
-            <p className="text-primary tracking-wider font-medium text-[1.1rem] ">
+            <p className="text-primary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
               {bookingData.travellers[0].email}
             </p>
           </div>
           <div>
-            <span className="text-primary">Note:</span>{" "}
+            <span className="text-primary text-[.9rem] md:text-[1.1rem]">
+              Note:
+            </span>{" "}
             {bookingData.travellers[0].comments}
           </div>
         </div>
         <button
-          className="btn btn-outline w-fit"
+          className="btn btn-outline w-fit "
           onClick={(e) => DeleteBooking(e)}
         >
-          Delete Booking
+          Delete
         </button>
       </div>
       <ToastContainer />

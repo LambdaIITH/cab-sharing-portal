@@ -35,7 +35,7 @@ const UserBookings = () => {
   }, []);
 
   return (
-    <div className="flex flex-col overflow-auto  mx-auto  rounded-box py-10">
+    <div className="flex flex-col overflow-auto  mx-auto  rounded-box md:py-10">
       <Stack
         direction="row"
         spacing={1}
