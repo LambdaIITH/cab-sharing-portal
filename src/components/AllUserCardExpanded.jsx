@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import UserTravellers from "./views/CabSharing/UserTravellers";
@@ -111,9 +111,33 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
             },
           }
         )
+        .then((res) => {
+          toast("Phone Number Updated");
+          fetchFilteredBookings();
+        })
         .catch((err) => {
           console.log(err);
         });
+    }
+  };
+
+  const handleCancelRequest = async (e) => {
+    e.stopPropagation();
+    const authToken = retrieveAuthToken(router);
+    try {
+      await axios.delete(
+        `http://localhost:8000/bookings/${bookingData?.id}/request`,
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast("Succesfully Cancelled Request");
+      fetchFilteredBookings();
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -130,6 +154,8 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
     setPhone(info.numberValue);
     setPhoneIsValid(matchIsValidTel(info.numberValue));
   };
+
+  console.log(is_there_a_phone_number);
 
   useEffect(() => {
     if (travellers_email_list.indexOf(email) === -1 && isInRequest === -1)
@@ -159,7 +185,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
         <div className="flex flex-row justify-between items-center">
           {isValidToJoin && isInRequest == -1 ? (
             <input
-              disabled={!isValidToJoin}
+              disabled={!isValidToJoin && !is_there_a_phone_number}
               onClick={(e) => e.stopPropagation()}
               value={joinComment}
               name="comment"
@@ -170,7 +196,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
             <p></p>
           )}
           <div>
-            {isValidToJoin && isInRequest == -1 && is_there_a_phone_number && (
+            {isValidToJoin && isInRequest == -1 && (
               <button
                 disabled={
                   joinComment.length == 0 || phone.replace("+91", "") == ""
@@ -191,8 +217,13 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
             )}
 
             {isInRequest != -1 && (
-              <button disabled={true} className="btn btn-outline">
-                Request Pending
+              <button
+                onClick={(e) => {
+                  handleCancelRequest(e);
+                }}
+                className="btn btn-outline"
+              >
+                Cancel Request
               </button>
             )}
           </div>

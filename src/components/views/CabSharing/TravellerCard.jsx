@@ -41,7 +41,7 @@ const TravellerCard = ({
           },
         }
       );
-      toast("Succesfully Exited");
+      toast("Succesfully exited cab");
       fetchUserBookings();
     } catch (err) {
       console.log(err);
@@ -112,8 +112,8 @@ const TravellerCard = ({
         {bookingData.travellers.length > 0 && (
           <UserTravellers travellers={bookingData.travellers} user_email={user_email} ExitBooking={ExitBooking} />
         )}
-      </div>
       <ToastContainer />
+      </div>
     </div>
   );
 };

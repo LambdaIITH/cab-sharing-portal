@@ -17,6 +17,10 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import retrieveAuthToken from "./utils/retrieveAuthToken";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import EditIcon from "@mui/icons-material/Edit";
 const CabShareSmall = ({
   userSpecific,
@@ -64,27 +68,26 @@ const CabShareSmall = ({
 
   const editWindow = async () => {
     const authToken = retrieveAuthToken(router);
-    // try {
-    //   const res = await axios.put(
-    //     `http://localhost:8000/bookings/${bookingData?.id}`,
-    //     {
-    //       start_time: startTime,
-    //       end_time: endTime,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: authToken,
-    //         "Content-Type": "application/json",
-    //       },
-    //     }
-    //   );
-    //   toast("Succesfully Edited");
-    //   fetchFilteredBookings();
-    //   handleDialogClose();
-    // } catch (err) {
-    //   console.log(err);
-    // }
-    console.log(startTime, endTime);
+    try {
+      const res = await axios.patch(
+        `http://localhost:8000/bookings/${bookingData?.id}`,
+        {
+          start_time: startTime,
+          end_time: endTime,
+        },
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast("Succesfully Edited");
+      fetchUserBookings();
+      handleDialogClose();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -152,13 +155,13 @@ const CabShareSmall = ({
             </span>
           </p>
           <button
-            className="btn btn-sm btn-circle btn-ghost"
+            className="btn btn-ghost btn-circle"
             onClick={(e) => {
               e.stopPropagation();
               setDialogOpen(true);
             }}
           >
-            <EditIcon sx={{ fontSize: 20 }} />
+            <EditIcon />
           </button>
           <Dialog
             open={dialogOpen}

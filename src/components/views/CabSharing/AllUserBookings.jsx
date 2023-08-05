@@ -27,6 +27,7 @@ import retrieveAuthToken from "../../utils/retrieveAuthToken";
 import CabShareSmall from "components/CabShareSmall";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
+import axios from "axios"
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 const AllUserBookings = () => {
@@ -40,6 +41,7 @@ const AllUserBookings = () => {
   const router = useRouter();
   const [show_all, setShowAll] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [request_checked, setRequestChecked] = useState(false);
 
   const fetchFilteredBookings = () => {
     const authToken = retrieveAuthToken(router);
@@ -60,13 +62,13 @@ const AllUserBookings = () => {
       apiURL += `?start_time=${isoStartTime}&end_time=${isoEndTime}`;
     }
 
-    fetch(apiURL, {
+    axios.get(apiURL, {
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
+      .then((res) => res.data)
       .then((data) => {
         console.log("data", data);
         setFilteredBookings(data);
@@ -90,6 +92,32 @@ const AllUserBookings = () => {
   const handleShowAll = (event) => {
     setShowAll(!show_all);
     setChecked(event.target.checked);
+  }
+
+  const fetchRequests = () => {
+    const authToken = retrieveAuthToken(router);
+    axios.get("http://localhost:8000/me/requests", {
+      headers: {
+        Authorization: authToken,
+      }
+    }).then((res) => res.data)
+    .then((data) => {
+      console.log("requests", data);
+      setFilteredBookings(data);
+    });
+  }
+
+  useEffect(()=>{
+    if (request_checked){
+      fetchRequests();
+    }
+    else{
+      fetchFilteredBookings();
+    }
+  },[request_checked])
+
+  const handleRequests = (event) => {
+    setRequestChecked(event.target.checked);
   }
 
   return (
@@ -175,9 +203,14 @@ const AllUserBookings = () => {
             Search
           </button>
       </div>
-          <FormGroup sx={{width:"200px", m:"auto"}}> {/* fix this width css*/}
+      <div className="flex flex-row gap-2 items-center justify-center rounded-lg">
+          <FormGroup sx={{width:"200px"}}> {/* fix this width css*/}
             <FormControlLabel control={<Switch defaultChecked checked={checked} onChange={handleShowAll}/>} label="Include filled cabs" />
           </FormGroup>
+          <FormGroup sx={{width:"200px"}}> {/* fix this width css*/}
+            <FormControlLabel control={<Switch defaultChecked checked={request_checked} onChange={handleRequests}/>} label="Pending requests" />
+          </FormGroup>
+      </div>
       <div className="my-10">
         {filteredBookings?.map((item, index) => {
           if (show_all || item.capacity > item.travellers.length){

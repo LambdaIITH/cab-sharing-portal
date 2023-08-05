@@ -102,17 +102,17 @@ async def create_booking(
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
-@app.patch("/bookings/{booking_id}/")
+@app.patch("/bookings/{booking_id}")
 async def update_booking(
     booking_id: int,
     patch: schemas.BookingUpdate,
     email: str = Depends(verify_auth_token),
 ):
     """
-    Update a Booking.
+    Update a Booking Time.
     """
     try:
         res = queries.update_booking(
@@ -130,7 +130,7 @@ async def update_booking(
     except Exception as e:
         print(e)
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
 @app.get("/me/bookings")

@@ -26,6 +26,9 @@ import { useRouter } from "next/router";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import PhoneNumberModal from "./PhoneNumberModal";
 
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const locations = ["RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 export function NewBookingDialog({ fetchUserBookings }) {
@@ -201,6 +204,10 @@ export function NewBookingDialog({ fetchUserBookings }) {
             },
           }
         )
+        .then((res) => {
+          setLoadedPhone(phone);
+          setIsThereAPhoneNumber(true);
+        })
         .catch((err) => {
           console.log(err);
         });
