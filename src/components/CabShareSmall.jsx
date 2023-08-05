@@ -8,6 +8,10 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import retrieveAuthToken from "./utils/retrieveAuthToken";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const CabShareSmall = ({
   userSpecific,
   bookingData,
@@ -54,27 +58,26 @@ const CabShareSmall = ({
 
   const editWindow = async () => {
     const authToken = retrieveAuthToken(router);
-    // try {
-    //   const res = await axios.put(
-    //     `http://localhost:8000/bookings/${bookingData?.id}`,
-    //     {
-    //       start_time: startTime,
-    //       end_time: endTime,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: authToken,
-    //         "Content-Type": "application/json",
-    //       },
-    //     }
-    //   );
-    //   toast("Succesfully Edited");
-    //   fetchFilteredBookings();
-    //   handleDialogClose();
-    // } catch (err) {
-    //   console.log(err);
-    // }
-    console.log(startTime, endTime);
+    try {
+      const res = await axios.patch(
+        `http://localhost:8000/bookings/${bookingData?.id}`,
+        {
+          start_time: startTime,
+          end_time: endTime,
+        },
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast("Succesfully Edited");
+      fetchUserBookings();
+      handleDialogClose();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   useEffect(() => {
@@ -138,63 +141,66 @@ const CabShareSmall = ({
               " " +
               new Date(bookingData.end_time).toLocaleTimeString()}
           </p>
-          <button
-            className="btn btn-outline w-fit"
-            onClick={(e) => {e.stopPropagation();setDialogOpen(true);}}
-          >
-          Edit Window
-        </button>
-          <Dialog open={dialogOpen} onClose={handleDialogClose} onClick={(e)=>{e.stopPropagation();}}>
-          <DialogTitle>Edit cab window</DialogTitle>
-          <DialogContent>
-            <Stack gap={3} sx={{mt:"10px"}}>
-              <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    label="Leave After"
-                    name="startTime"
-                    value={startTime}
-                    onChange={setStartTime}
-                    renderInput={(params) => <TextField {...params} />}
-                    onClose={checkErrors}
-                  />
-                </LocalizationProvider>
-              </FormControl>
-              <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    label="Leave Before"
-                    value={endTime}
-                    name="endTime"
-                    onChange={setEndTime}
-                    renderInput={(params) => <TextField {...params} />}
-                    onClose={checkErrors}
-                  />
-                </LocalizationProvider>
-                {endTimeError==1 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be more than &quot; Leave after &quot;
-                </span>
-                )}
-                {endTimeError==2 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be after current time
-                </span>
-                )}
-                {endTimeError==3 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  Cab window should be within 24 hours
-                </span>
-                )}
-              </FormControl>
-              
-            </Stack>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
-            <Button onClick={editWindow}>Save</Button>
-          </DialogActions>
-          </Dialog>
+          {bookingData.owner_email === email? (
+            <button
+              className="btn btn-outline w-fit"
+              onClick={(e) => {e.stopPropagation();setDialogOpen(true);}}
+            >
+            Edit Window
+          </button>
+          ):<></>}
+            <Dialog open={dialogOpen} onClose={handleDialogClose} onClick={(e)=>{e.stopPropagation();}}>
+            <DialogTitle>Edit cab window</DialogTitle>
+            <DialogContent>
+              <Stack gap={3} sx={{mt:"10px"}}>
+                <FormControl>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="Leave After"
+                      name="startTime"
+                      value={startTime}
+                      onChange={setStartTime}
+                      renderInput={(params) => <TextField {...params} />}
+                      onClose={checkErrors}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+                <FormControl>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="Leave Before"
+                      value={endTime}
+                      name="endTime"
+                      onChange={setEndTime}
+                      renderInput={(params) => <TextField {...params} />}
+                      onClose={checkErrors}
+                    />
+                  </LocalizationProvider>
+                  {endTimeError==1 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    &quot; Leave before &quot; should be more than &quot; Leave after &quot;
+                  </span>
+                  )}
+                  {endTimeError==2 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    &quot; Leave before &quot; should be after current time
+                  </span>
+                  )}
+                  {endTimeError==3 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    Cab window should be within 24 hours
+                  </span>
+                  )}
+                </FormControl>
+                
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDialogClose}>Cancel</Button>
+              <Button onClick={editWindow}>Save</Button>
+            </DialogActions>
+            </Dialog>
+            <ToastContainer />
         </div>
       </div>
       <div className="collapse-content">

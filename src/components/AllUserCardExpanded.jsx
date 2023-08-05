@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import UserTravellers from "./views/CabSharing/UserTravellers";
@@ -16,6 +16,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
 
   const [loaded_phone, setLoadedPhone] = useState("");
   const [phone, setPhone] = useState("");
+  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,10 +31,12 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
       if (data.data['phone_number'] == null){
         setPhone("")
         setLoadedPhone("")
+        setIsThereAPhoneNumber(false)
       }
       else{
         setPhone(data.data['phone_number'])
         setLoadedPhone(data.data['phone_number'])
+        setIsThereAPhoneNumber(true)
       }
     }).catch((err) => {
       console.log(err)
@@ -43,22 +46,6 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   // handlers
   const JoinBooking = async () => {
     const authToken = retrieveAuthToken(router);
-    if (phone!=loaded_phone){
-      let apiURL = `http://localhost:8000/me`;
-      await axios.post(apiURL, 
-        JSON.stringify({
-          phone_number: phone,
-        }),
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          }
-        }
-      ).catch((err) => {
-        console.log(err)
-      })
-    }
     try {
       const data = await axios.post(
         `http://localhost:8000/bookings/${bookingData.id}/request`,
@@ -81,6 +68,50 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
       fetchFilteredBookings();
     }
   };
+
+  const handlePhoneEdit = async () => {
+    if (phone!=loaded_phone){
+      const authToken = retrieveAuthToken(router);
+      let apiURL = `http://localhost:8000/me`;
+      await axios.post(apiURL, 
+        JSON.stringify({
+          phone_number: phone,
+        }),
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          }
+        }
+      ).then((res) => {
+        toast("Phone Number Updated");
+        fetchFilteredBookings();
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  }
+
+  const handleCancelRequest = async (e) => {
+    e.stopPropagation();
+    const authToken = retrieveAuthToken(router);
+    try {
+      await axios.delete(
+        `http://localhost:8000/bookings/${bookingData?.id}/request`,
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      toast("Succesfully Cancelled Request");
+      fetchFilteredBookings();
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const travellers_email_list = [];
   bookingData.travellers.map((item) => travellers_email_list.push(item.email));
@@ -121,7 +152,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
         <div className="flex flex-row justify-between items-center">
           {isValidToJoin && isInRequest == -1 ? (
             <input
-              disabled={!isValidToJoin}
+              disabled={!isValidToJoin && !is_there_a_phone_number}
               onClick={(e) => e.stopPropagation()}
               value={joinComment}
               name="comment"
@@ -133,6 +164,12 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
           )}
           <div>
           <MuiTelInput defaultCountry="IN" onlyCountries={['IN']} forceCallingCode onChange={handlePhoneChange} value={phone} />
+          <button
+            onClick={handlePhoneEdit}
+            className="btn btn-outline"
+          >
+            {(loaded_phone=="")?`Register`:`Edit`} Phone
+          </button>
             {isValidToJoin && isInRequest == -1 && (
               <button
                 disabled={(joinComment.length == 0) || (phone.replace("+91", "") == "")}
@@ -143,8 +180,8 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
               </button>
             )}
             {isInRequest != -1 && (
-              <button disabled={true} className="btn btn-outline">
-                Request Pending
+              <button onClick={(e)=>{handleCancelRequest(e)}} className="btn btn-outline">
+                Cancel Request
               </button>
             )}
           </div>

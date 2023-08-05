@@ -21,7 +21,7 @@ SELECT c.id, c.start_time, c.end_time, c.capacity, fl.place, tl.place, c.owner_e
     INNER JOIN request r ON r.booking_id = c.id
   WHERE r.request_email = :email
     AND r.status = 'pending'
-    AND c.end_time < (SELECT CURRENT_TIMESTAMP);
+    AND c.end_time > (SELECT CURRENT_TIMESTAMP);
 
 -- name: update_request<!
 UPDATE request

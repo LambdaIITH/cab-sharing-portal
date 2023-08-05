@@ -25,6 +25,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const locations = [
   "RGIA",
@@ -199,7 +201,11 @@ export function NewBookingDialog({ fetchUserBookings }) {
             "Content-Type": "application/json",
           }
         }
-      ).catch((err) => {
+      ).then((res) => {
+        setLoadedPhone(phone)
+        setIsThereAPhoneNumber(true)
+      })
+      .catch((err) => {
         console.log(err)
       })
     }
@@ -213,6 +219,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
   return (
     <>
     <MuiTelInput defaultCountry="IN" onlyCountries={['IN']} forceCallingCode onChange={handlePhoneChange} value={phone} />
+      <ToastContainer />   
       <Button
         // variant="contained"
         onClick={handlePhoneEdit}
