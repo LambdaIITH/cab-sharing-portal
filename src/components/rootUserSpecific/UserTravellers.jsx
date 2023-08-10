@@ -4,6 +4,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ConformModal from "components/modals/ConformModal";
 
 const UserTravellers = ({
   travellers,
@@ -44,14 +45,14 @@ const UserTravellers = ({
               <p className="text-[.9rem] sm:text-[1rem] mr-auto">
                 {item.email}
               </p>
-              {/* {item.email === user_email && (
-                <button
-                  className="btn btn-outline w-fit"
-                  onClick={(e) => ExitBooking(e)}
-                >
-                  Exit Booking
-                </button>
-              )} */}
+              {item.email === user_email && (
+                <ConformModal
+                  modalText={"Are you sure you want to exit from this booking"}
+                  buttonText={"Exit"}
+                  buttonClickFunction={ExitBooking}
+                  displayText={"Exit Booking"}
+                />
+              )}
             </div>
             {!hidePhoneNumber && (
               <div className="flex flex-row gap-3 items-center">

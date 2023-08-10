@@ -1,11 +1,8 @@
-import CabSharing from "components/views/CabSharing/CabSharing";
-import React from 'react'
+import CabSharing from "components/commonForAll/CabSharing";
+import React from "react";
 
-const  index= () => {
-  return (
-    <CabSharing />
-    
-  )
-}
+const index = () => {
+  return <CabSharing />;
+};
 
-export default index
+export default index;

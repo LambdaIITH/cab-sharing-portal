@@ -1,8 +1,6 @@
-import axios from "axios";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import UserCardExpanded from "./UserCardExpanded";
-import AllUserCardExpanded from "./AllUserCardExpanded";
+import { useRouter } from "next/router";
+import axios from "axios";
 import {
   Dialog,
   DialogActions,
@@ -16,12 +14,13 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import retrieveAuthToken from "./utils/retrieveAuthToken";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import EditIcon from "@mui/icons-material/Edit";
+import UserCardExpanded from "components/rootUserSpecific/UserCardExpanded";
+import AllUserCardExpanded from "components/allUsersSpecific/AllUserCardExpanded";
 const CabShareSmall = ({
   userSpecific,
   bookingData,
@@ -108,7 +107,7 @@ const CabShareSmall = ({
         index === 0 && expand && "collapse-open"
       }  ${
         expand ? "collapse-open" : "collapse-close"
-      } collapse-close bg-secondary md:p-5 mx-auto mt-3  rounded-md`}
+      } collapse-close bg-secondary md:p-5 mx-auto mt-3   rounded-md lg:w-[60rem]`}
       onClick={() => setExpand((prev) => !prev)}
     >
       <div className="collapse-title font-medium flex flex-col  rounded-md bg-secondary cursor-pointer">
@@ -116,44 +115,47 @@ const CabShareSmall = ({
           <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="From:" /> {bookingData.from_}
           </p>
-          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
-            <BoldedHeading text="To:" />{" "}
-            {bookingData.to === "Secunderabad Railway Station"
-              ? "SC"
-              : bookingData.to}
+
+          <p className="tracking-wider text-[.9rem] md:text-[1rem] truncate">
+            <BoldedHeading text="To:" /> {bookingData.to}
           </p>
+
+          <div className="hidden 5x:inline">
+            <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
+              <BoldedHeading text="Occupied:" />{" "}
+              {bookingData.travellers?.length}/{bookingData.capacity}
+            </p>
+          </div>
+        </div>
+        <div className="5x:hidden inline mt-2">
           <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="Occupied:" /> {bookingData.travellers?.length}/
             {bookingData.capacity}
           </p>
         </div>
-        <div className="flex flex-row mt-2 items-center justify-normal  gap-3 ">
-          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate mt-2 md:mt-0">
+
+        <div className="flex flex-row mt-2 items-center justify-normal  gap-3">
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate mt-2 md:mt-0 ">
             <span className="hidden sm:inline">
               <BoldedHeading text="Window:" />
             </span>{" "}
             <span className="sm:inline mt-1 md:mt-0">
               {new Date(bookingData.start_time).toLocaleDateString() +
                 " " +
-                new Date(bookingData.start_time)
-                  .toLocaleTimeString()
-                  .slice(0, 4) +
-                " " +
-                new Date(bookingData.start_time)
-                  .toLocaleTimeString()
-                  .slice(8, 10) +
+                new Date(bookingData.start_time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }) +
                 " - " +
                 new Date(bookingData.end_time).toLocaleDateString() +
                 " " +
-                new Date(bookingData.end_time)
-                  .toLocaleTimeString()
-                  .slice(0, 4) +
-                " " +
-                new Date(bookingData.end_time)
-                  .toLocaleTimeString()
-                  .slice(8, 10)}
+                new Date(bookingData.end_time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
             </span>
           </p>
+
           <button
             className="btn btn-ghost btn-circle"
             onClick={(e) => {

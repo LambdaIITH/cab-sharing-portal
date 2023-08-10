@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import UserRequests from "./views/CabSharing/UserRequests";
-import UserTravellers from "./views/CabSharing/UserTravellers";
-import retrieveAuthToken from "./utils/retrieveAuthToken";
-
-import { useRouter } from "next/router";
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
+import ConformModal from "components/modals/ConformModal";
+import UserRequests from "./UserRequests";
+import UserTravellers from "./UserTravellers";
 
 const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +15,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   // handlers
 
   const DeleteBooking = async (e) => {
-    e.stopPropagation();
+    // e.stopPropagation();
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -109,12 +108,12 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             {bookingData.travellers[0].comments}
           </div>
         </div>
-        <button
-          className="btn btn-outline w-fit "
-          onClick={(e) => DeleteBooking(e)}
-        >
-          Delete
-        </button>
+        <ConformModal
+          modalText={"Are you sure you want to delete this booking"}
+          buttonText={"Yes"}
+          buttonClickFunction={DeleteBooking}
+          displayText={"Delete"}
+        />
       </div>
       <ToastContainer />
       {bookingData?.requests?.length > 0 && (

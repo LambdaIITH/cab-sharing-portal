@@ -1,1 +1,1 @@
-export { default } from "components/views/Login.jsx"
+export { default } from "components/commonForAll/Login.jsx";

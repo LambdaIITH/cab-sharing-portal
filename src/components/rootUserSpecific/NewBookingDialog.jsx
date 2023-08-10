@@ -18,13 +18,13 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker, DateTimePicker } from "@mui/x-date-pickers";
-import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import { matchIsValidTel } from "mui-tel-input";
 import { set } from "date-fns";
 import axios from "axios";
 import { useRouter } from "next/router";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
-import PhoneNumberModal from "./PhoneNumberModal";
+import PhoneNumberModal from "../modals/PhoneNumberModal";
 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -54,7 +54,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
   const [phoneIsValid, setPhoneIsValid] = useState(false);
   const [location, setLocation] = useState("");
   const [toggle, setToggle] = useState("from");
-  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(false);
+  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(null);
 
   const [endTimeError, setEndTimeError] = useState(0);
   // 0 -> no error
@@ -221,15 +221,26 @@ export function NewBookingDialog({ fetchUserBookings }) {
   ));
   return (
     <>
-      {is_there_a_phone_number ? (
-        <button
-          onClick={handleDialogOpen}
-          className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
-          disabled={!is_there_a_phone_number}
-        >
-          Register Booking
-        </button>
-      ) : (
+      {is_there_a_phone_number === true && (
+        <div className="flex gap-4">
+          <PhoneNumberModal
+            handlePhoneEdit={handlePhoneEdit}
+            handlePhoneChange={handlePhoneChange}
+            phone={phone}
+            phoneIsValid={phoneIsValid}
+            edit={true}
+          />
+          <button
+            onClick={handleDialogOpen}
+            className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
+            disabled={!is_there_a_phone_number}
+          >
+            Register Booking
+          </button>
+        </div>
+      )}
+
+      {is_there_a_phone_number === false && (
         <PhoneNumberModal
           handlePhoneEdit={handlePhoneEdit}
           handlePhoneChange={handlePhoneChange}
@@ -241,16 +252,18 @@ export function NewBookingDialog({ fetchUserBookings }) {
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>New booking</DialogTitle>
         <DialogContent>
-          <Stack gap={3}>
-            Please fill the form to create a new booking. <br />
-            Your email address will be automatically associated with your
-            booking.
+          <div className="flex flex-col gap-5 ">
+            <p className="text-[.9rem] md:text-[1rem]">
+              Please fill the form to create a new booking. <br />
+            </p>
+            {/* Your email address will be automatically associated with your
+            booking. */}
             {values.from_loc !== "" && values.from_loc === values.to_loc && (
               <span className="label-text-alt mt-1 text-red-600">
                 To and From Location cannot be the same
               </span>
             )}
-            <Box gap={3} sx={{ display: "flex", flexDirection: "row" }}>
+            <div className="flex flex-row gap-3">
               <Typography
                 component="div"
                 fontSize={15}
@@ -298,7 +311,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
                   </span>
                 )}
               </FormControl>
-            </Box>
+            </div>
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
@@ -359,11 +372,16 @@ export function NewBookingDialog({ fetchUserBookings }) {
                 onChange={handleChange}
               />
             </FormControl>
-          </Stack>
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={RegisterNewBooking}>Book</Button>
+          <Button
+            onClick={RegisterNewBooking}
+            disabled={!values.capacity || !endTime || !startTime || !location}
+          >
+            Book
+          </Button>
         </DialogActions>
       </Dialog>
     </>

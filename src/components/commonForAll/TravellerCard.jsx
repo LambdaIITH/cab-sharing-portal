@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import UserTravellers from "./UserTravellers";
+import UserTravellers from "../rootUserSpecific/UserTravellers";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 const TravellerCard = ({
   userSpecific,
@@ -19,7 +18,7 @@ const TravellerCard = ({
   const router = useRouter();
 
   const [expand, setExpand] = useState(false);
-  const [user_email,setUserEmail] = useState("");
+  const [user_email, setUserEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -27,8 +26,7 @@ const TravellerCard = ({
     setUserEmail(localStorage.getItem("user_email"));
   }, []);
 
-  const ExitBooking = async (e) => {
-    e.stopPropagation();
+  const ExitBooking = async () => {
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -48,7 +46,7 @@ const TravellerCard = ({
     } finally {
       setLoading(false);
     }
-  }
+  };
   return (
     <div
       tabIndex={0}
@@ -56,63 +54,81 @@ const TravellerCard = ({
         index === 0 && expand && "collapse-open"
       }  ${
         expand ? "collapse-open" : "collapse-close"
-      } collapse-close bg-secondary p-5 mx-auto mt-3  rounded-md`}
+      } collapse-close bg-secondary p-5 mx-auto mt-3  rounded-md lg:w-[60rem]`}
       onClick={() => setExpand((prev) => !prev)}
     >
       <div className="collapse-title font-medium flex flex-col  rounded-md bg-secondary cursor-pointer">
-        <div className="flex flex-row mt-2 gap-10 ">
-          <p className=" tracking-wider text-[1rem] truncate">
+        <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="From:" /> {bookingData.from_}
           </p>
-          <p className=" tracking-wider text-[1rem] truncate">
+
+          <p className="tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="To:" /> {bookingData.to}
           </p>
-          <p className=" tracking-wider text-[1rem] truncate">
+
+          <div className="hidden 5x:inline">
+            <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
+              <BoldedHeading text="Occupied:" />{" "}
+              {bookingData.travellers?.length}/{bookingData.capacity}
+            </p>
+          </div>
+        </div>
+        <div className="5x:hidden inline mt-2">
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="Occupied:" /> {bookingData.travellers?.length}/
             {bookingData.capacity}
           </p>
         </div>
         <div className="flex flex-row mt-2 items-center  gap-10 ">
-          {/* <div className="flex flex-row gap-5">
-            <div className="flex flex-row gap-2">
-              <BoldedHeading text="Booking Date:" />
-              <p className=" text-[1.15rem]">
-                {bookingData.start_time.slice(0, 10)}
-              </p>
-            </div>
-          </div> */}
-          <p className=" tracking-wider text-[1rem] truncate">
-            <BoldedHeading text="Window:" />{" "}
-            {new Date(bookingData.start_time).toLocaleDateString() +
-              " " +
-              new Date(bookingData.start_time).toLocaleTimeString() +
-              " - " +
-              new Date(bookingData.end_time).toLocaleDateString() +
-              " " +
-              new Date(bookingData.end_time).toLocaleTimeString()}
+          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate mt-2 md:mt-0 ">
+            <span className="hidden sm:inline">
+              <BoldedHeading text="Window:" />
+            </span>{" "}
+            <span className="sm:inline mt-1 md:mt-0">
+              {new Date(bookingData.start_time).toLocaleDateString() +
+                " " +
+                new Date(bookingData.start_time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }) +
+                " - " +
+                new Date(bookingData.end_time).toLocaleDateString() +
+                " " +
+                new Date(bookingData.end_time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+            </span>
           </p>
         </div>
       </div>
       <div className="collapse-content" onClick={(e) => e.stopPropagation()}>
-        <div className="flex flex-col justify-center my-10">
-          <div className="flex flex-row justify-center items-center mr-auto gap-3">
-            <h3 className=" tracking-widest text-[1.15rem]">
+        <div className="flex flex-col justify-center mt-8">
+          <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
+            <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
               {bookingData.travellers[0].name}
             </h3>
-            <p className="text-primary tracking-wider font-medium text-[1.1rem] ">
+            <p className="text-primary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
               {bookingData.travellers[0].email}
             </p>
           </div>
           <div>
-            <span className="text-primary">Note:</span>{" "}
+            <span className="text-primary text-[.9rem] md:text-[1.1rem]">
+              Note:
+            </span>{" "}
             {bookingData.travellers[0].comments}
           </div>
         </div>
 
         {bookingData.travellers.length > 0 && (
-          <UserTravellers travellers={bookingData.travellers} user_email={user_email} ExitBooking={ExitBooking} />
+          <UserTravellers
+            travellers={bookingData.travellers}
+            user_email={user_email}
+            ExitBooking={ExitBooking}
+          />
         )}
-      <ToastContainer />
+        <ToastContainer />
       </div>
     </div>
   );

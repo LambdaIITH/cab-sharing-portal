@@ -1,11 +1,11 @@
-import CabShareSmall from "components/CabShareSmall";
 import React, { useEffect, useState } from "react";
-import { NewBookingDialog } from "./NewBookingDialog";
 import { Stack } from "@mui/material";
 import axios from "axios";
-import TravellerCard from "./TravellerCard";
-import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import { useRouter } from "next/router";
+import { NewBookingDialog } from "./NewBookingDialog";
+import CabShareSmall from "components/commonForAll/CabShareSmall";
+import TravellerCard from "components/commonForAll/TravellerCard";
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -35,7 +35,7 @@ const UserBookings = () => {
   }, []);
 
   return (
-    <div className="flex flex-col overflow-auto  mx-auto  rounded-box md:py-10">
+    <div className="flex flex-col  mx-auto  rounded-box md:py-10">
       <Stack
         direction="row"
         spacing={1}

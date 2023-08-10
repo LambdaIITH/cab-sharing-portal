@@ -1,12 +1,9 @@
-import { Box, Tab, Typography } from "@mui/material";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { useEffect, useState } from "react";
-import { DataTable } from "./DataTable";
-import NavBar from "./NavBar";
-import UserBookings from "./UserBookings";
 import { useRouter } from "next/router";
-import retrieveAuthToken from "../../utils/retrieveAuthToken";
-import AllUserBookings from "./AllUserBookings";
+import NavBar from "./NavBar";
+import UserBookings from "components/rootUserSpecific/UserBookings";
+import AllUserBookings from "components/allUsersSpecific/AllUserBookings";
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
 export default function CabSharing() {
   const [tab, setTab] = useState(0);
@@ -25,8 +22,8 @@ export default function CabSharing() {
     <>
       {/* <NavBar /> */}
       {/* controlling width */}
-      <div className="w-[95vw] lg:w-[60rem] mx-auto py-[2rem]">
-        <div className="tabs w-fit mx-auto shadow-lg my-[2rem]  border border-black rounded-lg">
+      <div className="flex flex-col overflow-x-auto py-[2rem] min-h-screen">
+        <div className="tabs flex mx-auto shadow-lg my-[2rem] border border-black rounded-lg">
           <a
             className={`tab tab-lg text-[1rem] md:text-lg transition-all rounded-l-lg ${
               tab == 0
@@ -48,8 +45,10 @@ export default function CabSharing() {
             All Bookings
           </a>
         </div>
-        {tab === 0 && <UserBookings />}
-        {tab === 1 && <AllUserBookings />}
+        <div className="flex flex-nowrap overflow-x-auto">
+          {tab === 0 && <UserBookings />}
+          {tab === 1 && <AllUserBookings />}
+        </div>
       </div>
     </>
   );

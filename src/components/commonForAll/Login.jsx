@@ -8,9 +8,9 @@ import jwt_decode from "jwt-decode";
 
 function ProcessUser(token) {
   const decoded_token = jwt_decode(token);
-  localStorage.setItem('user_name',decoded_token['name']);
-  localStorage.setItem('user_email',decoded_token['email']);
-  localStorage.setItem('user_pic_url',decoded_token['picture']);
+  localStorage.setItem("user_name", decoded_token["name"]);
+  localStorage.setItem("user_email", decoded_token["email"]);
+  localStorage.setItem("user_pic_url", decoded_token["picture"]);
 }
 
 function Login() {
@@ -43,31 +43,23 @@ function Login() {
   };
 
   return (
-    <Container
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-        height: "100vh",
-      }}
-    >
-      <Image
-        src={logo.src}
-        alt="IITH-Commisions Logo"
-        className="logo-img"
-        width={96}
-        height={96}
+    <div className="w-screen flex flex-col justify-center items-center h-screen gap-5">
+      <img
+        src={
+          "https://res.cloudinary.com/dcpgsijmr/image/upload/v1691685335/cab-sharing/IITHCS-logo_tnpnur.png"
+        }
+        className="w-[15rem] h-[15rem]"
       />
-      <p>Sign in to continue to IITH Commisions Portal.</p>
-
+      <p className="text-[.9rem] md:text-[1.3rem]">
+        Welcome to IITH Cabsharing Portal
+      </p>
       <GoogleLogin
         useOneTap
         onSuccess={responseGoogleSuccess}
         onError={responseGoogleFailure}
         shape="pill"
       />
-    </Container>
+    </div>
   );
 }
 

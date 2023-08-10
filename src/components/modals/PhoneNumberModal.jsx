@@ -7,6 +7,7 @@ const PhoneNumberModal = ({
   phone,
   phoneIsValid,
   handlePhoneEdit,
+  edit = false,
 }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ const PhoneNumberModal = ({
         className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
         onClick={() => showModal()}
       >
-        Get Started
+        {edit ? "Edit Phone number" : "Get Started"}
       </button>
       {isModalOpen && (
         <dialog
@@ -60,7 +61,9 @@ const PhoneNumberModal = ({
                 </li>
               </ul>
               <div className="flex flex-col gap-2">
-                <p className="font-bold">Enter your phone number</p>
+                <p className="font-bold">
+                  {edit ? "Edit" : "Enter"} your phone number
+                </p>
                 <MuiTelInput
                   sx={{
                     backgroundColor: "white",

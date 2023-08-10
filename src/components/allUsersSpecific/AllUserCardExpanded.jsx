@@ -1,15 +1,13 @@
-import { Button } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import UserTravellers from "./views/CabSharing/UserTravellers";
-import { comment } from "postcss";
-import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
-import retrieveAuthToken from "./utils/retrieveAuthToken";
-import { useRouter } from "next/router";
 
+import axios from "axios";
+import { matchIsValidTel } from "mui-tel-input";
+import { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PhoneNumberModal from "./views/CabSharing/PhoneNumberModal";
+import PhoneNumberModal from "components/modals/PhoneNumberModal";
+import UserTravellers from "components/rootUserSpecific/UserTravellers";
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
 const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const [isValidToJoin, setIsValidToJoin] = useState(false);
@@ -18,7 +16,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const [loaded_phone, setLoadedPhone] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneIsValid, setPhoneIsValid] = useState(false);
-  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(false);
+  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
 
   const router = useRouter();
 
@@ -164,7 +162,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   }, []);
 
   return (
-    <div onClick={(e) => e.stopPropagation()} className="mt-5">
+    <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
       <div className="flex flex-col justify-center my-5">
         <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
           <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem]">
