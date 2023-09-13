@@ -3,7 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <GoogleOAuthProvider clientId="151062523573-qi5ict3dofr2b4iosif3t5l4v2n8j2t7.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
       <div data-theme="halloween" className="">
         <Component {...pageProps} />
       </div>

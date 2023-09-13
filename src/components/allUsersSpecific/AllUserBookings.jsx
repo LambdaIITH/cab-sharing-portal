@@ -45,7 +45,7 @@ const AllUserBookings = () => {
 
   const fetchFilteredBookings = () => {
     const authToken = retrieveAuthToken(router);
-    let apiURL = `http://localhost:8000/bookings`;
+    let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
 
     if (fromValue && toValue) {
       if (startTime && endTime) {
@@ -97,7 +97,7 @@ const AllUserBookings = () => {
   const fetchRequests = () => {
     const authToken = retrieveAuthToken(router);
     axios
-      .get("http://localhost:8000/me/requests", {
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me/requests`, {
         headers: {
           Authorization: authToken,
         },

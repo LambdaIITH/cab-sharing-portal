@@ -19,7 +19,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:8000/bookings/${bookingData?.id}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`, {
         headers: {
           Authorization: authToken,
           "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8000/bookings/${bookingData?.id}/accept`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/accept`,
         {
           requester_email: request_email,
         },
@@ -66,7 +66,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8000/bookings/${bookingData?.id}/reject`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/reject`,
         {
           requester_email: request_email,
         },

@@ -22,7 +22,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
 
   useEffect(() => {
     const authToken = retrieveAuthToken(router);
-    let apiURL = `http://localhost:8000/me`;
+    let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
     axios
       .get(apiURL, {
         headers: {
@@ -52,7 +52,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const JoinBooking = async () => {
     const authToken = retrieveAuthToken(router);
     if (phone != loaded_phone) {
-      let apiURL = `http://localhost:8000/me`;
+      let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
       await axios
         .post(
           apiURL,
@@ -72,7 +72,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
     }
     try {
       const data = await axios.post(
-        `http://localhost:8000/bookings/${bookingData.id}/request`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData.id}/request`,
         { comments: joinComment },
         {
           headers: {
@@ -95,7 +95,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const handlePhoneEdit = async () => {
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
-      let apiURL = `http://localhost:8000/me`;
+      let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
       await axios
         .post(
           apiURL,
@@ -124,7 +124,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
     const authToken = retrieveAuthToken(router);
     try {
       await axios.delete(
-        `http://localhost:8000/bookings/${bookingData?.id}/request`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/request`,
         {
           headers: {
             Authorization: authToken,
