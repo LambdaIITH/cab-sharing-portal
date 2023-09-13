@@ -22,7 +22,7 @@ function Login() {
     console.log(response);
     localStorage.setItem("credential", response.credential);
 
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/me`, {
       headers: {
         Authorization: response.credential,
       },

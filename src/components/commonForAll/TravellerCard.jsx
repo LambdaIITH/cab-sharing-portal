@@ -31,7 +31,7 @@ const TravellerCard = ({
     try {
       setLoading(true);
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/self`,
+        `${process.env.REACT_APP_BACKEND_URL}/bookings/${bookingData?.id}/self`,
         {
           headers: {
             Authorization: authToken,

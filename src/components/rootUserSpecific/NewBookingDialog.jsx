@@ -83,7 +83,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
 
   useEffect(() => {
     const authToken = retrieveAuthToken(router);
-    let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
+    let apiURL = `${process.env.REACT_APP_BACKEND_URL}/me`;
     axios
       .get(apiURL, {
         headers: {
@@ -161,7 +161,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
 
   const RegisterNewBooking = async () => {
     const authToken = retrieveAuthToken(router);
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`, {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/bookings`, {
       headers: {
         Authorization: `${authToken}`,
         "Content-Type": "application/json",
@@ -190,7 +190,7 @@ export function NewBookingDialog({ fetchUserBookings }) {
   const handlePhoneEdit = async () => {
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
-      let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
+      let apiURL = `${process.env.REACT_APP_BACKEND_URL}/me`;
       await axios
         .post(
           apiURL,

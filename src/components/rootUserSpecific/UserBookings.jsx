@@ -16,7 +16,7 @@ const UserBookings = () => {
   const fetchUserBookings = async () => {
     const authToken = retrieveAuthToken(router);
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me/bookings`, {
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/me/bookings`, {
         headers: {
           Authorization: authToken,
           "Content-Type": "application/json",
