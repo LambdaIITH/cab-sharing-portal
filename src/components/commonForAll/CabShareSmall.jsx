@@ -69,7 +69,7 @@ const CabShareSmall = ({
     const authToken = retrieveAuthToken(router);
     try {
       const res = await axios.patch(
-        `${process.env.REACT_APP_BACKEND_URL}/bookings/${bookingData?.id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`,
         {
           start_time: startTime,
           end_time: endTime,
