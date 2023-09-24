@@ -129,11 +129,21 @@ def send_email(
     exited_email: Union[str, None] = None,
 ):
     global smtp_server
+
+    try:
+        smtp_server.noop()
+    except Exception as ex:
+        print("SMTP connection died, trying to restart")
+        print("Something wen wrong", ex)
+        smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        smtp_server.ehlo()
+        smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
+        print("Connected to SMTP server")
+
     message = MIMEMultipart("alternative")
     message["From"] = GMAIL_USER
     message["To"] = receiver
     booking_info = queries.get_booking_details(conn, cab_id=booking_id)
-
     if mail_type == "accept":
         subject = (
             f"Accepted Cab sharing request from {booking_info[3]} to {booking_info[4]}"
