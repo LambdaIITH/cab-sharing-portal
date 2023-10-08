@@ -107,10 +107,10 @@ const CabShareSmall = ({
         index === 0 && expand && "collapse-open"
       }  ${
         expand ? "collapse-open" : "collapse-close"
-      } collapse-close bg-secondary md:p-5 mx-auto mt-3   rounded-md lg:w-[60rem]`}
+      } collapse-close bg-secondary/10 md:p-5 mx-auto mt-3 border-2 shadow-md border-black text-black rounded-md lg:w-[60rem]`}
       onClick={() => setExpand((prev) => !prev)}
     >
-      <div className="collapse-title font-medium flex flex-col  rounded-md bg-secondary cursor-pointer">
+      <div className="collapse-title font-medium flex flex-col  rounded-md  cursor-pointer">
         <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
           <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="From:" /> {bookingData.from_}
@@ -243,7 +243,7 @@ const CabShareSmall = ({
 };
 
 const BoldedHeading = ({ text }) => (
-  <span className=" text-primary tracking-widest text-[.9rem] md:text-[1.15rem]">
+  <span className=" text-secondary border-b-2 border-secondary tracking-widest text-[.9rem] md:text-[1.15rem]">
     {text}
   </span>
 );

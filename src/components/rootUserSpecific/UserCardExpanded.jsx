@@ -19,12 +19,15 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
-      await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`, {
-        headers: {
-          Authorization: authToken,
-          "Content-Type": "application/json",
-        },
-      });
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`,
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast("Succesfully Removed");
       fetchUserBookings();
     } catch (err) {
@@ -97,12 +100,12 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
               {bookingData.travellers[0].name}
             </h3>
-            <p className="text-primary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+            <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
               {bookingData.travellers[0].email}
             </p>
           </div>
           <div>
-            <span className="text-primary text-[.9rem] md:text-[1.1rem]">
+            <span className="text-secondary border-b-2 border-secondary font-medium text-[.9rem] md:text-[1.1rem]">
               Note:
             </span>{" "}
             {bookingData.travellers[0].comments}

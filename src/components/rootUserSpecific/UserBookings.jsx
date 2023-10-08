@@ -16,12 +16,15 @@ const UserBookings = () => {
   const fetchUserBookings = async () => {
     const authToken = retrieveAuthToken(router);
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me/bookings`, {
-        headers: {
-          Authorization: authToken,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/me/bookings`,
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setBookings(res.data.future_bookings);
     } catch (err) {
       console.log(err);

@@ -22,13 +22,13 @@ export default function CabSharing() {
     <>
       {/* <NavBar /> */}
       {/* controlling width */}
-      <div className="flex flex-col overflow-x-auto py-[2rem] min-h-screen">
+      <div className="flex bg-purple-100 flex-col overflow-x-auto py-[2rem] min-h-screen">
         <div className="tabs flex mx-auto shadow-lg my-[2rem] border border-black rounded-lg">
           <a
             className={`tab tab-lg text-[1rem] md:text-lg transition-all rounded-l-lg ${
               tab == 0
-                ? "tab-active bg-primary text-black"
-                : "bg-[#F2D2BD] text-black/40"
+                ? "tab-active bg-secondary/80 text-white/80"
+                : "bg-secondary/20 text-white/60"
             }`}
             onClick={() => setTab(0)}
           >
@@ -37,8 +37,8 @@ export default function CabSharing() {
           <a
             className={`tab transition-all text-[1rem] md:text-lg rounded-r-lg tab-lg ${
               tab == 1
-                ? "tab-active bg-primary text-black"
-                : " bg-[#F2D2BD] text-black/40"
+                ? "tab-active bg-secondary/80 text-white/80"
+                : " bg-secondary/20 text-white/60"
             }`}
             onClick={() => setTab(1)}
           >
