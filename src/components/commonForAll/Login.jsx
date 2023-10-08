@@ -43,14 +43,12 @@ function Login() {
   };
 
   return (
-    <div className="w-screen flex flex-col justify-center items-center h-screen gap-5">
+    <div className="w-screen flex flex-col justify-center bg-purple-50 items-center h-screen gap-5">
       <img
-        src={
-          "https://res.cloudinary.com/dcpgsijmr/image/upload/v1691685335/cab-sharing/IITHCS-logo_tnpnur.png"
-        }
+        src={"/assets/iith_cabshare_logo.jpg"}
         className="w-[15rem] h-[15rem]"
       />
-      <p className="text-[.9rem] md:text-[1.3rem]">
+      <p className="text-[.9rem] md:text-[1.3rem] text-black">
         Welcome to IITH Cabsharing Portal
       </p>
       <GoogleLogin
