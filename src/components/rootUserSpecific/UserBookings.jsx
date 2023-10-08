@@ -49,7 +49,11 @@ const UserBookings = () => {
           marginBottom: "2rem",
         }}
       >
-        <NewBookingDialog fetchUserBookings={fetchUserBookings} />
+        <NewBookingDialog
+          fetchUserBookings={fetchUserBookings}
+          username={username}
+          email={email}
+        />
       </Stack>
       <div className="">
         {bookings?.length > 0 &&

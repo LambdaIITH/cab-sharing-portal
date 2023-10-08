@@ -32,7 +32,7 @@ const PhoneNumberModal = ({
   return (
     <>
       <button
-        className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
+        className=" btn bg-yellow-400 text-black hover:bg-yellow-500 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
         onClick={() => showModal()}
       >
         {edit ? "Edit Phone number" : "Get Started"}

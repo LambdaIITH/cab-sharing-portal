@@ -31,7 +31,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const locations = ["RGIA", "Secunderabad Railway Station", "Lingampally"];
 
-export function NewBookingDialog({ fetchUserBookings }) {
+export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const initData = {
@@ -221,24 +221,43 @@ export function NewBookingDialog({ fetchUserBookings }) {
   ));
   return (
     <>
-      {is_there_a_phone_number === true && (
-        <div className="flex gap-4">
-          <PhoneNumberModal
-            handlePhoneEdit={handlePhoneEdit}
-            handlePhoneChange={handlePhoneChange}
-            phone={phone}
-            phoneIsValid={phoneIsValid}
-            edit={true}
-          />
-          <button
-            onClick={handleDialogOpen}
-            className=" btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
-            disabled={!is_there_a_phone_number}
-          >
-            Register Booking
-          </button>
+      <div
+        className={`bg-secondary/10 md:p-5 mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
+      >
+        <div className="collapse-title font-medium flex flex-col  rounded-md  cursor-pointer">
+          <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+            Your Profile
+          </p>
+          <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
+            <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
+              <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
+                {username}
+              </h3>
+              <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+                {email}
+              </p>
+            </div>
+          </div>
+          {is_there_a_phone_number === true && (
+            <div className="flex gap-4">
+              <PhoneNumberModal
+                handlePhoneEdit={handlePhoneEdit}
+                handlePhoneChange={handlePhoneChange}
+                phone={phone}
+                phoneIsValid={phoneIsValid}
+                edit={true}
+              />
+              <button
+                onClick={handleDialogOpen}
+                className=" btn bg-yellow-400 text-black hover:bg-yellow-500 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
+                disabled={!is_there_a_phone_number}
+              >
+                Register Booking
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {is_there_a_phone_number === false && (
         <PhoneNumberModal
@@ -387,3 +406,9 @@ export function NewBookingDialog({ fetchUserBookings }) {
     </>
   );
 }
+
+const BoldedHeading = ({ text }) => (
+  <span className=" text-secondary border-b-2 border-secondary tracking-widest text-[.9rem] md:text-[1.15rem]">
+    {text}
+  </span>
+);
