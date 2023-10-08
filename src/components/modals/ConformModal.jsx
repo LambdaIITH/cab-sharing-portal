@@ -32,15 +32,20 @@ const ConformModal = ({
           className="modal modal-open"
           onClick={(e) => e.stopPropagation()}
         >
-          <form method="dialog" className="modal-box bg-secondary text-white">
+          <form
+            method="dialog"
+            className="modal-box bg-white text-black border-black border-2"
+          >
             <button
               className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
               onClick={() => closeModal()}
             >
               ✕
             </button>
-            <div className="flex flex-col gap-2">
-              <h3 className="font-bold text-lg text-primary">Conformation</h3>
+            <div className="flex flex-col gap-4">
+              <h3 className="font-bold text-lg text-secondary/80 border-secondary border-b-2 w-fit">
+                Conformation
+              </h3>
               {modalText}
               <button
                 className="btn btn-primary ml-auto text-black "

@@ -156,7 +156,7 @@ const CabShareSmall = ({
             </span>
           </p>
 
-          <button
+          {/* <button
             className="btn btn-ghost btn-circle"
             onClick={(e) => {
               e.stopPropagation();
@@ -164,8 +164,8 @@ const CabShareSmall = ({
             }}
           >
             <EditIcon />
-          </button>
-          <Dialog
+          </button> */}
+          {/* <Dialog
             open={dialogOpen}
             onClose={handleDialogClose}
             onClick={(e) => {
@@ -221,7 +221,7 @@ const CabShareSmall = ({
               <Button onClick={handleDialogClose}>Cancel</Button>
               <Button onClick={editWindow}>Save</Button>
             </DialogActions>
-          </Dialog>
+          </Dialog> */}
         </div>
       </div>
       <div className="collapse-content">
