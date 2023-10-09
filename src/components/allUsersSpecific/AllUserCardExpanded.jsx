@@ -153,8 +153,6 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
     setPhoneIsValid(matchIsValidTel(info.numberValue));
   };
 
-  console.log(is_there_a_phone_number);
-
   useEffect(() => {
     if (travellers_email_list.indexOf(email) === -1 && isInRequest === -1)
       setIsValidToJoin(true);

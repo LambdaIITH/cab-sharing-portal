@@ -61,23 +61,61 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   // 1 -> end time before start time
   // 2 -> end time before current time
   // 3 -> start and end time are too separated
+  const [time1close, setTime1Close] = useState(false);
+  const [time2close, setTime2Close] = useState(false);
 
-  const checkErrors = () => {
-    if (startTime && endTime) {
-      if (startTime >= endTime) {
-        setEndTimeError(1);
-        setStartTime(null);
-        setEndTime(null);
-      } else if (endTime < new Date()) {
-        setEndTimeError(2);
-        setEndTime(null);
-      } else if (endTime - startTime > 1000 * 60 * 60 * 24) {
-        setEndTimeError(3);
-        setStartTime(null);
-        setEndTime(null);
-      } else {
-        setEndTimeError(0);
-      }
+  const checkErrors = (startTime, endTime) => {
+    if (startTime >= endTime) {
+      setEndTimeError(1);
+      setStartTime(null);
+      setEndTime(null);
+    } else if (endTime < new Date()) {
+      setEndTimeError(2);
+      setEndTime(null);
+    } else if (endTime - startTime > 1000 * 60 * 60 * 24) {
+      setEndTimeError(3);
+      setStartTime(null);
+      setEndTime(null);
+    } else {
+      setEndTimeError(0);
+    }
+  };
+
+  const handleTime1Close = (date) => {
+    setTime1Close(true);
+    // setStartTime(date);
+  };
+
+  const handleTime2Close = (date) => {
+    setTime2Close(true);
+    // setEndTime(date);
+  };
+
+  useEffect(() => {
+    if (time1close && time2close && startTime && endTime) {
+      checkErrors(startTime, endTime);
+    }
+  }, [time1close, time2close, startTime, endTime]);
+
+  const [capacityError, setCapacityError] = useState(0);
+  // 0 -> no error
+  // 1 -> capacity is not valid
+  // 2 -> capacity is not a positive number
+  // 3 -> capacity is too large
+  
+  const checkCapacityErrors = (capacity) => {
+    if (capacity == "" || parseFloat(capacity) != parseInt(capacity) || capacity.charCodeAt(0) < 48 || capacity.charCodeAt(0) > 57) {
+      setCapacityError(1);
+      return false;
+    } else if (capacity < 0) {
+      setCapacityError(2);
+      return false;
+    } else if (capacity > 256) {
+      setCapacityError(3);
+      return false;
+    } else {
+      setCapacityError(0);
+      return true;
     }
   };
 
@@ -134,6 +172,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const handleChange = ({ target }) => {
     if (target.name == "from_loc" || target.name == "to_loc") {
       setLocation(target.value);
+    }
+    if (target.name == "capacity") {
+      if (!checkCapacityErrors(target.value)) {
+        return false;
+      }
     }
     setRegisterData((prev) => ({
       ...prev,
@@ -339,7 +382,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   value={startTime}
                   onChange={setStartTime}
                   renderInput={(params) => <TextField {...params} />}
-                  onClose={checkErrors}
+                  onClose={handleTime1Close}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -351,7 +394,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   name="endTime"
                   onChange={setEndTime}
                   renderInput={(params) => <TextField {...params} />}
-                  onClose={checkErrors}
+                  onClose={handleTime2Close}
                 />
               </LocalizationProvider>
               {endTimeError == 1 && (
@@ -381,6 +424,21 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 onChange={handleChange}
               />
             </FormControl>
+              {capacityError == 1 && (
+                <span className="label-text-alt mt-1 text-red-600">
+                  Capacity is not valid
+                </span>
+              )}
+              {capacityError == 2 && (
+                <span className="label-text-alt mt-1 text-red-600">
+                  Capacity cannot be negative
+                </span>
+              )}
+              {capacityError == 3 && (
+                <span className="label-text-alt mt-1 text-red-600">
+                  Capacity more than 256, Seriously ?
+                </span>
+              )}
             <FormControl>
               <TextField
                 id="comments"
