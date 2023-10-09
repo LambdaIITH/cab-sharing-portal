@@ -3,7 +3,6 @@ from typing import Dict, List, Union
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pytz import timezone
 
 import schemas
 from utils import (
@@ -81,13 +80,13 @@ async def create_booking(
         raise HTTPException(status_code=400, detail="Invalid Location")
 
     print(booking.start_time)
-    print(booking.start_time.astimezone(timezone("Asia/Kolkata")))
+    print(booking.start_time)
 
     try:
         booking_id = queries.create_booking(
             conn,
-            start_time=booking.start_time.astimezone(timezone("Asia/Kolkata")),
-            end_time=booking.end_time.astimezone(timezone("Asia/Kolkata")),
+            start_time=booking.start_time,
+            end_time=booking.end_time,
             capacity=booking.capacity,
             from_loc=from_id,
             to_loc=to_id,

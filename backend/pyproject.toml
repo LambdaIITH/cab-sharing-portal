@@ -17,7 +17,6 @@ google-auth = "^2.9.1"
 requests = "^2.28.1"
 flake8 = "^5.0.4"
 mypy = "^0.971"
-pytz = "^2023.3"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"
