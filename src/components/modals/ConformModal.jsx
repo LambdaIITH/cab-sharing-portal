@@ -21,7 +21,7 @@ const ConformModal = ({
   return (
     <>
       <button
-        className=" btn bg-yellow-400 hover:bg-yellow-500 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
+        className=" btn bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
         onClick={() => showModal()}
       >
         {displayText}

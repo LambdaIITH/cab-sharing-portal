@@ -42,7 +42,7 @@ const UserTravellers = ({
               <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem] mr-auto">
                 {item.name}
               </h3>
-              <p className="text-[.9rem] sm:text-[1rem] mr-auto">
+              <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
                 {item.email}
               </p>
               {item.email === user_email && (
