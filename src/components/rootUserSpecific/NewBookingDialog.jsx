@@ -32,8 +32,6 @@ import "react-toastify/dist/ReactToastify.css";
 const locations = ["RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 export function NewBookingDialog({ fetchUserBookings, username, email }) {
-  const [dialogOpen, setDialogOpen] = useState(false);
-
   const initData = {
     from_loc: "IITH",
     to_loc: "",
@@ -194,22 +192,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     setPhoneIsValid(matchIsValidTel(info.numberValue));
   };
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const showModal = () => {
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
   const handleDialogClose = () => {
-    closeModal(true);
+    setExpand(false);
     setRegisterData(initState);
     setTouched(false);
     setStartTime(null);
@@ -234,7 +218,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        setDialogOpen(false);
+        setExpand(false);
         setRegisterData(initState);
         setTouched(false);
         setStartTime(null);
@@ -282,10 +266,9 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     <>
       <div
         tabIndex={0}
-        className={`collapse collapse-arrow  ${
+        className={`collapse  ${
           expand ? "collapse-open" : "collapse-close"
         } collapse-close bg-secondary/10 md:p-5 mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
-        onClick={() => setExpand((prev) => !prev)}
       >
         <div className="collapse-title font-medium flex flex-col  rounded-md  cursor-pointer">
           <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
@@ -301,162 +284,191 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </p>
             </div>
           </div>
-          {is_there_a_phone_number === true && (
-            <div className="flex gap-4">
+          <div className="flex gap-4">
+            {is_there_a_phone_number === true ? (
               <PhoneNumberModal
                 handlePhoneEdit={handlePhoneEdit}
                 handlePhoneChange={handlePhoneChange}
                 phone={phone}
                 phoneIsValid={phoneIsValid}
                 edit={true}
+                loaded_phone={loaded_phone}
+                setPhone={setPhone}
               />
-              <button
-                onClick={() => showModal()}
-                className=" btn bg-yellow-400 text-black hover:bg-yellow-500 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
-                disabled={!is_there_a_phone_number}
-              >
-                Register Booking
-              </button>
-            </div>
-          )}
+            ) : (
+              <PhoneNumberModal
+                handlePhoneEdit={handlePhoneEdit}
+                handlePhoneChange={handlePhoneChange}
+                phone={phone}
+                phoneIsValid={phoneIsValid}
+                loaded_phone={loaded_phone}
+                setPhone={setPhone}
+              />
+            )}
+
+            <button
+              onClick={() => setExpand((prev) => !prev)}
+              className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+              disabled={!is_there_a_phone_number}
+            >
+              {expand ? "Cancel" : "Create Booking"}
+            </button>
+          </div>
         </div>
 
-        {is_there_a_phone_number === false && (
-          <PhoneNumberModal
-            handlePhoneEdit={handlePhoneEdit}
-            handlePhoneChange={handlePhoneChange}
-            phone={phone}
-            phoneIsValid={phoneIsValid}
-          />
-        )}
-
-        <div
-          className="flex flex-col gap-1 collapse-content"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <p className="font-bold text-[1.1rem] text-black/80 mb-2   w-fit">
-            Please fill the form to create a new booking. <br />
+        {is_there_a_phone_number === false ? (
+          <p
+            className="font-bold text-[1.1rem] text-black/80 mb-2 collapse-content  w-fit"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Please Add phone number to create a new booking. <br />
           </p>
-          <div className="flex flex-row gap-3 items-center justify-center">
-            <p className="flex justify-center items-center">IITH</p>
-            {toggle == "from" ? (
-              <button
-                className="btn bg-yellow-400 text-black hover:bg-yellow-400"
-                onClick={() => {
-                  handleToggle("to");
-                }}
-              >
-                <ArrowForwardIcon />
-              </button>
-            ) : (
-              <button
-                className="btn bg-yellow-400 text-black hover:bg-yellow-400"
-                onClick={() => {
-                  handleToggle("from");
-                }}
-              >
-                <ArrowBackIcon />
-              </button>
-            )}
-            <FormControl fullWidth>
-              <p className="text-xs">Location</p>
-              <Select
-                value={location}
-                name={toggle == "to" ? "from_loc" : "to_loc"}
-                onBlur={onBlur}
-                labelid="new-book-loc"
-                onChange={handleChange}
-                required
-              >
-                {destinations}
-              </Select>
-              {touched && (!values.from_loc || !values.to_loc) && (
+        ) : (
+          <div
+            className="flex flex-col gap-1 collapse-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="font-bold text-[1.1rem] text-black/80 mb-2   w-fit">
+              Please fill the form to create a new booking. <br />
+            </p>
+            <div className="flex flex-row gap-3 items-center justify-center">
+              <p className="flex justify-center items-center mt-3">IITH</p>
+              {toggle == "from" ? (
+                <button
+                  className="btn bg-yellow-400 text-black hover:bg-yellow-400 mt-3"
+                  onClick={() => {
+                    handleToggle("to");
+                  }}
+                >
+                  <ArrowForwardIcon />
+                </button>
+              ) : (
+                <button
+                  className="btn bg-yellow-400 text-black hover:bg-yellow-400"
+                  onClick={() => {
+                    handleToggle("from");
+                  }}
+                >
+                  <ArrowBackIcon />
+                </button>
+              )}
+              <FormControl fullWidth>
+                <p className="text-xs">Location</p>
+                <Select
+                  value={location}
+                  name={toggle == "to" ? "from_loc" : "to_loc"}
+                  onBlur={onBlur}
+                  labelid="new-book-loc"
+                  onChange={handleChange}
+                  required
+                >
+                  {destinations}
+                </Select>
+                {touched && (!values.from_loc || !values.to_loc) && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    Required
+                  </span>
+                )}
+              </FormControl>
+            </div>
+            <FormControl>
+              <p className="text-xs">Leave After</p>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateTimePicker
+                  label="-"
+                  name="startTime"
+                  value={startTime}
+                  onChange={setStartTime}
+                  renderInput={(params) => <TextField {...params} />}
+                  onClose={handleTime1Close}
+                />
+              </LocalizationProvider>
+            </FormControl>
+            <FormControl>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <p className="text-xs">Leave Before</p>
+                <DateTimePicker
+                  label="-"
+                  value={endTime}
+                  name="endTime"
+                  onChange={setEndTime}
+                  renderInput={(params) => <TextField {...params} />}
+                  onClose={handleTime2Close}
+                />
+              </LocalizationProvider>
+              {endTimeError == 1 && (
                 <span className="label-text-alt mt-1 text-red-600">
-                  Required
+                  &quot; Leave before &quot; should be more than &quot; Leave
+                  after &quot;
+                </span>
+              )}
+              {endTimeError == 2 && (
+                <span className="label-text-alt mt-1 text-red-600">
+                  &quot; Leave before &quot; should be after current time
+                </span>
+              )}
+              {endTimeError == 3 && (
+                <span className="label-text-alt mt-1 text-red-600">
+                  Cab window should be within 24 hours
                 </span>
               )}
             </FormControl>
+            <FormControl>
+              <p className="text-xs">Capacity</p>
+              <TextField
+                id="capacity"
+                name="capacity"
+                label="-"
+                type="number"
+                value={values.capacity}
+                onChange={handleChange}
+              />
+            </FormControl>
+            {capacityError == 1 && (
+              <span className="label-text-alt mt-1 text-red-600">
+                Capacity is not valid
+              </span>
+            )}
+            {capacityError == 2 && (
+              <span className="label-text-alt mt-1 text-red-600">
+                Capacity cannot be negative
+              </span>
+            )}
+            {capacityError == 3 && (
+              <span className="label-text-alt mt-1 text-red-600">
+                Capacity more than 256, Seriously ?
+              </span>
+            )}
+            <FormControl>
+              <p className="text-xs">Comments</p>
+              <TextField
+                id="comments"
+                name="comments"
+                label="-"
+                type="text"
+                value={values.comments}
+                onChange={handleChange}
+              />
+            </FormControl>
+            <div className="flex justify-end gap-5 mt-10">
+              <button
+                onClick={handleDialogClose}
+                className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={RegisterNewBooking}
+                className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
+                disabled={
+                  !values.capacity || !endTime || !startTime || !location
+                }
+              >
+                Book
+              </button>
+            </div>
           </div>
-          <FormControl>
-            <p className="text-xs">Leave After</p>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                label="-"
-                name="startTime"
-                value={startTime}
-                onChange={setStartTime}
-                renderInput={(params) => <TextField {...params} />}
-                onClose={handleTime1Close}
-              />
-            </LocalizationProvider>
-          </FormControl>
-          <FormControl>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <p className="text-xs">Leave Before</p>
-              <DateTimePicker
-                label="-"
-                value={endTime}
-                name="endTime"
-                onChange={setEndTime}
-                renderInput={(params) => <TextField {...params} />}
-                onClose={handleTime2Close}
-              />
-            </LocalizationProvider>
-            {endTimeError == 1 && (
-              <span className="label-text-alt mt-1 text-red-600">
-                &quot; Leave before &quot; should be more than &quot; Leave
-                after &quot;
-              </span>
-            )}
-            {endTimeError == 2 && (
-              <span className="label-text-alt mt-1 text-red-600">
-                &quot; Leave before &quot; should be after current time
-              </span>
-            )}
-            {endTimeError == 3 && (
-              <span className="label-text-alt mt-1 text-red-600">
-                Cab window should be within 24 hours
-              </span>
-            )}
-          </FormControl>
-          <FormControl>
-            <p className="text-xs">Capacity</p>
-            <TextField
-              id="capacity"
-              name="capacity"
-              label="-"
-              type="number"
-              value={values.capacity}
-              onChange={handleChange}
-            />
-          </FormControl>
-          {capacityError == 1 && (
-            <span className="label-text-alt mt-1 text-red-600">
-              Capacity is not valid
-            </span>
-          )}
-          {capacityError == 2 && (
-            <span className="label-text-alt mt-1 text-red-600">
-              Capacity cannot be negative
-            </span>
-          )}
-          {capacityError == 3 && (
-            <span className="label-text-alt mt-1 text-red-600">
-              Capacity more than 256, Seriously ?
-            </span>
-          )}
-          <FormControl>
-            <p className="text-xs">Comments</p>
-            <TextField
-              id="comments"
-              name="comments"
-              label="-"
-              type="text"
-              value={values.comments}
-              onChange={handleChange}
-            />
-          </FormControl>
-        </div>
+        )}
       </div>
     </>
   );
