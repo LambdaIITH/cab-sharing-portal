@@ -18,6 +18,8 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const [phoneIsValid, setPhoneIsValid] = useState(false);
   const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -162,13 +164,33 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
       <div className="flex flex-col justify-center my-5">
-        <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-          <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem]">
-            {bookingData.travellers[0].name}
-          </h3>
-          <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] sm:text-[1.1rem] mr-auto ">
-            {bookingData.travellers[0].email}
-          </p>
+        <div className="flex">
+          <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
+            <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem]">
+              {bookingData.travellers[0].name}
+            </h3>
+            <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] sm:text-[1.1rem] mr-auto ">
+              {bookingData.travellers[0].email}
+            </p>
+          </div>
+          {isValidToJoin && isInRequest == -1 && (
+            <button
+              className="btn btn-outline border-black hover:bg-yellow-400 hover:border-black text-black"
+              onClick={() => setIsModalVisible(true)}
+            >
+              Join Booking
+            </button>
+          )}
+          {isInRequest != -1 && (
+            <button
+              onClick={(e) => {
+                handleCancelRequest(e);
+              }}
+              className="btn btn-outline border-black hover:bg-yellow-400 hover:border-black text-black"
+            >
+              Cancel Request
+            </button>
+          )}
         </div>
         <div>
           <span className="text-secondary border-b-2 border-secondary text-[.9rem] sm:text-[1.1rem] ">
@@ -179,30 +201,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
       </div>
       {
         <div className="flex flex-row justify-between items-center">
-          {isValidToJoin && isInRequest == -1 ? (
-            <input
-              disabled={!isValidToJoin && !is_there_a_phone_number}
-              onClick={(e) => e.stopPropagation()}
-              value={joinComment}
-              name="comment"
-              onChange={(e) => setJoinComment(e.target.value)}
-              className="bg-transparent w-[60%] txt-black text-[.8rem] sm:text-[1.1rem] py-3 pl-2 rounded-sm border-b border-white"
-            />
-          ) : (
-            <p></p>
-          )}
           <div>
-            {isValidToJoin && isInRequest == -1 && (
-              <button
-                disabled={
-                  joinComment.length == 0 || phone.replace("+91", "") == ""
-                }
-                className="btn btn-outline"
-                onClick={JoinBooking}
-              >
-                Join Booking
-              </button>
-            )}
             {!is_there_a_phone_number && (
               <PhoneNumberModal
                 handlePhoneEdit={handlePhoneEdit}
@@ -211,21 +210,9 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
                 phoneIsValid={phoneIsValid}
               />
             )}
-
-            {isInRequest != -1 && (
-              <button
-                onClick={(e) => {
-                  handleCancelRequest(e);
-                }}
-                className="btn btn-outline"
-              >
-                Cancel Request
-              </button>
-            )}
           </div>
         </div>
       }
-
       <div className="mt-5">
         {bookingData.travellers.length > 0 && (
           <UserTravellers
@@ -235,6 +222,54 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
         )}
       </div>
       <ToastContainer />
+      {isModalVisible && (
+        <dialog
+          id="my_modal_3"
+          className="modal modal-open"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <form method="dialog" className="modal-box bg-white text-black">
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={() => setIsModalVisible(false)}
+            >
+              ✕
+            </button>
+            {isValidToJoin && isInRequest == -1 ? (
+              <div className="flex flex-col gap-5">
+                <p>Add a Comment</p>
+                <input
+                  disabled={!isValidToJoin && !is_there_a_phone_number}
+                  onClick={(e) => e.stopPropagation()}
+                  value={joinComment}
+                  name="comment"
+                  onChange={(e) => setJoinComment(e.target.value)}
+                  className="bg-transparent w-[60%] txt-black text-[.8rem] sm:text-[1.1rem] py-3 pl-2 rounded-md border border-gray-100 shadow-md"
+                />
+                <div className="flex gap-5 justify-end">
+                  <button
+                    className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
+                    onClick={() => setIsModalVisible(false)}
+                  >
+                    Close
+                  </button>
+                  <button
+                    className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
+                    onClick={JoinBooking}
+                    disabled={
+                      joinComment.length == 0 || phone.replace("+91", "") == ""
+                    }
+                  >
+                    Join
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p></p>
+            )}
+          </form>
+        </dialog>
+      )}
     </div>
   );
 };
