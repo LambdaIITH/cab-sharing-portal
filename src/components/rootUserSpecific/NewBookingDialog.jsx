@@ -102,9 +102,14 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   // 1 -> capacity is not valid
   // 2 -> capacity is not a positive number
   // 3 -> capacity is too large
-  
+
   const checkCapacityErrors = (capacity) => {
-    if (capacity == "" || parseFloat(capacity) != parseInt(capacity) || capacity.charCodeAt(0) < 48 || capacity.charCodeAt(0) > 57) {
+    if (
+      capacity == "" ||
+      parseFloat(capacity) != parseInt(capacity) ||
+      capacity.charCodeAt(0) < 48 ||
+      capacity.charCodeAt(0) > 57
+    ) {
       setCapacityError(1);
       return false;
     } else if (capacity < 0) {
@@ -192,8 +197,18 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     setDialogOpen(true);
   };
 
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const showModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   const handleDialogClose = () => {
-    setDialogOpen(false);
+    closeModal(true);
     setRegisterData(initState);
     setTouched(false);
     setStartTime(null);
@@ -291,7 +306,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 edit={true}
               />
               <button
-                onClick={handleDialogOpen}
+                onClick={() => showModal()}
                 className=" btn bg-yellow-400 text-black hover:bg-yellow-500 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1"
                 disabled={!is_there_a_phone_number}
               >
@@ -311,119 +326,125 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         />
       )}
 
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>New booking</DialogTitle>
-        <DialogContent>
-          <div className="flex flex-col gap-5 ">
-            <p className="text-[.9rem] md:text-[1rem]">
-              Please fill the form to create a new booking. <br />
-            </p>
-            {/* Your email address will be automatically associated with your
-            booking. */}
-            {values.from_loc !== "" && values.from_loc === values.to_loc && (
-              <span className="label-text-alt mt-1 text-red-600">
-                To and From Location cannot be the same
-              </span>
-            )}
-            <div className="flex flex-row gap-3">
-              <Typography
-                component="div"
-                fontSize={15}
-                sx={{ display: "flex", alignItems: "center" }}
-              >
-                IITH
-              </Typography>
-              {toggle == "from" ? (
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  onClick={() => {
-                    handleToggle("to");
-                  }}
-                >
-                  <ArrowForwardIcon />
-                </Button>
-              ) : (
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  onClick={() => {
-                    handleToggle("from");
-                  }}
-                >
-                  <ArrowBackIcon />
-                </Button>
-              )}
-              <FormControl fullWidth>
-                <InputLabel id="new-book-loc">Location</InputLabel>
-                <Select
-                  value={location}
-                  name={toggle == "to" ? "from_loc" : "to_loc"}
-                  onBlur={onBlur}
-                  label="Location"
-                  labelid="new-book-loc"
-                  onChange={handleChange}
-                  required
-                >
-                  {destinations}
-                </Select>
-                {touched && (!values.from_loc || !values.to_loc) && (
+      {isModalOpen && (
+        <Dialog
+          open={true}
+          onClose={handleDialogClose}
+          maxWidth="lg"
+          // PaperComponent={"Paper"}
+
+          // id="my_modal_3"
+          // className="modal modal-open "
+          // onClick={(e) => e.stopPropagation()}
+        >
+          {/* <form
+            method="dialog"
+            className="modal-box bg-white text-black border-black border-2"
+          > */}
+          <button
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            onClick={() => closeModal()}
+          >
+            ✕
+          </button>
+          <DialogContent>
+            <div className="flex flex-col gap-1 ">
+              <p className="font-bold text-[1.1rem] text-black/80 mb-2   w-fit">
+                Please fill the form to create a new booking. <br />
+              </p>
+              <div className="flex flex-row gap-3 items-center justify-center">
+                <p className="flex justify-center items-center">IITH</p>
+                {toggle == "from" ? (
+                  <button
+                    className="btn bg-yellow-400 text-black hover:bg-yellow-400"
+                    onClick={() => {
+                      handleToggle("to");
+                    }}
+                  >
+                    <ArrowForwardIcon />
+                  </button>
+                ) : (
+                  <button
+                    className="btn bg-yellow-400 text-black hover:bg-yellow-400"
+                    onClick={() => {
+                      handleToggle("from");
+                    }}
+                  >
+                    <ArrowBackIcon />
+                  </button>
+                )}
+                <FormControl fullWidth>
+                  <p className="text-xs">Location</p>
+                  <Select
+                    value={location}
+                    name={toggle == "to" ? "from_loc" : "to_loc"}
+                    onBlur={onBlur}
+                    labelid="new-book-loc"
+                    onChange={handleChange}
+                    required
+                  >
+                    {destinations}
+                  </Select>
+                  {touched && (!values.from_loc || !values.to_loc) && (
+                    <span className="label-text-alt mt-1 text-red-600">
+                      Required
+                    </span>
+                  )}
+                </FormControl>
+              </div>
+              <FormControl>
+                <p className="text-xs">Leave After</p>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DateTimePicker
+                    label="-"
+                    name="startTime"
+                    value={startTime}
+                    onChange={setStartTime}
+                    renderInput={(params) => <TextField {...params} />}
+                    onClose={handleTime1Close}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+              <FormControl>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <p className="text-xs">Leave Before</p>
+                  <DateTimePicker
+                    label="-"
+                    value={endTime}
+                    name="endTime"
+                    onChange={setEndTime}
+                    renderInput={(params) => <TextField {...params} />}
+                    onClose={handleTime2Close}
+                  />
+                </LocalizationProvider>
+                {endTimeError == 1 && (
                   <span className="label-text-alt mt-1 text-red-600">
-                    Required
+                    &quot; Leave before &quot; should be more than &quot; Leave
+                    after &quot;
+                  </span>
+                )}
+                {endTimeError == 2 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    &quot; Leave before &quot; should be after current time
+                  </span>
+                )}
+                {endTimeError == 3 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    Cab window should be within 24 hours
                   </span>
                 )}
               </FormControl>
-            </div>
-            <FormControl>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  label="Leave After"
-                  name="startTime"
-                  value={startTime}
-                  onChange={setStartTime}
-                  renderInput={(params) => <TextField {...params} />}
-                  onClose={handleTime1Close}
+              <FormControl>
+                <p className="text-xs">Capacity</p>
+                <TextField
+                  id="capacity"
+                  name="capacity"
+                  label="-"
+                  type="number"
+                  value={values.capacity}
+                  onChange={handleChange}
                 />
-              </LocalizationProvider>
-            </FormControl>
-            <FormControl>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  label="Leave Before"
-                  value={endTime}
-                  name="endTime"
-                  onChange={setEndTime}
-                  renderInput={(params) => <TextField {...params} />}
-                  onClose={handleTime2Close}
-                />
-              </LocalizationProvider>
-              {endTimeError == 1 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be more than &quot; Leave
-                  after &quot;
-                </span>
-              )}
-              {endTimeError == 2 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be after current time
-                </span>
-              )}
-              {endTimeError == 3 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  Cab window should be within 24 hours
-                </span>
-              )}
-            </FormControl>
-            <FormControl>
-              <TextField
-                id="capacity"
-                name="capacity"
-                label="Capacity"
-                type="number"
-                value={values.capacity}
-                onChange={handleChange}
-              />
-            </FormControl>
+              </FormControl>
               {capacityError == 1 && (
                 <span className="label-text-alt mt-1 text-red-600">
                   Capacity is not valid
@@ -439,28 +460,38 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   Capacity more than 256, Seriously ?
                 </span>
               )}
-            <FormControl>
-              <TextField
-                id="comments"
-                name="comments"
-                label="Comments"
-                type="text"
-                value={values.comments}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button
-            onClick={RegisterNewBooking}
-            disabled={!values.capacity || !endTime || !startTime || !location}
-          >
-            Book
-          </Button>
-        </DialogActions>
-      </Dialog>
+              <FormControl>
+                <p className="text-xs">Comments</p>
+                <TextField
+                  id="comments"
+                  name="comments"
+                  label="-"
+                  type="text"
+                  value={values.comments}
+                  onChange={handleChange}
+                />
+              </FormControl>
+            </div>
+          </DialogContent>
+
+          <DialogActions>
+            <button
+              onClick={handleDialogClose}
+              className="btn btn-outline border-yellow-400 text-black hover:bg-yellow-400"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={RegisterNewBooking}
+              className="btn bg-yellow-400 text-black hover:bg-yellow-400"
+              disabled={!values.capacity || !endTime || !startTime || !location}
+            >
+              Book
+            </button>
+          </DialogActions>
+          {/* </form> */}
+        </Dialog>
+      )}
     </>
   );
 }

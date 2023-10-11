@@ -19,6 +19,7 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import axios from "axios";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
@@ -34,6 +35,7 @@ const AllUserBookings = () => {
   const [show_all, setShowAll] = useState(false);
   const [checked, setChecked] = useState(false);
   const [request_checked, setRequestChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleDialogOpen = () => {
@@ -43,7 +45,8 @@ const AllUserBookings = () => {
     setDialogOpen(false);
   };
 
-  const fetchFilteredBookings = () => {
+  const fetchFilteredBookings = async () => {
+    setIsLoading(true);
     const authToken = retrieveAuthToken(router);
     let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
 
@@ -61,18 +64,19 @@ const AllUserBookings = () => {
       apiURL += `?start_time=${isoStartTime}&end_time=${isoEndTime}`;
     }
 
-    axios
-      .get(apiURL, {
+    try {
+      const response = await axios.get(apiURL, {
         headers: {
           Authorization: authToken,
           "Content-Type": "application/json",
         },
-      })
-      .then((res) => res.data)
-      .then((data) => {
-        console.log("data", data);
-        setFilteredBookings(data);
       });
+      console.log("data", response.data);
+      setFilteredBookings(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching filtered bookings:", error);
+    }
   };
 
   const maxDate = new Date();
@@ -85,7 +89,9 @@ const AllUserBookings = () => {
 
   useEffect(() => {
     if (username && email) {
-      fetchFilteredBookings();
+      fetchFilteredBookings().then(() => {
+        setIsLoading(false);
+      });
     }
   }, [username, email]);
 
@@ -94,19 +100,25 @@ const AllUserBookings = () => {
     setChecked(event.target.checked);
   };
 
-  const fetchRequests = () => {
+  const fetchRequests = async () => {
+    setIsLoading(true);
     const authToken = retrieveAuthToken(router);
-    axios
-      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me/requests`, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((res) => res.data)
-      .then((data) => {
-        console.log("requests", data);
-        setFilteredBookings(data);
-      });
+
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/me/requests`,
+        {
+          headers: {
+            Authorization: authToken,
+          },
+        }
+      );
+      console.log("requests", response.data);
+      setFilteredBookings(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+    }
   };
 
   useEffect(() => {
@@ -123,154 +135,164 @@ const AllUserBookings = () => {
 
   return (
     <div className="flex flex-col  rounded-box py-10 mx-auto">
-      <div className="flex flex-row gap-2 items-center justify-center rounded-lg">
-        <Dialog open={dialogOpen} onClose={handleDialogClose}>
-          <DialogContent>
-            <div className="flex flex-col gap-3 items-center justify-center">
-              <DialogTitle>Filter bookings</DialogTitle>
-              <p className="text-[.9rem] md:text-[1rem] w-[20rem] text-center">
-                Filter based on times, locations or both <br />
-              </p>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  label="Start Time"
-                  value={startTime}
-                  minDate={new Date()}
-                  maxDate={maxDate}
-                  onChange={(newValue) => {
-                    setStartTime(newValue);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      sx={{
-                        width: "175px",
-                        borderRadius: "8px",
+      {isLoading ? (
+        <UserbookingShimmer />
+      ) : (
+        <div>
+          <div className="flex flex-row gap-2 items-center justify-center rounded-lg">
+            <Dialog open={dialogOpen} onClose={handleDialogClose}>
+              <DialogContent>
+                <div className="flex flex-col gap-3 items-center justify-center">
+                  <DialogTitle>Filter bookings</DialogTitle>
+                  <p className="text-[.9rem] md:text-[1rem] w-[20rem] text-center">
+                    Filter based on times, locations or both <br />
+                  </p>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="Start Time"
+                      value={startTime}
+                      minDate={new Date()}
+                      maxDate={maxDate}
+                      onChange={(newValue) => {
+                        setStartTime(newValue);
                       }}
-                      {...params}
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            width: "175px",
+                            borderRadius: "8px",
+                          }}
+                          {...params}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </LocalizationProvider>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  label="End Time"
-                  value={endTime}
-                  minDate={new Date()}
-                  maxDate={maxDate}
-                  onChange={(newValue) => {
-                    setEndTime(newValue);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      sx={{
-                        width: "175px",
-                        borderRadius: "8px",
+                  </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="End Time"
+                      value={endTime}
+                      minDate={new Date()}
+                      maxDate={maxDate}
+                      onChange={(newValue) => {
+                        setEndTime(newValue);
                       }}
-                      {...params}
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            width: "175px",
+                            borderRadius: "8px",
+                          }}
+                          {...params}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </LocalizationProvider>
+                  </LocalizationProvider>
 
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={places}
-                value={fromValue}
-                onChange={(event, newValue) => {
-                  setFromValue(newValue);
-                }}
-                sx={{
-                  width: "175px",
-                  borderRadius: "8px",
-                }}
-                renderInput={(params) => <TextField {...params} label="From" />}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={places}
-                value={toValue}
-                onChange={(event, newValue) => {
-                  setToValue(newValue);
-                }}
-                sx={{
-                  width: "175px",
-                  borderRadius: "8px",
-                }}
-                renderInput={(params) => <TextField {...params} label="To" />}
-              />
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={places}
+                    value={fromValue}
+                    onChange={(event, newValue) => {
+                      setFromValue(newValue);
+                    }}
+                    sx={{
+                      width: "175px",
+                      borderRadius: "8px",
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="From" />
+                    )}
+                  />
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={places}
+                    value={toValue}
+                    onChange={(event, newValue) => {
+                      setToValue(newValue);
+                    }}
+                    sx={{
+                      width: "175px",
+                      borderRadius: "8px",
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="To" />
+                    )}
+                  />
+                </div>
+                <DialogActions>
+                  <Button onClick={handleDialogClose}>Cancel</Button>
+                  <Button
+                    onClick={fetchFilteredBookings}
+
+                    // disabled={!values.capacity || !endTime || !startTime || !location}
+                  >
+                    Filter
+                  </Button>
+                </DialogActions>
+              </DialogContent>
+            </Dialog>
+          </div>
+          <div className="flex flex-row gap-5 mx-auto justify-center items-center">
+            <div className="flex gap-2 items-center justify-center rounded-md bg-primary w-fit mx-auto p-2">
+              <FormGroup sx={{ width: "200px" }}>
+                {" "}
+                {/* fix this width css*/}
+                <FormControlLabel
+                  sx={{ color: "black" }}
+                  control={
+                    <Switch
+                      defaultChecked
+                      checked={checked}
+                      onChange={handleShowAll}
+                    />
+                  }
+                  label="Include filled cabs"
+                />
+              </FormGroup>
+              <FormGroup sx={{ width: "200px" }}>
+                {" "}
+                {/* fix this width css*/}
+                <FormControlLabel
+                  sx={{ color: "black" }}
+                  control={
+                    <Switch
+                      defaultChecked
+                      checked={request_checked}
+                      onChange={handleRequests}
+                    />
+                  }
+                  label="Pending requests"
+                />
+              </FormGroup>
             </div>
-            <DialogActions>
-              <Button onClick={handleDialogClose}>Cancel</Button>
-              <Button
-                onClick={fetchFilteredBookings}
-
-                // disabled={!values.capacity || !endTime || !startTime || !location}
-              >
-                Filter
-              </Button>
-            </DialogActions>
-          </DialogContent>
-        </Dialog>
-      </div>
-      <div className="flex flex-row gap-5 mx-auto justify-center items-center">
-        <div className="flex gap-2 items-center justify-center rounded-md bg-primary w-fit mx-auto p-2">
-          <FormGroup sx={{ width: "200px" }}>
-            {" "}
-            {/* fix this width css*/}
-            <FormControlLabel
-              sx={{ color: "black" }}
-              control={
-                <Switch
-                  defaultChecked
-                  checked={checked}
-                  onChange={handleShowAll}
-                />
+            <button
+              className="btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1 ml-auto"
+              onClick={handleDialogOpen}
+            >
+              <FilterAltIcon />
+            </button>
+          </div>
+          <div className="my-10">
+            {filteredBookings?.map((item, index) => {
+              if (show_all || item.capacity > item.travellers.length) {
+                return (
+                  <CabShareSmall
+                    fetchFilteredBookings={fetchFilteredBookings}
+                    userSpecific={false}
+                    key={index}
+                    index={index}
+                    bookingData={item}
+                    username={username}
+                    email={email}
+                  />
+                );
               }
-              label="Include filled cabs"
-            />
-          </FormGroup>
-          <FormGroup sx={{ width: "200px" }}>
-            {" "}
-            {/* fix this width css*/}
-            <FormControlLabel
-              sx={{ color: "black" }}
-              control={
-                <Switch
-                  defaultChecked
-                  checked={request_checked}
-                  onChange={handleRequests}
-                />
-              }
-              label="Pending requests"
-            />
-          </FormGroup>
+            })}
+          </div>
         </div>
-        <button
-          className="btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1 ml-auto"
-          onClick={handleDialogOpen}
-        >
-          <FilterAltIcon />
-        </button>
-      </div>
-      <div className="my-10">
-        {filteredBookings?.map((item, index) => {
-          if (show_all || item.capacity > item.travellers.length) {
-            return (
-              <CabShareSmall
-                fetchFilteredBookings={fetchFilteredBookings}
-                userSpecific={false}
-                key={index}
-                index={index}
-                bookingData={item}
-                username={username}
-                email={email}
-              />
-            );
-          }
-        })}
-      </div>
+      )}
     </div>
   );
 };
