@@ -15,6 +15,10 @@ const UserBookings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  const [expand, setExpand] = useState(false);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const fetchUserBookings = async () => {
     const authToken = retrieveAuthToken(router);
     try {
@@ -63,6 +67,7 @@ const UserBookings = () => {
               email={email}
             />
           </Stack>
+
           <div className="">
             {bookings?.length > 0 &&
               bookings?.map((item, index) => {
