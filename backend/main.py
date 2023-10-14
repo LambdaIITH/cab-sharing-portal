@@ -318,6 +318,7 @@ async def accept_request(
     send_email(response.requester_email, "accept", booking_id)
 
     name = queries.get_name(conn, email=email)
+    phone = queries.get_phone_number(conn, email=email)
 
     travellers = queries.get_travellers(conn, cab_id=booking_id)
     for traveller in travellers:
@@ -330,6 +331,7 @@ async def accept_request(
             booking_id,
             x_accepted_email=email,
             x_accepted_name=name,
+            x_accepted_phone=phone,
         )
 
 
