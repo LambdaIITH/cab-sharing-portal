@@ -9,7 +9,9 @@ SELECT status
   WHERE booking_id = :booking_id AND request_email = :email;
 
 -- name: delete_request!
-DELETE FROM request WHERE booking_id=:cab_id AND request_email=:email;
+UPDATE request
+  SET status = 'cancelled'
+  WHERE booking_id = :cab_id AND request_email = :email AND status = 'pending';
 
 -- name: show_requests
 SELECT r.request_email, r.comments, u.name, u.phone_number

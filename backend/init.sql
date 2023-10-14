@@ -1,3 +1,11 @@
+DROP TABLE IF EXISTS request;
+DROP TABLE IF EXISTS traveller;
+DROP TABLE IF EXISTS cab_booking;
+DROP TABLE IF EXISTS locations;
+DROP TABLE IF EXISTS users;
+DROP TYPE IF EXISTS request_status;
+
+
 CREATE TABLE users
 (
   user_email VARCHAR NOT NULL,
@@ -45,7 +53,7 @@ CREATE TABLE traveller
   FOREIGN KEY (cab_id) REFERENCES cab_booking(id) ON DELETE CASCADE
 );
 
-CREATE TYPE request_status AS ENUM ('pending', 'accepted', 'rejected');
+CREATE TYPE request_status AS ENUM ('pending', 'accepted', 'rejected', 'cancelled');
 
 CREATE TABLE request
 (
@@ -57,8 +65,3 @@ CREATE TABLE request
   FOREIGN KEY (booking_id) REFERENCES cab_booking(id) ON DELETE CASCADE,
   FOREIGN KEY (request_email) REFERENCES users(user_email)
 );
-
--- status numbers and their corresponding meanings
-  -- 2 - pending
-  -- 1 - accepted
-  -- 0 - rejected

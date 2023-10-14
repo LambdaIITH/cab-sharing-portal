@@ -205,7 +205,7 @@ async def request_to_join_booking(
     """
 
     # check if booking exists
-    if queries.get_owner_email(conn, booking_id=booking_id) is None:
+    if queries.get_owner_email(conn, cab_id=booking_id) is None:
         raise HTTPException(status_code=400, detail="Invalid Booking ID")
 
     # check if request already sent
@@ -217,13 +217,11 @@ async def request_to_join_booking(
             detail = "Request already sent"
         elif request_status == "accepted":
             detail = "You are already a traveller"
+        elif request_status == "cancelled":
+            detail = "Request already cancelled"
         else:
             # request_status == "rejected"
             detail = "Request already rejected"
-        # TODO:
-        # Add a request_status == "cancelled" variant to database and handle it here. Otherwise,
-        # the user will be able to spam another user by repeatedly sending requests and cancelling
-        # them before they are accepted/rejected.
         raise HTTPException(status_code=400, detail=detail)
 
     try:
@@ -233,7 +231,7 @@ async def request_to_join_booking(
             email=email,
             comments=join_booking.comments,
         )
-        owner_email = queries.get_owner_email(conn, booking_id=booking_id)
+        owner_email = queries.get_owner_email(conn, cab_id=booking_id)
         phone = queries.get_phone_number(conn, email=email)
         name = queries.get_name(conn, email=email)
         send_email(
@@ -256,6 +254,12 @@ async def delete_request(booking_id: int, email: str = Depends(verify_auth_token
     """
     To delete a person's request to join booking
     """
+    request_status = queries.get_request_status(
+        conn, booking_id=booking_id, email=email
+    )
+    if request_status != "pending":
+        raise HTTPException(status_code=400, detail="No pending request found")
+
     try:
         res = queries.delete_request(conn, cab_id=booking_id, email=email)
         if res == 0:
@@ -292,7 +296,9 @@ async def accept_request(
             val="accepted",
         )
         if comments is None:
-            raise HTTPException(status_code=400, detail="There is no request to accept")
+            raise HTTPException(
+                status_code=400, detail="There is no pending request to accept"
+            )
 
         queries.add_traveller(
             conn,
