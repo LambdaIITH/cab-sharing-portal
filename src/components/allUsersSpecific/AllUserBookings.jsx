@@ -37,12 +37,14 @@ const AllUserBookings = () => {
   const [request_checked, setRequestChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [expand, setExpand] = useState(false);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleDialogOpen = () => {
-    setDialogOpen(true);
+    setExpand(true);
   };
   const handleDialogClose = () => {
-    setDialogOpen(false);
+    setExpand(false);
   };
 
   const fetchFilteredBookings = async () => {
@@ -139,140 +141,185 @@ const AllUserBookings = () => {
         <UserbookingShimmer />
       ) : (
         <div>
-          <div className="flex flex-row gap-2 items-center justify-center rounded-lg">
-            <Dialog open={dialogOpen} onClose={handleDialogClose}>
+          <div className="flex flex-row gap-2 items-center justify-center rounded-lg"></div>
+
+          <div
+            tabIndex={0}
+            className={`collapse   ${
+              expand ? "collapse-open" : "collapse-close"
+            } collapse-close bg-secondary/10 md:p-5 mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
+          >
+            <div className="collapse-title font-medium flex flex-col   rounded-md">
+              <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+                Sort & Filter
+              </p>
+              <div className="flex flex-col md:flex-row justify-center items-center rounded-md">
+                <FormGroup sx={{ width: "200px" }}>
+                  <FormControlLabel
+                    sx={{
+                      color: "black",
+                      fontFamily: "Montserrat, sans-serif",
+                    }}
+                    control={
+                      <Switch
+                        defaultChecked
+                        checked={checked}
+                        onChange={handleShowAll}
+                      />
+                    }
+                    label="Include filled cabs"
+                  />
+                </FormGroup>
+                <FormGroup sx={{ width: "200px" }}>
+                  <FormControlLabel
+                    sx={{
+                      color: "black",
+                      fontFamily: "Montserrat, sans-serif",
+                    }}
+                    control={
+                      <Switch
+                        defaultChecked
+                        checked={request_checked}
+                        onChange={handleRequests}
+                      />
+                    }
+                    label="Pending requests"
+                  />
+                </FormGroup>
+                <div className="ml-auto">
+                  {!expand && (
+                    <button
+                      className="btn bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                      onClick={handleDialogOpen}
+                    >
+                      Filter
+                    </button>
+                  )}
+                  {(startTime !== null ||
+                    endTime !== null ||
+                    toValue !== null ||
+                    fromValue !== null) && (
+                    <button
+                      className="btn bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                      onClick={() => {
+                        setEndTime(null);
+                        setStartTime(null);
+                        setToValue(null);
+                        setFromValue(null);
+                        setExpand(false);
+                      }}
+                    >
+                      Clear Filters
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="collapse-content">
               <DialogContent>
-                <div className="flex flex-col gap-3 items-center justify-center">
-                  <DialogTitle>Filter bookings</DialogTitle>
+                <div className="flex flex-col gap-3 ">
                   <p className="text-[.9rem] md:text-[1rem] w-[20rem] text-center">
                     Filter based on times, locations or both <br />
                   </p>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                      label="Start Time"
-                      value={startTime}
-                      minDate={new Date()}
-                      maxDate={maxDate}
-                      onChange={(newValue) => {
-                        setStartTime(newValue);
+                  <div className="flex flex-row gap-2">
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DateTimePicker
+                        label="Start Time"
+                        value={startTime}
+                        minDate={new Date()}
+                        maxDate={maxDate}
+                        onChange={(newValue) => {
+                          setStartTime(newValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            sx={{
+                              width: "175px",
+                              borderRadius: "8px",
+                            }}
+                            {...params}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DateTimePicker
+                        label="End Time"
+                        value={endTime}
+                        minDate={new Date()}
+                        maxDate={maxDate}
+                        onChange={(newValue) => {
+                          setEndTime(newValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            sx={{
+                              width: "175px",
+                              borderRadius: "8px",
+                            }}
+                            {...params}
+                          />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </div>
+                  <div className="flex flex-row gap-2">
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={places}
+                      value={fromValue}
+                      onChange={(event, newValue) => {
+                        setFromValue(newValue);
+                      }}
+                      sx={{
+                        width: "175px",
+                        borderRadius: "8px",
                       }}
                       renderInput={(params) => (
-                        <TextField
-                          sx={{
-                            width: "175px",
-                            borderRadius: "8px",
-                          }}
-                          {...params}
-                        />
+                        <TextField {...params} label="From" />
                       )}
                     />
-                  </LocalizationProvider>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                      label="End Time"
-                      value={endTime}
-                      minDate={new Date()}
-                      maxDate={maxDate}
-                      onChange={(newValue) => {
-                        setEndTime(newValue);
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={places}
+                      value={toValue}
+                      onChange={(event, newValue) => {
+                        setToValue(newValue);
+                      }}
+                      sx={{
+                        width: "175px",
+                        borderRadius: "8px",
                       }}
                       renderInput={(params) => (
-                        <TextField
-                          sx={{
-                            width: "175px",
-                            borderRadius: "8px",
-                          }}
-                          {...params}
-                        />
+                        <TextField {...params} label="To" />
                       )}
                     />
-                  </LocalizationProvider>
-
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={places}
-                    value={fromValue}
-                    onChange={(event, newValue) => {
-                      setFromValue(newValue);
-                    }}
-                    sx={{
-                      width: "175px",
-                      borderRadius: "8px",
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="From" />
-                    )}
-                  />
-                  <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    options={places}
-                    value={toValue}
-                    onChange={(event, newValue) => {
-                      setToValue(newValue);
-                    }}
-                    sx={{
-                      width: "175px",
-                      borderRadius: "8px",
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} label="To" />
-                    )}
-                  />
+                  </div>
                 </div>
                 <DialogActions>
-                  <Button onClick={handleDialogClose}>Cancel</Button>
-                  <Button
-                    onClick={fetchFilteredBookings}
+                  <button
+                    onClick={handleDialogClose}
+                    className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+                  >
+                    Cancel
+                  </button>
 
-                    // disabled={!values.capacity || !endTime || !startTime || !location}
+                  <button
+                    onClick={fetchFilteredBookings}
+                    className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
+                    disabled={
+                      (startTime === null || endTime === null) &&
+                      (toValue === null || fromValue === null)
+                    }
                   >
                     Filter
-                  </Button>
+                  </button>
                 </DialogActions>
               </DialogContent>
-            </Dialog>
-          </div>
-          <div className="flex flex-row gap-5 mx-auto justify-center items-center">
-            <div className="flex gap-2 items-center justify-center rounded-md bg-primary w-fit mx-auto p-2">
-              <FormGroup sx={{ width: "200px" }}>
-                {" "}
-                {/* fix this width css*/}
-                <FormControlLabel
-                  sx={{ color: "black" }}
-                  control={
-                    <Switch
-                      defaultChecked
-                      checked={checked}
-                      onChange={handleShowAll}
-                    />
-                  }
-                  label="Include filled cabs"
-                />
-              </FormGroup>
-              <FormGroup sx={{ width: "200px" }}>
-                {" "}
-                {/* fix this width css*/}
-                <FormControlLabel
-                  sx={{ color: "black" }}
-                  control={
-                    <Switch
-                      defaultChecked
-                      checked={request_checked}
-                      onChange={handleRequests}
-                    />
-                  }
-                  label="Pending requests"
-                />
-              </FormGroup>
             </div>
-            <button
-              className="btn btn-primary capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-1 ml-auto"
-              onClick={handleDialogOpen}
-            >
-              <FilterAltIcon />
-            </button>
           </div>
           <div className="my-10">
             {filteredBookings?.map((item, index) => {

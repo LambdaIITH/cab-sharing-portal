@@ -276,7 +276,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
           expand ? "collapse-open" : "collapse-close"
         } collapse-close bg-secondary/10 md:p-5 mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
       >
-        <div className="collapse-title font-medium flex flex-col  rounded-md  cursor-pointer">
+        <div className="collapse-title font-medium flex flex-col  rounded-md">
           <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
             Your Profile
           </p>
