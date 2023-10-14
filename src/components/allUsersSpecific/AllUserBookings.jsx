@@ -207,6 +207,7 @@ const AllUserBookings = () => {
                         setToValue(null);
                         setFromValue(null);
                         setExpand(false);
+                        fetchRequests();
                       }}
                     >
                       Clear Filters
