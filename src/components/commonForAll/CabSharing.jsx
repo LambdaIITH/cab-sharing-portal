@@ -4,6 +4,7 @@ import NavBar from "./NavBar";
 import UserBookings from "components/rootUserSpecific/UserBookings";
 import AllUserBookings from "components/allUsersSpecific/AllUserBookings";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export default function CabSharing() {
   const [tab, setTab] = useState(0);
@@ -19,7 +20,7 @@ export default function CabSharing() {
   }, []);
 
   return (
-    <>
+    <div className="bg-purple-100">
       {/* <NavBar /> */}
       {/* controlling width */}
       <div className="flex bg-purple-100 flex-col overflow-x-auto py-[2rem] min-h-screen">
@@ -50,6 +51,11 @@ export default function CabSharing() {
           {tab === 1 && <AllUserBookings />}
         </div>
       </div>
-    </>
+      <footer className="flex justify-center gap-2 text-[1.1rem] items-center bg-yellow-400 text-black py-4 mt-8">
+        <span>Made with </span>
+        <FavoriteIcon sx={{ color: "#BF40BF" }} />
+        <span> By Lambda</span>
+      </footer>
+    </div>
   );
 }
