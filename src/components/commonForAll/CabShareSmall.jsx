@@ -90,7 +90,7 @@ const CabShareSmall = ({
   };
 
   useEffect(() => {
-    if (index === 0) setExpand(true);
+    if (userSpecific && index === 0) setExpand(true);
   }, []);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const CabShareSmall = ({
         index === 0 && expand && "collapse-open"
       }  ${
         expand ? "collapse-open" : "collapse-close"
-      } collapse-close bg-secondary/10 md:p-5 mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
+      } collapse-close bg-secondary/10 md:p-5 mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
       onClick={() => setExpand((prev) => !prev)}
     >
       <div className="collapse-title font-medium flex flex-col  rounded-md  cursor-pointer">
