@@ -2,9 +2,10 @@ import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Literal, Union
+from typing import Literal
 
 import aiosql
+import html2text
 import psycopg2
 from dotenv import load_dotenv
 from fastapi import Header, HTTPException
@@ -122,69 +123,87 @@ smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
 print("Connected to SMTP server")
 
 
-def send_email(
-    receiver: str,
-    mail_type: Literal["accept", "reject", "exit"],
-    booking_id: int,
-    exited_email: Union[str, None] = None,
-):
-    global smtp_server
-
+def refresh_smtp_server(server):
+    """
+    If the SMTP connection dies, this function will restart it.
+    """
     try:
-        smtp_server.noop()
+        server.noop()
     except Exception as ex:
         print("SMTP connection died, trying to restart")
-        print("Something wen wrong", ex)
-        smtp_server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        smtp_server.ehlo()
-        smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
+        print("Something went wrong", ex)
+        server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        server.ehlo()
+        server.login(GMAIL_USER, GMAIL_PASSWORD)
         print("Connected to SMTP server")
+
+
+def send_email(
+    receiver: str,
+    mail_type: Literal[
+        "create",
+        "request",
+        "accept",
+        "accept_notif",
+        "reject",
+        "exit",
+        "exit_notif",
+        "delete_notif",
+    ],
+    booking_id: int,
+    **kwargs,
+):
+    """
+    Send an email to the receiver with the given mail_type.
+
+    kwargs are used for mail_type specific substitutions.
+    all kwargs must start with "x_", for example x_requester_name, x_exiter_email, etc.
+    this is to prevent conflicts, and to make it clear that these are not part of the booking info.
+    """
+    global smtp_server
+    refresh_smtp_server(smtp_server)
+
+    booking_info = queries.get_booking_details(conn, cab_id=booking_id)
+    (
+        _,
+        start_time,
+        end_time,
+        capacity,
+        from_loc,
+        to_loc,
+        owner_email,
+        owner_name,
+        owner_phone,
+    ) = booking_info
+
+    def fmt(s: str) -> str:
+        return s.format(
+            booking_id=booking_id,
+            start_time=start_time.strftime("%Y-%m-%d %H:%M"),
+            end_time=end_time.strftime("%Y-%m-%d %H:%M"),
+            date=start_time.strftime("%d %b %Y"),  # 13 Sep 2023
+            capacity=capacity,
+            from_loc=from_loc,
+            to_loc=to_loc,
+            owner_email=owner_email,
+            owner_name=owner_name,
+            owner_phone=owner_phone,
+            **kwargs,  # see docstring
+        )
+
+    with open(f"templates/{mail_type}/subject.txt", "r") as f:
+        subject = f.read()
+    with open(f"templates/{mail_type}/body.html", "r") as f:
+        html = f.read()
+    subject = fmt(subject)
+    # convert html to text before substituting user data
+    text = html2text.html2text(html)
+    text = fmt(text)
+    html = fmt(html)
 
     message = MIMEMultipart("alternative")
     message["From"] = GMAIL_USER
     message["To"] = receiver
-    booking_info = queries.get_booking_details(conn, cab_id=booking_id)
-    if mail_type == "accept":
-        subject = (
-            f"Accepted Cab sharing request from {booking_info[3]} to {booking_info[4]}"
-        )
-        text = "Yayy, your request has been accepted"
-        html = f"""\
-        <html>
-            <body>
-                <h2> Your request has been accepted by {booking_info[6]} ( {booking_info[7]},{booking_info[5]} )</h2>
-                <p>
-                    <b>From:</b> {booking_info[3]}<br>
-                    <b>To:</b> {booking_info[4]}<br>
-                    <b>Cab Window:</b> {booking_info[1]} - {booking_info[2]}<br>
-                </p>
-            </body>
-        </html>
-        """
-    elif mail_type == "reject":
-        subject = (
-            f"Rejected Cab sharing request from {booking_info[3]} to {booking_info[4]}"
-        )
-        text = "Sorry, your request has been rejected"
-        html = """
-        <html>
-            <body>
-                <h2> Sorry, your request has been rejected </h2>
-            </body>
-        </html>
-        """
-    elif mail_type == "exit":
-        assert exited_email is not None
-        subject = f"{exited_email} exited your cab from {booking_info[3]} to {booking_info[4]}"
-        text = "They have exited your cab"
-        html = """
-        <html>
-            <body>
-                <h2> Sorry, they have exited your cab. </h2>
-            </body>
-        </html>
-        """
-
     message["Subject"] = subject
     # need to compose a proper email with accept and reject options
     part1 = MIMEText(text, "plain")
@@ -195,4 +214,4 @@ def send_email(
         smtp_server.sendmail(GMAIL_USER, receiver, message.as_string())
         # print ("Email sent successfully!")
     except Exception as ex:
-        print("Something went wrong", ex)
+        print("Could not send email", ex)

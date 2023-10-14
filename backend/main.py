@@ -63,7 +63,6 @@ async def create_user(
         print(e)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
-    return {"status": "success"}
 
 
 @app.post("/bookings")
@@ -78,9 +77,6 @@ async def create_booking(
     to_id = queries.get_loc_id(conn, place=booking.to_loc)
     if from_id is None or to_id is None:
         raise HTTPException(status_code=400, detail="Invalid Location")
-
-    print(booking.start_time)
-    print(booking.start_time)
 
     try:
         booking_id = queries.create_booking(
@@ -98,6 +94,7 @@ async def create_booking(
             conn, cab_id=booking_id, user_email=email, comments=booking.comments
         )
         conn.commit()
+        send_email(email, "create", booking_id)
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
@@ -130,6 +127,8 @@ async def update_booking(
         print(e)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
+
+    # TODO: Send Email to Travellers
 
 
 @app.get("/me/bookings")
@@ -212,6 +211,17 @@ async def request_to_join_booking(
             email=email,
             comments=join_booking.comments,
         )
+        owner_email = queries.get_owner_email(conn, booking_id=booking_id)
+        phone = queries.get_phone_number(conn, email=email)
+        name = queries.get_name(conn, email=email)
+        send_email(
+            owner_email,
+            "request",
+            booking_id,
+            x_requester_name=name,
+            x_requester_phone=phone,
+            x_requester_email=email,
+        )
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger
@@ -279,6 +289,21 @@ async def accept_request(
 
     send_email(response.requester_email, "accept", booking_id)
 
+    name = queries.get_name(conn, email=email)
+
+    travellers = queries.get_travellers(conn, cab_id=booking_id)
+    for traveller in travellers:
+        traveller_email = traveller[0]
+        if traveller_email == response.requester_email:
+            continue
+        send_email(
+            traveller_email,
+            "accept_notif",
+            booking_id,
+            x_accepted_email=email,
+            x_accepted_name=name,
+        )
+
 
 @app.post("/bookings/{booking_id}/reject")
 async def reject_request(
@@ -334,6 +359,10 @@ async def delete_existing_booking(
         )
 
     try:
+        travellers = queries.get_travellers(conn, cab_id=booking_id)
+        for traveller in travellers:
+            traveller_email = traveller[0]
+            send_email(traveller_email, "delete_notif", booking_id)
         queries.delete_booking(conn, cab_id=booking_id)
         conn.commit()
     except Exception as e:
@@ -347,7 +376,7 @@ async def delete_user_from_booking(
     booking_id: int, email: str = Depends(verify_auth_token)
 ):
     """
-    For a user to delete himself from a booking (owner cannot delete himself)
+    For a user to exit from a booking (owner cannot exit)
     """
     owner_email = queries.get_owner_email(conn, cab_id=booking_id)
     if owner_email is None:
@@ -355,18 +384,30 @@ async def delete_user_from_booking(
     elif owner_email == email:
         raise HTTPException(status_code=400, detail="You are the owner of this booking")
 
-    queries.delete_particular_traveller(
-        conn, cab_id=booking_id, user_email=email, owner_email=owner_email
-    )
-
     try:
+        queries.delete_particular_traveller(
+            conn, cab_id=booking_id, user_email=email, owner_email=owner_email
+        )
         conn.commit()
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
 
-    # TODO: Send email to owner that someone has left the booking
-    send_email(owner_email, "exit", booking_id, email)
+    # confimation email to exiting user
+    send_email(email, "exit", booking_id)
+
+    name = queries.get_name(conn, email=email)
+
+    travellers = queries.get_travellers(conn, cab_id=booking_id)
+    for traveller in travellers:
+        traveller_email = traveller[0]
+        send_email(
+            traveller_email,
+            "exit_notif",
+            booking_id,
+            x_exited_email=email,
+            x_exited_name=name,
+        )
 
 
 if __name__ == "__main__":
