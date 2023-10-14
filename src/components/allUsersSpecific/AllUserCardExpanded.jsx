@@ -193,7 +193,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
           )}
         </div>
         <div>
-          <span className="text-secondary border-b-2 border-secondary text-[.9rem] sm:text-[1.1rem] ">
+          <span className="text-secondary text-[.9rem] sm:text-[1.1rem] ">
             Note:
           </span>{" "}
           {bookingData.travellers[0].comments}

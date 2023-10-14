@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 const UserRequests = ({ requests, AcceptBooking, RejectBooking, loading }) => {
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
-      <p className="border-b-2 text-[1.1rem] text-primary border-primary ">
+      <p className="border-b-2 text-[1.1rem] text-secondary border-secondary ">
         Requests
       </p>
       {requests.map((item, index) => (
@@ -25,7 +25,7 @@ const UserRequests = ({ requests, AcceptBooking, RejectBooking, loading }) => {
                 </p>
               </div>
               <p>
-                <span className="text-[.9rem] sm:text-[1rem] text-primary">
+                <span className="text-[.9rem] sm:text-[1rem] text-secondary">
                   Note:
                 </span>{" "}
                 {item.comments}

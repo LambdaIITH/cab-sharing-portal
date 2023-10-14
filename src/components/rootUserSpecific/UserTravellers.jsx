@@ -50,7 +50,7 @@ const UserTravellers = ({
                   modalText={"Are you sure you want to exit from this booking"}
                   buttonText={"Exit"}
                   buttonClickFunction={ExitBooking}
-                  displayText={"Exit Booking"}
+                  displayText={"Exit"}
                 />
               )}
             </div>

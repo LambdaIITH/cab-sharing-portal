@@ -105,7 +105,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             </p>
           </div>
           <div>
-            <span className="text-secondary border-b-2 border-secondary font-medium text-[.9rem] md:text-[1.1rem]">
+            <span className="text-secondary text-[.9rem] md:text-[1rem]">
               Note:
             </span>{" "}
             {bookingData.travellers[0].comments}
