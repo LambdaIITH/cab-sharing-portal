@@ -38,8 +38,11 @@ const TravellerCard = ({
             "Content-Type": "application/json",
           },
         }
-      );
-      toast("Succesfully exited cab");
+      ).then(()=>{
+        toast("Succesfully exited cab");
+      }).catch((err) => {
+        toast("Error exiting cab", { type: "error" });
+      });
       fetchUserBookings();
     } catch (err) {
       console.log(err);

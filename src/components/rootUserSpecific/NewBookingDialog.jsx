@@ -240,8 +240,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
       let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
-      await axios
-        .post(
+      await axios.post(
           apiURL,
           JSON.stringify({
             phone_number: phone,
@@ -256,9 +255,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         .then((res) => {
           setLoadedPhone(phone);
           setIsThereAPhoneNumber(true);
+          toast("Phone number updated successfully");
         })
         .catch((err) => {
           console.log(err);
+          toast("Error updating phone number", { type: "error" });
         });
     }
   };
@@ -276,6 +277,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
           expand ? "collapse-open" : "collapse-close"
         } collapse-close bg-secondary/10 md:p-5 mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
       >
+        <ToastContainer />
         <div className="collapse-title font-medium flex flex-col  rounded-md">
           <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
             Your Profile
@@ -387,6 +389,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   onChange={setStartTime}
                   renderInput={(params) => <TextField {...params} />}
                   onClose={handleTime1Close}
+                  inputFormat="dd/MM/yyyy hh:mm a"
                 />
               </LocalizationProvider>
             </FormControl>
@@ -401,6 +404,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   onChange={setEndTime}
                   renderInput={(params) => <TextField {...params} />}
                   onClose={handleTime2Close}
+                  inputFormat="dd/MM/yyyy hh:mm a"
                 />
               </LocalizationProvider>
               {endTimeError == 1 && (

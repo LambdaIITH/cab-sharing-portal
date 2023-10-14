@@ -55,22 +55,25 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
     const authToken = retrieveAuthToken(router);
     if (phone != loaded_phone) {
       let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
-      await axios
-        .post(
-          apiURL,
-          JSON.stringify({
-            phone_number: phone,
-          }),
-          {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .catch((err) => {
-          console.log(err);
-        });
+      await axios.post(
+        apiURL,
+        JSON.stringify({
+          phone_number: phone,
+        }),
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        toast("Phone Number Updated");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast("Something went wrong", { type: "error" });
+      });
     }
     try {
       const data = await axios.post(
@@ -82,11 +85,13 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log(
-        `successfully requested the user booking of id ${bookingData?.id}`
-      );
-      toast("Successfully Requested");
+      ).then(()=>{
+        console.log("Successfully requested the user booking");
+        toast("Successfully requested the user booking", { type: "success" });
+      }).catch((err) => {
+        console.log(err);
+        toast("Something went wrong", { type: "error" });
+      });
     } catch (err) {
       console.log(err);
     } finally {
@@ -99,25 +104,25 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
       const authToken = retrieveAuthToken(router);
       let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
       await axios
-        .post(
-          apiURL,
-          JSON.stringify({
-            phone_number: phone,
-          }),
-          {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          toast("Phone Number Updated");
-          fetchFilteredBookings();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      .post(
+        apiURL,
+        JSON.stringify({
+          phone_number: phone,
+        }),
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        toast("Phone Number Updated");
+        fetchFilteredBookings();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     }
   };
 
@@ -133,8 +138,12 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
             "Content-Type": "application/json",
           },
         }
-      );
-      toast("Succesfully Cancelled Request");
+      ).then(()=>{
+        toast("Succesfully Cancelled Request");
+      }).catch((err) => {
+        console.log(err);
+        toast("Something went wrong", { type: "error" });
+      });    
       fetchFilteredBookings();
     } catch (err) {
       console.log(err);
@@ -163,6 +172,7 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
+      <ToastContainer />
       <div className="flex flex-col justify-center my-5">
         <div className="flex">
           <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
@@ -221,7 +231,6 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
           />
         )}
       </div>
-      <ToastContainer />
       {isModalVisible && (
         <dialog
           id="my_modal_3"

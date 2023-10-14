@@ -21,6 +21,9 @@ import axios from "axios";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
 
 const AllUserBookings = () => {
@@ -78,6 +81,9 @@ const AllUserBookings = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching filtered bookings:", error);
+      toast("Error fetching filtered bookings", {
+        type: "error",
+      });
     }
   };
 
@@ -115,11 +121,13 @@ const AllUserBookings = () => {
           },
         }
       );
-      console.log("requests", response.data);
       setFilteredBookings(response.data);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching requests:", error);
+      toast("Error fetching requests", {
+        type: "error",
+      });
     }
   };
 
@@ -141,6 +149,7 @@ const AllUserBookings = () => {
         <UserbookingShimmer />
       ) : (
         <div>
+          <ToastContainer />
           <div className="flex flex-row gap-2 items-center justify-center rounded-lg"></div>
 
           <div
@@ -162,7 +171,7 @@ const AllUserBookings = () => {
                     }}
                     control={
                       <Switch
-                        defaultChecked
+                        // defaultChecked
                         checked={checked}
                         onChange={handleShowAll}
                       />
@@ -178,7 +187,7 @@ const AllUserBookings = () => {
                     }}
                     control={
                       <Switch
-                        defaultChecked
+                        // defaultChecked
                         checked={request_checked}
                         onChange={handleRequests}
                       />

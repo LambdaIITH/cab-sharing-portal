@@ -27,8 +27,11 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             "Content-Type": "application/json",
           },
         }
-      );
-      toast("Succesfully Removed");
+      ).then(()=>{
+        toast("Succesfully Deleted");
+      }).catch((err) => {
+        toast("Some Error Occured", {type: "error"});
+      });
       fetchUserBookings();
     } catch (err) {
       console.log(err);
@@ -53,8 +56,12 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             "Content-Type": "application/json",
           },
         }
-      );
-      toast("Succesfully Accepted");
+      ).then(()=>{
+        toast("Succesfully Accepted");
+      }).catch((err) => {
+        toast("Some Error Occured", {type: "error"});
+      });
+      
       fetchUserBookings();
     } catch (err) {
       console.log(err);
@@ -79,8 +86,11 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             "Content-Type": "application/json",
           },
         }
-      );
-      toast("Succesfully Rejected");
+      ).then(()=>{
+        toast("Succesfully Rejected");
+      }).catch((err) => {
+        toast("Some Error Occured", {type: "error"});
+      });
       fetchUserBookings();
     } catch (err) {
       console.log(err);

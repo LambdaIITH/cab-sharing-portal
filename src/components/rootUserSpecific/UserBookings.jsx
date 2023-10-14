@@ -8,6 +8,7 @@ import TravellerCard from "components/commonForAll/TravellerCard";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 
+
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [username, setUsername] = useState("");
