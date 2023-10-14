@@ -108,7 +108,7 @@ async def update_booking(
     email: str = Depends(verify_auth_token),
 ):
     """
-    Update a Booking Time.
+    Update a Booking Time. (currently unused in frontend, so doesn't send emails)
     """
     try:
         res = queries.update_booking(
@@ -203,6 +203,28 @@ async def request_to_join_booking(
     """
     A function for a new person to place a request to join an existing booking
     """
+
+    # check if booking exists
+    if queries.get_owner_email(conn, booking_id=booking_id) is None:
+        raise HTTPException(status_code=400, detail="Invalid Booking ID")
+
+    # check if request already sent
+    request_status = queries.get_request_status(
+        conn, booking_id=booking_id, email=email
+    )
+    if request_status is not None:
+        if request_status == "pending":
+            detail = "Request already sent"
+        elif request_status == "accepted":
+            detail = "You are already a traveller"
+        else:
+            # request_status == "rejected"
+            detail = "Request already rejected"
+        # TODO:
+        # Add a request_status == "cancelled" variant to database and handle it here. Otherwise,
+        # the user will be able to spam another user by repeatedly sending requests and cancelling
+        # them before they are accepted/rejected.
+        raise HTTPException(status_code=400, detail=detail)
 
     try:
         queries.create_request(
@@ -372,9 +394,7 @@ async def delete_existing_booking(
 
 
 @app.delete("/bookings/{booking_id}/self")
-async def delete_user_from_booking(
-    booking_id: int, email: str = Depends(verify_auth_token)
-):
+async def exit_booking(booking_id: int, email: str = Depends(verify_auth_token)):
     """
     For a user to exit from a booking (owner cannot exit)
     """
