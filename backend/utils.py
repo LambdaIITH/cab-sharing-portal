@@ -70,7 +70,6 @@ def get_bookings(res, owner_email=None):
     bookings = []
     for tup in res:
         travellers = queries.get_travellers(conn, cab_id=tup[0])
-        print("get_bookings", travellers)
         travellers_list = []
 
         owner_email = tup[6]
