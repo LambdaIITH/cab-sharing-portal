@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Container } from "@mui/material";
 import logo from "assets/media/logo.png";
 import Image from "next/image";
 import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
-
+import retrieveAuthToken from "components/utils/retrieveAuthToken";
 function ProcessUser(token) {
   const decoded_token = jwt_decode(token);
   localStorage.setItem("user_name", decoded_token["name"]);
@@ -41,6 +41,14 @@ function Login() {
     console.log("Log in UnSuccessful");
     console.log(response);
   };
+
+  useEffect(() => {
+    let token = retrieveAuthToken(router);
+    if (token != null) {
+      router.push("/cab-sharing");
+    }
+  } , []);
+
 
   return (
     <div className="w-screen flex flex-col justify-center bg-purple-50 items-center h-screen gap-5">

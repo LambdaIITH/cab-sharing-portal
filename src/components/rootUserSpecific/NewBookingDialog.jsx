@@ -68,13 +68,19 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       setEndTimeError(1);
       setStartTime(null);
       setEndTime(null);
+      setTime1Close(false);
+      setTime2Close(false);
     } else if (endTime < new Date()) {
       setEndTimeError(2);
       setEndTime(null);
+      setTime2Close(false);
+      setTime1Close(false);
     } else if (endTime - startTime > 1000 * 60 * 60 * 24) {
       setEndTimeError(3);
       setStartTime(null);
       setEndTime(null);
+      setTime1Close(false);
+      setTime2Close(false);
     } else {
       setEndTimeError(0);
     }
@@ -375,7 +381,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               <p className="text-xs">Leave After</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
-                  label="-"
+                  label=""
                   name="startTime"
                   value={startTime}
                   onChange={setStartTime}
@@ -388,8 +394,9 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <p className="text-xs">Leave Before</p>
                 <DateTimePicker
-                  label="-"
+                  label=""
                   value={endTime}
+                  minDate={new Date()}
                   name="endTime"
                   onChange={setEndTime}
                   renderInput={(params) => <TextField {...params} />}
@@ -418,7 +425,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               <TextField
                 id="capacity"
                 name="capacity"
-                label="-"
+                label=""
                 type="number"
                 value={values.capacity}
                 onChange={handleChange}
@@ -444,7 +451,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               <TextField
                 id="comments"
                 name="comments"
-                label="-"
+                label=""
                 type="text"
                 value={values.comments}
                 onChange={handleChange}

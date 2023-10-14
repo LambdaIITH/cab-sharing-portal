@@ -73,9 +73,10 @@ const PhoneNumberModal = ({
                 className="w-fit flex ml-auto btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
                 disabled={!phoneIsValid}
                 onClick={() => {
-                  handlePhoneEdit();
-                  router.reload();
-                  closeModal();
+                  handlePhoneEdit().then(() => {
+                    router.reload();
+                    closeModal();
+                  });
                 }}
               >
                 Save
