@@ -211,9 +211,13 @@ async def request_to_join_booking(
     A function for a new person to place a request to join an existing booking
     """
 
-    # check if booking exists
-    if queries.get_owner_email(conn, cab_id=booking_id) is None:
+    owner_email = queries.get_owner_email(conn, cab_id=booking_id)
+    if owner_email is None:
+        # booking doesn't exist
         raise HTTPException(status_code=400, detail="Invalid Booking ID")
+    elif owner_email == email:
+        # user is owner
+        raise HTTPException(status_code=400, detail="You cannot join your own booking")
 
     verify_exists(email)
 
