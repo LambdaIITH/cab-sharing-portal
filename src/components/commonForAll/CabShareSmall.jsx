@@ -61,10 +61,6 @@ const CabShareSmall = ({
       }
     }
   };
-  useEffect(() => {
-    console.log("inside cab share small")
-    console.log(phone, loaded_phone);
-  }, [phone, loaded_phone]);
 
   const handleDialogClose = () => {
     setDialogOpen(false);

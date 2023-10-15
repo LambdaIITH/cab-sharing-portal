@@ -116,8 +116,7 @@ def get_bookings(res, owner_email=None):
 
 
 print("Connecting to SMTP server")
-smtp_server = smtplib.SMTP("smtp.gmail.com")
-smtp_server.connect("smtp.gmail.com", 587)
+smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
 smtp_server.starttls()
 smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
 print("Connected to SMTP server")
@@ -132,15 +131,13 @@ def refresh_smtp_server(server):
     except smtplib.SMTPServerDisconnected as ex:
         print("SMTP connection died, trying to restart")
         print("Something went wrong", ex)
-        server = smtplib.SMTP("smtp.gmail.com")
-        server.connect("smtp.gmail.com", 587)
+        server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls()
         server.login(GMAIL_USER, GMAIL_PASSWORD)
         print("Connected to SMTP server")
     except Exception as ex:
         print("Something else went wrong", ex)
-        server = smtplib.SMTP("smtp.gmail.com")
-        server.connect("smtp.gmail.com", 587)
+        server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls()
         server.login(GMAIL_USER, GMAIL_PASSWORD)
         print("Connected to SMTP server")

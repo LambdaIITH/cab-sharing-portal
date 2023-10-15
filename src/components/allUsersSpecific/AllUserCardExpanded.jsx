@@ -146,8 +146,6 @@ const AllUserCardExpanded = ({
     if (travellers_email_list.indexOf(email) === -1 && isInRequest === -1)
       setIsValidToJoin(true);
     else ownerIndex = travellers_email_list.indexOf(email);
-    console.log("inside all user card expanded");
-    console.log(phone, loaded_phone);
   }, []);
 
   return (
@@ -251,7 +249,7 @@ const AllUserCardExpanded = ({
                       joinComment.length == 0 || phone.replace("+91", "") == ""
                     }
                   >
-                    Join
+                    {phone.replace("+91", "") == ""? "Add Phone Number" : "Join"}
                   </button>
                 </div>
               </div>

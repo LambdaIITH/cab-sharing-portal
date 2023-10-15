@@ -114,21 +114,20 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       capacity.charCodeAt(0) < 48 ||
       capacity.charCodeAt(0) > 57
     ) {
-      console.log("capacity is not valid");
+
       setCapacityError(1);
       return false;
     } else if (capacity < 2) {
-      console.log("capacity is less than 2");
+
       setCapacityError(2);
       return false;
     } 
     else if (capacity > 256) {
-      console.log("capacity is too large");
+
       setCapacityError(3);
       return false;
     }
     else {
-      console.log("capacity is valid");
       setCapacityError(0);
       return true;
     }
