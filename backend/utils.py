@@ -65,6 +65,15 @@ def verify_auth_token_with_name(Authorization: str = Header()):
 # ------------------ AUTH END ------------------
 
 
+def verify_exists(email):
+    phone_number = queries.get_phone_number(conn, email=email)
+    if phone_number is None:
+        # return 401
+        raise HTTPException(
+            status_code=403, detail="Phone number not found for this email."
+        )
+
+
 def get_bookings(res, owner_email=None):
 
     bookings = []

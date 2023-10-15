@@ -12,6 +12,7 @@ from utils import (
     send_email,
     verify_auth_token,
     verify_auth_token_with_name,
+    verify_exists,
 )
 
 app = FastAPI()
@@ -78,6 +79,8 @@ async def create_booking(
     if from_id is None or to_id is None:
         raise HTTPException(status_code=400, detail="Invalid Location")
 
+    verify_exists(email)
+
     try:
         booking_id = queries.create_booking(
             conn,
@@ -110,6 +113,9 @@ async def update_booking(
     """
     Update a Booking Time. (currently unused in frontend, so doesn't send emails)
     """
+
+    verify_exists(email)
+
     try:
         res = queries.update_booking(
             conn,
@@ -208,6 +214,11 @@ async def request_to_join_booking(
     if queries.get_owner_email(conn, cab_id=booking_id) is None:
         raise HTTPException(status_code=400, detail="Invalid Booking ID")
 
+    verify_exists(email)
+
+    if queries.is_cab_full(conn, cab_id=booking_id):
+        raise HTTPException(status_code=400, detail="Booking is full")
+
     # check if request already sent
     request_status = queries.get_request_status(
         conn, booking_id=booking_id, email=email
@@ -287,6 +298,9 @@ async def accept_request(
         raise HTTPException(
             status_code=403, detail="You are not the owner of this booking"
         )
+
+    if queries.is_cab_full(conn, cab_id=booking_id):
+        raise HTTPException(status_code=400, detail="Cab is already full")
 
     try:
         comments = queries.update_request(
@@ -410,7 +424,9 @@ async def exit_booking(booking_id: int, email: str = Depends(verify_auth_token))
     if owner_email is None:
         raise HTTPException(status_code=400, detail="Booking does not exist")
     elif owner_email == email:
-        raise HTTPException(status_code=400, detail="You are the owner of this booking")
+        raise HTTPException(
+            status_code=400, detail="Owner cannot exit a booking, but you can delete it"
+        )
 
     try:
         queries.delete_particular_traveller(

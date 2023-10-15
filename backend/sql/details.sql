@@ -58,6 +58,12 @@ SELECT t.user_email, t.comments, u.name, u.phone_number
     INNER JOIN users u ON t.user_email = u.user_email
   WHERE t.cab_id = :cab_id;
 
+-- name: is_cab_full$
+-- Check if the cab is full and return true if it is
+SELECT COUNT(*) >= (SELECT capacity FROM cab_booking WHERE id = :cab_id)
+  FROM traveller
+  WHERE cab_id = :cab_id;
+
 -- name: get_booking_details^
 SELECT c.id, c.start_time, c.end_time, c.capacity, fl.place, tl.place, c.owner_email, u.name, u.phone_number
   FROM cab_booking c
