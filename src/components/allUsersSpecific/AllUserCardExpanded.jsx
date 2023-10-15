@@ -11,7 +11,10 @@ import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
 
 
-const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings,
+const AllUserCardExpanded = ({ 
+  bookingData, 
+  email, 
+  fetchFilteredBookings,
   loaded_phone,
   phone,
   setPhone,
@@ -143,6 +146,8 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings,
     if (travellers_email_list.indexOf(email) === -1 && isInRequest === -1)
       setIsValidToJoin(true);
     else ownerIndex = travellers_email_list.indexOf(email);
+    console.log("inside all user card expanded");
+    console.log(phone, loaded_phone);
   }, []);
 
   return (
@@ -192,6 +197,8 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings,
                 handlePhoneEdit={handlePhoneEdit}
                 handlePhoneChange={handlePhoneChange}
                 phone={phone}
+                loaded_phone={loaded_phone}
+                setPhone={setPhone}
                 phoneIsValid={phoneIsValid}
               />
             )}

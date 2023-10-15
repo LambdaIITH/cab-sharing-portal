@@ -42,6 +42,10 @@ const AllUserBookings = () => {
 
   const [expand, setExpand] = useState(false);
 
+  const [phone, setPhone] = useState("");
+  const [loaded_phone, setLoadedPhone] = useState("");
+  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleDialogOpen = () => {
     setExpand(true);
@@ -93,6 +97,31 @@ const AllUserBookings = () => {
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
     setEmail(localStorage.getItem("user_email"));
+    const authToken = retrieveAuthToken(router);
+    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((data) => {
+        console.log(data.data);
+        if (
+          data.data["phone_number"] == null ||
+          data.data["phone_number"] == ""
+        ) {
+          setPhone("");
+          setLoadedPhone("");
+          setIsThereAPhoneNumber(false);
+        } else {
+          setPhone(data.data["phone_number"]);
+          setLoadedPhone(data.data["phone_number"]);
+          setIsThereAPhoneNumber(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    
   }, []);
 
   useEffect(() => {
@@ -343,6 +372,11 @@ const AllUserBookings = () => {
                     bookingData={item}
                     username={username}
                     email={email}
+                    phone={phone}
+                    loaded_phone={loaded_phone}
+                    is_there_a_phone_number={is_there_a_phone_number}
+                    setPhone={setPhone}
+                    
                   />
                 );
               }

@@ -30,11 +30,9 @@ const CabShareSmall = ({
   fetchUserBookings,
   fetchFilteredBookings,
   loaded_phone,
-  setLoadedPhone,
   phone,
   setPhone,
   is_there_a_phone_number,
-  setIsThereAPhoneNumber,
 }) => {
   const router = useRouter();
 
@@ -63,6 +61,10 @@ const CabShareSmall = ({
       }
     }
   };
+  useEffect(() => {
+    console.log("inside cab share small")
+    console.log(phone, loaded_phone);
+  }, [phone, loaded_phone]);
 
   const handleDialogClose = () => {
     setDialogOpen(false);
