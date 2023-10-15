@@ -3,6 +3,7 @@ from typing import Dict, List, Union
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pytz import timezone
 
 import schemas
 from utils import (
@@ -84,8 +85,8 @@ async def create_booking(
     try:
         booking_id = queries.create_booking(
             conn,
-            start_time=booking.start_time,
-            end_time=booking.end_time,
+            start_time=booking.start_time.astimezone(timezone("Asia/Kolkata")),
+            end_time=booking.end_time.astimezone(timezone("Asia/Kolkata")),
             capacity=booking.capacity,
             from_loc=from_id,
             to_loc=to_id,
@@ -119,8 +120,8 @@ async def update_booking(
     try:
         res = queries.update_booking(
             conn,
-            start_time=patch.start_time,
-            end_time=patch.end_time,
+            start_time=patch.start_time.astimezone(timezone("Asia/Kolkata")),
+            end_time=patch.end_time.astimezone(timezone("Asia/Kolkata")),
             cab_id=booking_id,
             owner_email=email,
         )
