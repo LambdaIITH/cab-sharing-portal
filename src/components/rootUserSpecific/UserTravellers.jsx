@@ -28,7 +28,7 @@ const UserTravellers = ({
 
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
-      <p className="border-b-2 border-secondary text-[1.1rem] text-secondary  ">
+      <p className="border-b-2 border-secondary text-[1.1rem] text-secondary">
         Travellers
       </p>
 

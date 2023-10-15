@@ -29,6 +29,12 @@ const CabShareSmall = ({
   index,
   fetchUserBookings,
   fetchFilteredBookings,
+  loaded_phone,
+  setLoadedPhone,
+  phone,
+  setPhone,
+  is_there_a_phone_number,
+  setIsThereAPhoneNumber,
 }) => {
   const router = useRouter();
 
@@ -168,6 +174,10 @@ const CabShareSmall = ({
             bookingData={bookingData}
             email={email}
             fetchFilteredBookings={fetchFilteredBookings}
+            loaded_phone={loaded_phone}
+            phone={phone}
+            setPhone={setPhone}
+            is_there_a_phone_number={is_there_a_phone_number}
           />
         )}
       </div>

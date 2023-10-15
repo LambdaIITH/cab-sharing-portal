@@ -8,7 +8,6 @@ import TravellerCard from "components/commonForAll/TravellerCard";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 
-
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [username, setUsername] = useState("");
@@ -19,6 +18,36 @@ const UserBookings = () => {
   const [expand, setExpand] = useState(false);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [loaded_phone, setLoadedPhone] = useState("");
+  const [phone, setPhone] = useState("");
+  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
+
+  useEffect(() => {
+    const authToken = retrieveAuthToken(router);
+    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((data) => {
+        if (
+          data.data["phone_number"] == null ||
+          data.data["phone_number"] == ""
+        ) {
+          setPhone("");
+          setLoadedPhone("");
+          setIsThereAPhoneNumber(false);
+        } else {
+          setPhone(data.data["phone_number"]);
+          setLoadedPhone(data.data["phone_number"]);
+          setIsThereAPhoneNumber(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const fetchUserBookings = async () => {
     const authToken = retrieveAuthToken(router);
@@ -82,6 +111,10 @@ const UserBookings = () => {
                       bookingData={item}
                       username={username}
                       email={email}
+                      loaded_phone={loaded_phone}
+                      phone={phone}
+                      setPhone={setPhone}
+                      is_there_a_phone_number={is_there_a_phone_number}
                     />
                   );
                 else

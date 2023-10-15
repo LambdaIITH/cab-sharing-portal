@@ -6,6 +6,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
+import axios from "axios";
 function ProcessUser(token) {
   const decoded_token = jwt_decode(token);
   localStorage.setItem("user_name", decoded_token["name"]);
@@ -22,12 +23,11 @@ function Login() {
     console.log(response);
     localStorage.setItem("credential", response.credential);
     console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
       headers: {
         Authorization: response.credential,
       },
     })
-      .then((res) => res.json())
       .then((data) => {
         console.log(data);
         ProcessUser(response.credential);

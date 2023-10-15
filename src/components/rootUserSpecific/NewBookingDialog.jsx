@@ -40,7 +40,6 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   };
   const initState = { isLoading: false, error: "", values: initData };
   const [registerData, setRegisterData] = useState(initState);
-  const [date, setDate] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [touched, setTouched] = useState(false);
@@ -110,30 +109,34 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
   const checkCapacityErrors = (capacity) => {
     if (
-      capacity == "" ||
+      capacity.length == "" ||
       parseFloat(capacity) != parseInt(capacity) ||
       capacity.charCodeAt(0) < 48 ||
       capacity.charCodeAt(0) > 57
     ) {
+      console.log("capacity is not valid");
       setCapacityError(1);
       return false;
-    } else if (capacity < 0) {
+    } else if (capacity < 2) {
+      console.log("capacity is less than 2");
       setCapacityError(2);
       return false;
-    } else if (capacity > 256) {
+    } 
+    else if (capacity > 256) {
+      console.log("capacity is too large");
       setCapacityError(3);
       return false;
-    } else {
+    }
+    else {
+      console.log("capacity is valid");
       setCapacityError(0);
       return true;
     }
   };
 
-  useEffect(() => {
+  async function getMe() {
     const authToken = retrieveAuthToken(router);
-    let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
-    axios
-      .get(apiURL, {
+    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
           Authorization: authToken,
         },
@@ -154,7 +157,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       })
       .catch((err) => {
         console.log(err);
-      });
+    });
+  }
+
+  useEffect(() => {
+    getMe();
   }, []);
 
   // handlers
@@ -184,9 +191,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       setLocation(target.value);
     }
     if (target.name == "capacity") {
-      if (!checkCapacityErrors(target.value)) {
-        return false;
-      }
+      checkCapacityErrors(target.value);
     }
     setRegisterData((prev) => ({
       ...prev,
@@ -210,20 +215,19 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
   const RegisterNewBooking = async () => {
     const authToken = retrieveAuthToken(router);
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`, {
-      headers: {
-        Authorization: `${authToken}`,
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({
-        ...values,
-        start_time: startTime,
-        end_time: endTime,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+    
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`, {
+          ...values,
+          start_time: startTime,
+          end_time: endTime,
+        }, {
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+      }  
+      )
+      .then(() => {
         setExpand(false);
         setRegisterData(initState);
         setTouched(false);
@@ -231,6 +235,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         setEndTime(null);
         setLocation("");
         setEndTimeError(0);
+        setCapacityError(0);
+        setToggle("from");
         fetchUserBookings();
       })
       .catch((err) => console.log(err));
@@ -380,12 +386,13 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </FormControl>
             </div>
             <FormControl>
-              <p className="text-xs">Leave After</p>
+              <p className="text-xs">Willing to leave after</p>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                   label=""
                   name="startTime"
                   value={startTime}
+                  minDate={new Date()}
                   onChange={setStartTime}
                   renderInput={(params) => <TextField {...params} />}
                   onClose={handleTime1Close}
@@ -395,7 +402,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             </FormControl>
             <FormControl>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <p className="text-xs">Leave Before</p>
+                <p className="text-xs">Have to leave before</p>
                 <DateTimePicker
                   label=""
                   value={endTime}
@@ -430,7 +437,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 id="capacity"
                 name="capacity"
                 label=""
-                type="number"
+                type="text"
                 value={values.capacity}
                 onChange={handleChange}
               />
@@ -442,7 +449,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             )}
             {capacityError == 2 && (
               <span className="label-text-alt mt-1 text-red-600">
-                Capacity cannot be negative
+                Capacity cannot be less than 2
               </span>
             )}
             {capacityError == 3 && (
@@ -472,7 +479,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 onClick={RegisterNewBooking}
                 className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                 disabled={
-                  !values.capacity || !endTime || !startTime || !location
+                  !values.capacity || !endTime || !startTime || !location || capacityError != 0 || endTimeError != 0
                 }
               >
                 Book

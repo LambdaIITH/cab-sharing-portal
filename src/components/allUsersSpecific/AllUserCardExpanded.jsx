@@ -9,54 +9,30 @@ import PhoneNumberModal from "components/modals/PhoneNumberModal";
 import UserTravellers from "components/rootUserSpecific/UserTravellers";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
-const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
+
+
+const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings,
+  loaded_phone,
+  phone,
+  setPhone,
+  is_there_a_phone_number,
+}) => {
   const [isValidToJoin, setIsValidToJoin] = useState(false);
   const [joinComment, setJoinComment] = useState("I am interested to join.");
 
-  const [loaded_phone, setLoadedPhone] = useState("");
-  const [phone, setPhone] = useState("");
+
   const [phoneIsValid, setPhoneIsValid] = useState(false);
-  const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const router = useRouter();
 
-  useEffect(() => {
-    const authToken = retrieveAuthToken(router);
-    let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
-    axios
-      .get(apiURL, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((data) => {
-        if (
-          data.data["phone_number"] == null ||
-          data.data["phone_number"] == ""
-        ) {
-          setPhone("");
-          setLoadedPhone("");
-          setIsThereAPhoneNumber(false);
-        } else {
-          setPhone(data.data["phone_number"]);
-          setLoadedPhone(data.data["phone_number"]);
-          setIsThereAPhoneNumber(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
   // handlers
   const JoinBooking = async () => {
     const authToken = retrieveAuthToken(router);
     if (phone != loaded_phone) {
-      let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
       await axios.post(
-        apiURL,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
         JSON.stringify({
           phone_number: phone,
         }),
@@ -102,10 +78,9 @@ const AllUserCardExpanded = ({ bookingData, email, fetchFilteredBookings }) => {
   const handlePhoneEdit = async () => {
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
-      let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
       await axios
       .post(
-        apiURL,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
         JSON.stringify({
           phone_number: phone,
         }),
