@@ -19,19 +19,22 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`,
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(()=>{
-        toast("Succesfully Deleted");
-      }).catch((err) => {
-        toast("Some Error Occured", {type: "error"});
-      });
+      await axios
+        .delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`,
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          toast("Succesfully Deleted");
+        })
+        .catch((err) => {
+          toast("Some Error Occured", { type: "error" });
+        });
       fetchUserBookings();
     } catch (err) {
       console.log(err);
@@ -45,23 +48,26 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/accept`,
-        {
-          requester_email: request_email,
-        },
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
+      await axios
+        .post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/accept`,
+          {
+            requester_email: request_email,
           },
-        }
-      ).then(()=>{
-        toast("Succesfully Accepted");
-      }).catch((err) => {
-        toast("Some Error Occured", {type: "error"});
-      });
-      
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          toast("Succesfully Accepted");
+        })
+        .catch((err) => {
+          toast("Some Error Occured", { type: "error" });
+        });
+
       fetchUserBookings();
     } catch (err) {
       console.log(err);
@@ -75,22 +81,25 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/reject`,
-        {
-          requester_email: request_email,
-        },
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
+      await axios
+        .post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/reject`,
+          {
+            requester_email: request_email,
           },
-        }
-      ).then(()=>{
-        toast("Succesfully Rejected");
-      }).catch((err) => {
-        toast("Some Error Occured", {type: "error"});
-      });
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          toast("Succesfully Rejected");
+        })
+        .catch((err) => {
+          toast("Some Error Occured", { type: "error" });
+        });
       fetchUserBookings();
     } catch (err) {
       console.log(err);
@@ -121,12 +130,14 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             {bookingData.travellers[0].comments}
           </div>
         </div>
-        <ConformModal
-          modalText={"Are you sure you want to delete this booking"}
-          buttonText={"Yes"}
-          buttonClickFunction={DeleteBooking}
-          displayText={"Delete"}
-        />
+        <div className="hidden sm:block">
+          <ConformModal
+            modalText={"Are you sure you want to delete this booking"}
+            buttonText={"Yes"}
+            buttonClickFunction={DeleteBooking}
+            displayText={"Delete"}
+          />
+        </div>
       </div>
       <ToastContainer />
       {bookingData?.requests?.length > 0 && (

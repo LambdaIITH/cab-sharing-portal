@@ -7,6 +7,8 @@ import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Traveller card in user bookings
+
 const TravellerCard = ({
   userSpecific,
   bookingData,
@@ -30,19 +32,22 @@ const TravellerCard = ({
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/self`,
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(()=>{
-        toast("Succesfully exited cab");
-      }).catch((err) => {
-        toast("Error exiting cab", { type: "error" });
-      });
+      await axios
+        .delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/self`,
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          toast("Succesfully exited cab");
+        })
+        .catch((err) => {
+          toast("Error exiting cab", { type: "error" });
+        });
       fetchUserBookings();
     } catch (err) {
       console.log(err);
@@ -57,17 +62,17 @@ const TravellerCard = ({
         index === 0 && expand && "collapse-open"
       }  ${
         expand ? "collapse-open" : "collapse-close"
-      } collapse-close bg-secondary/10 md:p-5 mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
+      } collapse-close bg-secondary/10 md:p-5 mx-3 sm:mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
       onClick={() => setExpand((prev) => !prev)}
     >
-      <div className="collapse-title font-medium flex flex-col  rounded-md  cursor-pointer">
+      <div className="collapse-title p-1 md:p-2 font-medium flex flex-col  rounded-md  cursor-pointer">
         <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
           <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
             <BoldedHeading text="From:" /> {bookingData.from_}
           </p>
 
           <p className="tracking-wider text-[.9rem] md:text-[1rem] truncate">
-            <BoldedHeading text="To:" /> {bookingData.to}
+            {/* <BoldedHeading text="To:" /> {bookingData.to} */}
           </p>
 
           <div className="hidden 5x:inline">
@@ -83,7 +88,7 @@ const TravellerCard = ({
             {bookingData.capacity}
           </p>
         </div>
-        <div className="flex flex-row mt-2 items-center  gap-10 ">
+        <div className="hidden sm:flex flex-row mt-2 items-center  gap-10 ">
           <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate mt-2 md:mt-0 ">
             <span className="hidden sm:inline">
               <BoldedHeading text="Window:" />
@@ -106,7 +111,10 @@ const TravellerCard = ({
           </p>
         </div>
       </div>
-      <div className="collapse-content" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="collapse-content p-1 md:p-2"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex flex-col justify-center mt-8">
           <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
             <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">

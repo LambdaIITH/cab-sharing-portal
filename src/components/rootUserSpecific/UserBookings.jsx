@@ -45,7 +45,8 @@ const UserBookings = () => {
     setUsername(localStorage.getItem("user_name"));
     setEmail(localStorage.getItem("user_email"));
     const authToken = retrieveAuthToken(router);
-    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
           Authorization: authToken,
         },
@@ -64,7 +65,8 @@ const UserBookings = () => {
           setLoadedPhone(data.data["phone_number"]);
           setIsThereAPhoneNumber(true);
         }
-      }).then(()=>{
+      })
+      .then(() => {
         fetchUserBookings().then(() => {
           setIsLoading(false);
         });
@@ -72,22 +74,17 @@ const UserBookings = () => {
       .catch((err) => {
         console.log(err);
       });
-    
   }, []);
 
   return (
-    <div className="flex flex-col  mx-auto  rounded-box md:py-10">
+    <div className="flex flex-col  mx-auto pb-5 rounded-box md:py-10">
       {isLoading ? (
         <UserbookingShimmer />
       ) : (
         <div className="">
           <Stack
-            direction="row"
-            spacing={1}
             sx={{
-              display: "flex",
               width: "100%",
-              justifyContent: "flex-end",
               marginBottom: "2rem",
             }}
           >

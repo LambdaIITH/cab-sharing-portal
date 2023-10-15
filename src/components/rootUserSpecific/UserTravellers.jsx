@@ -6,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ConformModal from "components/modals/ConformModal";
 
+// List of traverllers in TravellerCard, this is a child of TravellerCard(parent)
+
 const UserTravellers = ({
   travellers,
   hidePhoneNumber = false,
@@ -33,10 +35,7 @@ const UserTravellers = ({
       </p>
 
       {travellers.map((item, index) => (
-        <div
-          className="flex flex-col gap-3 items-center p-2 w-full"
-          key={index}
-        >
+        <div className="flex flex-col gap-3 items-center  w-full" key={index}>
           <div className="flex flex-col sm:flex-row justify-between w-full">
             <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
               <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem] mr-auto">

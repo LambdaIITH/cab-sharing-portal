@@ -20,7 +20,7 @@ export default function CabSharing() {
   }, []);
 
   return (
-    <div className="bg-purple-100">
+    <div className="bg-purple-100 ">
       {/* <NavBar /> */}
       {/* controlling width */}
       <div className="flex bg-purple-100 flex-col overflow-x-auto py-[2rem] min-h-screen">

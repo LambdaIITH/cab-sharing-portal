@@ -114,20 +114,15 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       capacity.charCodeAt(0) < 48 ||
       capacity.charCodeAt(0) > 57
     ) {
-
       setCapacityError(1);
       return false;
     } else if (capacity < 2) {
-
       setCapacityError(2);
       return false;
-    } 
-    else if (capacity > 256) {
-
+    } else if (capacity > 256) {
       setCapacityError(3);
       return false;
-    }
-    else {
+    } else {
       setCapacityError(0);
       return true;
     }
@@ -135,7 +130,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
   async function getMe() {
     const authToken = retrieveAuthToken(router);
-    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+    await axios
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
           Authorization: authToken,
         },
@@ -156,7 +152,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       })
       .catch((err) => {
         console.log(err);
-    });
+      });
   }
 
   useEffect(() => {
@@ -214,17 +210,21 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
   const RegisterNewBooking = async () => {
     const authToken = retrieveAuthToken(router);
-    
-    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`, {
+
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
+        {
           ...values,
           start_time: startTime,
           end_time: endTime,
-        }, {
-        headers: {
-          Authorization: authToken,
-          "Content-Type": "application/json",
         },
-      }  
+        {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "application/json",
+          },
+        }
       )
       .then(() => {
         setExpand(false);
@@ -245,7 +245,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
       let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
-      await axios.post(
+      await axios
+        .post(
           apiURL,
           JSON.stringify({
             phone_number: phone,
@@ -280,11 +281,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         tabIndex={0}
         className={`collapse  ${
           expand ? "collapse-open" : "collapse-close"
-        } collapse-close bg-secondary/10 md:p-5 mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
+        } collapse-close bg-secondary/10 mx-3 md:p-5 sm:mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
       >
         <ToastContainer />
-        <div className="collapse-title font-medium flex flex-col  rounded-md">
-          <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+        <div className="collapse-title p-2  font-medium flex flex-col  rounded-md">
+          <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-semibold text-[1rem] md:text-[1.1rem] mr-auto">
             Your Profile
           </p>
           <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
@@ -321,12 +322,19 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
             <button
               onClick={() => setExpand((prev) => !prev)}
-              className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+              className=" btn hidden sm:block bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
               disabled={!is_there_a_phone_number}
             >
               {expand ? "Cancel" : "Create Booking"}
             </button>
           </div>
+          <button
+            onClick={() => setExpand((prev) => !prev)}
+            className=" btn block sm:hidden bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+            disabled={!is_there_a_phone_number}
+          >
+            {expand ? "Cancel" : "Create Booking"}
+          </button>
         </div>
 
         {is_there_a_phone_number === false ? (
@@ -478,7 +486,12 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 onClick={RegisterNewBooking}
                 className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                 disabled={
-                  !values.capacity || !endTime || !startTime || !location || capacityError != 0 || endTimeError != 0
+                  !values.capacity ||
+                  !endTime ||
+                  !startTime ||
+                  !location ||
+                  capacityError != 0 ||
+                  endTimeError != 0
                 }
               >
                 Book
