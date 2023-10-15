@@ -184,7 +184,7 @@ const CabShareSmall = ({
 };
 
 const BoldedHeading = ({ text }) => (
-  <span className=" text-secondary border-b-2 border-secondary tracking-widest text-[.9rem] md:text-[1.15rem]">
+  <span className=" text-secondary  tracking-widest font-semibold text-[.9rem] md:text-[1.15rem]">
     {text}
   </span>
 );

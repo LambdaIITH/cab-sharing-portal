@@ -98,7 +98,8 @@ const AllUserBookings = () => {
     setUsername(localStorage.getItem("user_name"));
     setEmail(localStorage.getItem("user_email"));
     const authToken = retrieveAuthToken(router);
-    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+    axios
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
           Authorization: authToken,
         },
@@ -121,7 +122,6 @@ const AllUserBookings = () => {
       .catch((err) => {
         console.log(err);
       });
-    
   }, []);
 
   useEffect(() => {
@@ -188,7 +188,7 @@ const AllUserBookings = () => {
             } collapse-close bg-secondary/10 md:p-5 mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
           >
             <div className="collapse-title font-medium flex flex-col   rounded-md">
-              <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+              <p className="text-secondary border-b-2 border-secondary mx-auto font-semibold mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
                 Sort & Filter
               </p>
               <div className="flex flex-col md:flex-row justify-center items-center rounded-md">
@@ -376,7 +376,6 @@ const AllUserBookings = () => {
                     loaded_phone={loaded_phone}
                     is_there_a_phone_number={is_there_a_phone_number}
                     setPhone={setPhone}
-                    
                   />
                 );
               }

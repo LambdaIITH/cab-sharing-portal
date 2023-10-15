@@ -9,11 +9,9 @@ import PhoneNumberModal from "components/modals/PhoneNumberModal";
 import UserTravellers from "components/rootUserSpecific/UserTravellers";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
-
-
-const AllUserCardExpanded = ({ 
-  bookingData, 
-  email, 
+const AllUserCardExpanded = ({
+  bookingData,
+  email,
   fetchFilteredBookings,
   loaded_phone,
   phone,
@@ -22,7 +20,6 @@ const AllUserCardExpanded = ({
 }) => {
   const [isValidToJoin, setIsValidToJoin] = useState(false);
   const [joinComment, setJoinComment] = useState("I am interested to join.");
-
 
   const [phoneIsValid, setPhoneIsValid] = useState(false);
 
@@ -34,43 +31,47 @@ const AllUserCardExpanded = ({
   const JoinBooking = async () => {
     const authToken = retrieveAuthToken(router);
     if (phone != loaded_phone) {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
-        JSON.stringify({
-          phone_number: phone,
-        }),
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        toast("Phone Number Updated");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast("Something went wrong", { type: "error" });
-      });
+      await axios
+        .post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
+          JSON.stringify({
+            phone_number: phone,
+          }),
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          toast("Phone Number Updated");
+        })
+        .catch((err) => {
+          console.log(err);
+          toast("Something went wrong", { type: "error" });
+        });
     }
     try {
-      const data = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData.id}/request`,
-        { comments: joinComment },
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(()=>{
-        console.log("Successfully requested the user booking");
-        toast("Successfully requested the user booking", { type: "success" });
-      }).catch((err) => {
-        console.log(err);
-        toast("Something went wrong", { type: "error" });
-      });
+      const data = await axios
+        .post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData.id}/request`,
+          { comments: joinComment },
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          console.log("Successfully requested the user booking");
+          toast("Successfully requested the user booking", { type: "success" });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast("Something went wrong", { type: "error" });
+        });
     } catch (err) {
       console.log(err);
     } finally {
@@ -82,25 +83,25 @@ const AllUserCardExpanded = ({
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
       await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
-        JSON.stringify({
-          phone_number: phone,
-        }),
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        toast("Phone Number Updated");
-        fetchFilteredBookings();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
+          JSON.stringify({
+            phone_number: phone,
+          }),
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          toast("Phone Number Updated");
+          fetchFilteredBookings();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -108,20 +109,23 @@ const AllUserCardExpanded = ({
     e.stopPropagation();
     const authToken = retrieveAuthToken(router);
     try {
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/request`,
-        {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(()=>{
-        toast("Succesfully Cancelled Request");
-      }).catch((err) => {
-        console.log(err);
-        toast("Something went wrong", { type: "error" });
-      });    
+      await axios
+        .delete(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/request`,
+          {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(() => {
+          toast("Succesfully Cancelled Request");
+        })
+        .catch((err) => {
+          console.log(err);
+          toast("Something went wrong", { type: "error" });
+        });
       fetchFilteredBookings();
     } catch (err) {
       console.log(err);
@@ -157,7 +161,7 @@ const AllUserCardExpanded = ({
             <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem]">
               {bookingData.travellers[0].name}
             </h3>
-            <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] sm:text-[1.1rem] mr-auto ">
+            <p className="text-secondary  tracking-wider font-medium text-[.9rem] sm:text-[1.1rem] mr-auto ">
               {bookingData.travellers[0].email}
             </p>
           </div>
@@ -249,7 +253,9 @@ const AllUserCardExpanded = ({
                       joinComment.length == 0 || phone.replace("+91", "") == ""
                     }
                   >
-                    {phone.replace("+91", "") == ""? "Add Phone Number" : "Join"}
+                    {phone.replace("+91", "") == ""
+                      ? "Add Phone Number"
+                      : "Join"}
                   </button>
                 </div>
               </div>

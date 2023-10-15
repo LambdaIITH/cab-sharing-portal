@@ -119,7 +119,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
               {bookingData.travellers[0].name}
             </h3>
-            <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+            <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
               {bookingData.travellers[0].email}
             </p>
           </div>

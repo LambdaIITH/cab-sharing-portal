@@ -120,12 +120,12 @@ const TravellerCard = ({
             <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
               {bookingData.travellers[0].name}
             </h3>
-            <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+            <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
               {bookingData.travellers[0].email}
             </p>
           </div>
           <div>
-            <span className="text-secondary border-b-2 border-secondary font-medium text-[.9rem] md:text-[1.1rem]">
+            <span className="text-secondary  font-medium text-[.9rem] md:text-[1.1rem]">
               Note:
             </span>{" "}
             {bookingData.travellers[0].comments}
@@ -146,7 +146,7 @@ const TravellerCard = ({
 };
 
 const BoldedHeading = ({ text }) => (
-  <span className=" text-secondary border-b-2 border-secondary tracking-widest text-[.9rem] md:text-[1.15rem]">
+  <span className=" text-secondary font-semibold  tracking-widest text-[.9rem] md:text-[1.15rem]">
     {text}
   </span>
 );

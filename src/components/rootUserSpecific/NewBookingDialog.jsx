@@ -285,7 +285,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       >
         <ToastContainer />
         <div className="collapse-title p-2  font-medium flex flex-col  rounded-md">
-          <p className="text-secondary border-b-2 border-secondary mb-2 tracking-wider font-semibold text-[1rem] md:text-[1.1rem] mr-auto">
+          <p className="text-secondary border-b-2 border-secondary mx-auto mb-2 tracking-wider font-semibold text-[1rem] md:text-[1.1rem] mr-auto">
             Your Profile
           </p>
           <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
@@ -293,7 +293,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
                 {username}
               </h3>
-              <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+              <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
                 {email}
               </p>
             </div>

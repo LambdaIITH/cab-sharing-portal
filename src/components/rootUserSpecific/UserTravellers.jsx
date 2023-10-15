@@ -30,7 +30,7 @@ const UserTravellers = ({
 
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
-      <p className="border-b-2 border-secondary text-[1.1rem] text-secondary">
+      <p className="border-b-2 border-secondary font-semibold text-[1.1rem] text-secondary">
         Travellers
       </p>
 
@@ -41,7 +41,7 @@ const UserTravellers = ({
               <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem] mr-auto">
                 {item.name}
               </h3>
-              <p className="text-secondary border-b-2 border-secondary tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+              <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
                 {item.email}
               </p>
               {item.email === user_email && (
