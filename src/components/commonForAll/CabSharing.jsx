@@ -21,7 +21,7 @@ export default function CabSharing() {
   }, []);
 
   return (
-    <div className="bg-purple-100 ">
+    <div className="bg-purple-100">
       {/* <NavBar /> */}
       {/* controlling width */}
       <LogoutButton />
@@ -53,7 +53,7 @@ export default function CabSharing() {
           {tab === 1 && <AllUserBookings />}
         </div>
       </div>
-      <footer className="flex justify-center gap-2 text-[1.1rem] items-center bg-yellow-400 text-black py-4 mt-8">
+      <footer className="flex justify-center gap-2 text-[1.1rem] items-center bg-yellow-400 text-black py-4">
         <span>Made with </span>
         <FavoriteIcon sx={{ color: "#BF40BF" }} />
         <span> By Lambda</span>

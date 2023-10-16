@@ -201,7 +201,6 @@ const AllUserBookings = () => {
                   <FormControlLabel
                     sx={{
                       color: "black",
-                      fontFamily: "Montserrat, sans-serif",
                     }}
                     control={
                       <Switch
@@ -217,7 +216,6 @@ const AllUserBookings = () => {
                   <FormControlLabel
                     sx={{
                       color: "black",
-                      fontFamily: "Montserrat, sans-serif",
                     }}
                     control={
                       <Switch
@@ -267,6 +265,40 @@ const AllUserBookings = () => {
                     Filter based on times, locations or both <br />
                   </p>
                   <div className="flex flex-row gap-2">
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={places}
+                      value={fromValue}
+                      onChange={(event, newValue) => {
+                        setFromValue(newValue);
+                      }}
+                      sx={{
+                        width: "200px",
+                        borderRadius: "8px",
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="From" />
+                      )}
+                    />
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={places}
+                      value={toValue}
+                      onChange={(event, newValue) => {
+                        setToValue(newValue);
+                      }}
+                      sx={{
+                        width: "200px",
+                        borderRadius: "8px",
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="To" />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-row gap-2">
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DateTimePicker
                         label="Start Time"
@@ -279,7 +311,7 @@ const AllUserBookings = () => {
                         renderInput={(params) => (
                           <TextField
                             sx={{
-                              width: "175px",
+                              width: "200px",
                               borderRadius: "8px",
                             }}
                             {...params}
@@ -299,7 +331,7 @@ const AllUserBookings = () => {
                         renderInput={(params) => (
                           <TextField
                             sx={{
-                              width: "175px",
+                              width: "200px",
                               borderRadius: "8px",
                             }}
                             {...params}
@@ -308,42 +340,9 @@ const AllUserBookings = () => {
                       />
                     </LocalizationProvider>
                   </div>
-                  <div className="flex flex-row gap-2">
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={places}
-                      value={fromValue}
-                      onChange={(event, newValue) => {
-                        setFromValue(newValue);
-                      }}
-                      sx={{
-                        width: "175px",
-                        borderRadius: "8px",
-                      }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="From" />
-                      )}
-                    />
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={places}
-                      value={toValue}
-                      onChange={(event, newValue) => {
-                        setToValue(newValue);
-                      }}
-                      sx={{
-                        width: "175px",
-                        borderRadius: "8px",
-                      }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="To" />
-                      )}
-                    />
-                  </div>
+                  
                 </div>
-                <DialogActions>
+                <DialogActions sx={{mb:"2rem"}}>
                   <button
                     onClick={handleDialogClose}
                     className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
@@ -356,7 +355,8 @@ const AllUserBookings = () => {
                     className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                     disabled={
                       (startTime === null || endTime === null) &&
-                      (toValue === null || fromValue === null)
+                      (toValue === null || fromValue === null) &&
+                      (startTime === null || endTime === null || toValue === null || fromValue === null)
                     }
                   >
                     Filter
