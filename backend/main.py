@@ -85,8 +85,8 @@ async def create_booking(
     try:
         booking_id = queries.create_booking(
             conn,
-            start_time=booking.start_time.astimezone(timezone("Asia/Kolkata")),
-            end_time=booking.end_time.astimezone(timezone("Asia/Kolkata")),
+            start_time=booking.start_time,
+            end_time=booking.end_time,
             capacity=booking.capacity,
             from_loc=from_id,
             to_loc=to_id,
