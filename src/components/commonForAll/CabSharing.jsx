@@ -5,6 +5,7 @@ import UserBookings from "components/rootUserSpecific/UserBookings";
 import AllUserBookings from "components/allUsersSpecific/AllUserBookings";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import LogoutButton from "./Logout";
 
 export default function CabSharing() {
   const [tab, setTab] = useState(0);
@@ -23,8 +24,9 @@ export default function CabSharing() {
     <div className="bg-purple-100 ">
       {/* <NavBar /> */}
       {/* controlling width */}
-      <div className="flex bg-purple-100 flex-col overflow-x-auto py-[2rem] min-h-screen">
-        <div className="tabs flex mx-auto shadow-lg my-[2rem] border border-black rounded-lg">
+      <LogoutButton />
+      <div className="flex bg-purple-100 flex-col overflow-x-auto min-h-screen">
+        <div className="tabs flex mx-auto shadow-lg border border-black rounded-lg">
           <a
             className={`tab tab-lg text-[1rem] md:text-lg transition-all rounded-l-lg ${
               tab == 0

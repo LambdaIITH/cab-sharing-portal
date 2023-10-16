@@ -18,13 +18,15 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers";
+import { DateTimePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { matchIsValidTel } from "mui-tel-input";
 import { set } from "date-fns";
 import axios from "axios";
 import { useRouter } from "next/router";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import PhoneNumberModal from "../modals/PhoneNumberModal";
+
+import Link from "next/link";
 
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -327,6 +329,9 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             >
               {expand ? "Cancel" : "Create Booking"}
             </button>
+            {/* <button className="btn bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] ml-[auto]">
+              Logout
+            </button> */}
           </div>
           <button
             onClick={() => setExpand((prev) => !prev)}
@@ -403,7 +408,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   onChange={setStartTime}
                   renderInput={(params) => <TextField {...params} />}
                   onClose={handleTime1Close}
-                  inputFormat="dd/MM/yyyy hh:mm a"
+                  inputFormat="dd/MM/yyyy HH:mm"
+                  ampm={false}
                 />
               </LocalizationProvider>
             </FormControl>
@@ -418,7 +424,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   onChange={setEndTime}
                   renderInput={(params) => <TextField {...params} />}
                   onClose={handleTime2Close}
-                  inputFormat="dd/MM/yyyy hh:mm a"
+                  inputFormat="dd/MM/yyyy HH:mm"
+                  ampm={false}
                 />
               </LocalizationProvider>
               {endTimeError == 1 && (
