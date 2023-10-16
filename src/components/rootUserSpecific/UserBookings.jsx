@@ -41,18 +41,15 @@ const UserBookings = () => {
     }
   };
 
-  useEffect(() => {
-    setUsername(localStorage.getItem("user_name"));
-    setEmail(localStorage.getItem("user_email"));
+  const getMe = async () => {
     const authToken = retrieveAuthToken(router);
-    axios
+    await axios
       .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
           Authorization: authToken,
         },
       })
       .then((data) => {
-        console.log(data.data);
         if (
           data.data["phone_number"] == null ||
           data.data["phone_number"] == ""
@@ -74,6 +71,12 @@ const UserBookings = () => {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("user_name"));
+    setEmail(localStorage.getItem("user_email"));
+    getMe();
   }, []);
 
   return (

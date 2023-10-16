@@ -16,20 +16,17 @@ function ProcessUser(token) {
 
 function Login() {
   const router = useRouter();
-  const responseGoogleSuccess = (response) => {
+  const responseGoogleSuccess = async (response) => {
     console.log("Successful Log in");
     //response has profile object and stuff
 
-    console.log(response);
     localStorage.setItem("credential", response.credential);
-    console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
-    axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
       headers: {
         Authorization: response.credential,
       },
     })
       .then((data) => {
-        console.log(data);
         ProcessUser(response.credential);
         router.push("/cab-sharing");
       })
@@ -39,7 +36,6 @@ function Login() {
   };
   const responseGoogleFailure = (response, details) => {
     console.log("Log in UnSuccessful");
-    console.log(response);
   };
 
   useEffect(() => {

@@ -12,10 +12,12 @@ import UserTravellers from "./UserTravellers";
 const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [clicked_delete, setClickedDelete] = useState(false);
   // handlers
 
   const DeleteBooking = async (e) => {
     // e.stopPropagation();
+    setClickedDelete(true);
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -41,6 +43,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     } finally {
       setLoading(false);
     }
+    setClickedDelete(false);
   };
 
   const AcceptBooking = async (e, request_email) => {
@@ -131,12 +134,17 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           </div>
         </div>
         <div className="hidden sm:block">
-          <ConformModal
-            modalText={"Are you sure you want to delete this booking"}
-            buttonText={"Yes"}
-            buttonClickFunction={DeleteBooking}
-            displayText={"Delete"}
-          />
+          {!clicked_delete? (
+            <ConformModal
+              modalText={"Are you sure you want to delete this booking"}
+              buttonText={"Yes"}
+              buttonClickFunction={DeleteBooking}
+              displayText={"Delete"}
+              
+            />
+          ):
+            <span className="loading loading-spinner text-black"></span>
+          }
         </div>
       </div>
       <ToastContainer />

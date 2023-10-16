@@ -31,7 +31,7 @@ import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const locations = ["RGIA", "Secunderabad Railway Station", "Lingampally"];
+const locations = ["RGIA", "Secun. Railway Stn.", "Lingampally Stn.", "Kacheguda Stn.", "Hyd. Deccan Stn."];
 
 export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const initData = {
@@ -56,6 +56,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const [toggle, setToggle] = useState("from");
   const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(null);
 
+  const [clicked_book, setClickedBook] = useState(false);
+
   const [endTimeError, setEndTimeError] = useState(0);
   // 0 -> no error
   // 1 -> end time before start time
@@ -65,7 +67,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const [time2close, setTime2Close] = useState(false);
 
   const checkErrors = (startTime, endTime) => {
-    if (startTime >= endTime) {
+    if (startTime > endTime || startTime == endTime) {
       setEndTimeError(1);
       setStartTime(null);
       setEndTime(null);
@@ -211,9 +213,9 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   };
 
   const RegisterNewBooking = async () => {
+    setClickedBook(true);
     const authToken = retrieveAuthToken(router);
-
-    axios
+    await axios
       .post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
         {
@@ -239,8 +241,12 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         setCapacityError(0);
         setToggle("from");
         fetchUserBookings();
+        toast("Booking Created Successfully");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err)
+      });
+      setClickedBook(false);
   };
 
   const handlePhoneEdit = async () => {
@@ -277,6 +283,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       {loc}
     </MenuItem>
   ));
+
   return (
     <>
       <div
@@ -430,13 +437,13 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </LocalizationProvider>
               {endTimeError == 1 && (
                 <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be more than &quot; Leave
+                  &quot; Have to leave before &quot; should be more than &quot; Leave
                   after &quot;
                 </span>
               )}
               {endTimeError == 2 && (
                 <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Leave before &quot; should be after current time
+                  &quot; Have to leave before &quot; should be after current time
                 </span>
               )}
               {endTimeError == 3 && (
@@ -493,6 +500,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 onClick={RegisterNewBooking}
                 className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                 disabled={
+                  clicked_book ||
                   !values.capacity ||
                   !endTime ||
                   !startTime ||
@@ -501,7 +509,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                   endTimeError != 0
                 }
               >
-                Book
+                {!clicked_book ? (
+                  "Book"
+                ) : (
+                  <span className="loading loading-spinner text-black"></span>
+                )}
               </button>
             </div>
           </div>

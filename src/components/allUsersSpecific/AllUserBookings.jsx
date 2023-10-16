@@ -24,7 +24,7 @@ import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const places = ["IITH", "RGIA", "Secunderabad Railway Station", "Lingampally"];
+const places = ["IITH", "RGIA", "Secun. Railway Stn.", "Lingampally Stn.", "Kacheguda Stn.", "Hyd. Deccan Stn."];
 
 const AllUserBookings = () => {
   const [startTime, setStartTime] = useState(null);
@@ -72,7 +72,7 @@ const AllUserBookings = () => {
       const isoEndTime = endTime.toISOString();
       apiURL += `?start_time=${isoStartTime}&end_time=${isoEndTime}`;
     }
-
+    
     try {
       const response = await axios.get(apiURL, {
         headers: {
@@ -88,24 +88,22 @@ const AllUserBookings = () => {
       toast("Error fetching filtered bookings", {
         type: "error",
       });
+      setIsLoading(false);
     }
   };
 
   const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() + 10);
 
-  useEffect(() => {
-    setUsername(localStorage.getItem("user_name"));
-    setEmail(localStorage.getItem("user_email"));
+  const getMe = async () => {
     const authToken = retrieveAuthToken(router);
-    axios
+    await axios
       .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
           Authorization: authToken,
         },
       })
       .then((data) => {
-        console.log(data.data);
         if (
           data.data["phone_number"] == null ||
           data.data["phone_number"] == ""
@@ -122,6 +120,12 @@ const AllUserBookings = () => {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("user_name"));
+    setEmail(localStorage.getItem("user_email"));
+    getMe();
   }, []);
 
   useEffect(() => {
@@ -157,6 +161,7 @@ const AllUserBookings = () => {
       toast("Error fetching requests", {
         type: "error",
       });
+      setIsLoading(false);
     }
   };
 

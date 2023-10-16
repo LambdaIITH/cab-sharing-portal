@@ -24,8 +24,11 @@ CREATE TABLE locations
 
 INSERT INTO locations (place) VALUES ('IITH');
 INSERT INTO locations (place) VALUES ('RGIA');
-INSERT INTO locations (place) VALUES ('Secunderabad Railway Station');
-INSERT INTO locations (place) VALUES ('Lingampally');
+INSERT INTO locations (place) VALUES ('Secun. Railway Stn.');
+INSERT INTO locations (place) VALUES ('Lingampally Stn.');
+INSERT INTO locations (place) VALUES ('Kacheguda Stn.');
+INSERT INTO locations (place) VALUES ('Hyd. Deccan Stn.');
+
 
 CREATE TABLE cab_booking
 (

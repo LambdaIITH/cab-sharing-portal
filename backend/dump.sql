@@ -185,8 +185,10 @@ COPY public.cab_booking (id, date, start_time, end_time, capacity, from_loc, to_
 COPY public.locations (place, id) FROM stdin;
 RGIA	1
 IITH	0
-Secunderabad Railway Station	2
-Lingampally	3
+Secun. Railway Stn.	2
+Lingampally	Stn. 3
+Kacheguda Stn. 4
+Hyd. Deccan Stn. 5
 \.
 
 
