@@ -10,6 +10,7 @@ import psycopg2
 from dotenv import load_dotenv
 from fastapi import Header, HTTPException
 from google.auth import exceptions
+from pytz import timezone
 
 from auth import authn_user
 
@@ -95,10 +96,14 @@ def get_bookings(res, owner_email=None):
             else:
                 travellers_list.append(traveller_dict)
 
+        # convert from utc to ist
+        start_time = tup[1].astimezone(timezone("Asia/Kolkata"))
+        end_time = tup[2].astimezone(timezone("Asia/Kolkata"))
+
         booking = {
             "id": tup[0],
-            "start_time": tup[1].strftime("%Y-%m-%d %H:%M:%S"),
-            "end_time": tup[2].strftime("%Y-%m-%d %H:%M:%S"),
+            "start_time": start_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "end_time": end_time.strftime("%Y-%m-%d %H:%M:%S"),
             "capacity": tup[3],
             "from_": tup[4],
             "to": tup[5],

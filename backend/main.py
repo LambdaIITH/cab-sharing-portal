@@ -188,6 +188,9 @@ async def search_bookings(
         from_id = queries.get_loc_id(conn, place=from_loc)
         to_id = queries.get_loc_id(conn, place=to_loc)
 
+        if from_id is None or to_id is None:
+            raise HTTPException(status_code=400, detail="Invalid Location")
+
         res = queries.filter_all(
             conn,
             from_loc=from_id,
