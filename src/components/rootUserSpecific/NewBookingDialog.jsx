@@ -479,7 +479,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </span>
             )}
             <FormControl>
-              <p className="text-xs">Comments</p>
+              <p className="text-xs">Comments ( max 20 characters )</p>
               <TextField
                 id="comments"
                 name="comments"
@@ -487,6 +487,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 type="text"
                 value={values.comments}
                 onChange={handleChange}
+                inputProps={{ maxLength: 20 }}
               />
             </FormControl>
             <div className="flex justify-end gap-5 mt-10">
@@ -522,9 +523,3 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     </>
   );
 }
-
-const BoldedHeading = ({ text }) => (
-  <span className=" text-secondary border-b-2 border-secondary tracking-widest text-[.9rem] md:text-[1.15rem]">
-    {text}
-  </span>
-);

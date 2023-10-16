@@ -9,6 +9,7 @@ import {
   Button,
   DialogTitle,
   DialogContent,
+  Stack,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -24,7 +25,14 @@ import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const places = ["IITH", "RGIA", "Secun. Railway Stn.", "Lingampally Stn.", "Kacheguda Stn.", "Hyd. Deccan Stn."];
+const places = [
+  "IITH",
+  "RGIA",
+  "Secun. Railway Stn.",
+  "Lingampally Stn.",
+  "Kacheguda Stn.",
+  "Hyd. Deccan Stn.",
+];
 
 const AllUserBookings = () => {
   const [startTime, setStartTime] = useState(null);
@@ -72,7 +80,7 @@ const AllUserBookings = () => {
       const isoEndTime = endTime.toISOString();
       apiURL += `?start_time=${isoStartTime}&end_time=${isoEndTime}`;
     }
-    
+
     try {
       const response = await axios.get(apiURL, {
         headers: {
@@ -120,7 +128,7 @@ const AllUserBookings = () => {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
@@ -184,19 +192,18 @@ const AllUserBookings = () => {
       ) : (
         <div>
           <ToastContainer />
-          <div className="flex flex-row gap-2 items-center justify-center rounded-lg"></div>
 
           <div
             tabIndex={0}
             className={`collapse   ${
               expand ? "collapse-open" : "collapse-close"
-            } collapse-close bg-secondary/10 md:p-5 mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md lg:w-[60rem]`}
+            } collapse-close bg-secondary/10 mx-3 md:p-5 sm:mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
           >
-            <div className="collapse-title font-medium flex flex-col   rounded-md">
-              <p className="text-secondary border-b-2 border-secondary mx-auto font-semibold mb-2 tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+            <div className="collapse-title p-2 font-medium flex flex-col  rounded-md w-[90vw] sm:w-full">
+              <p className="text-secondary border-b-2 border-secondary mx-auto mb-2 tracking-wider font-semibold text-[1rem] md:text-[1.1rem] mr-auto">
                 Sort & Filter
               </p>
-              <div className="flex flex-col md:flex-row justify-center items-center rounded-md">
+              <div className="flex flex-col sm:flex-row justify-center items-center rounded-md ">
                 <FormGroup sx={{ width: "200px" }}>
                   <FormControlLabel
                     sx={{
@@ -230,7 +237,7 @@ const AllUserBookings = () => {
                 <div className="ml-auto">
                   {!expand && (
                     <button
-                      className="btn bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                      className="btn hidden sm:block bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                       onClick={handleDialogOpen}
                     >
                       Filter
@@ -256,113 +263,122 @@ const AllUserBookings = () => {
                   )}
                 </div>
               </div>
+              {!expand && (
+                <button
+                  className="btn block sm:hidden bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                  onClick={handleDialogOpen}
+                >
+                  Filter
+                </button>
+              )}
             </div>
 
-            <div className="collapse-content">
-              <DialogContent>
-                <div className="flex flex-col gap-3 ">
-                  <p className="text-[.9rem] md:text-[1rem] w-[20rem] text-center">
-                    Filter based on times, locations or both <br />
-                  </p>
-                  <div className="flex flex-row gap-2">
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={places}
-                      value={fromValue}
-                      onChange={(event, newValue) => {
-                        setFromValue(newValue);
-                      }}
-                      sx={{
-                        width: "200px",
-                        borderRadius: "8px",
-                      }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="From" />
-                      )}
-                    />
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={places}
-                      value={toValue}
-                      onChange={(event, newValue) => {
-                        setToValue(newValue);
-                      }}
-                      sx={{
-                        width: "200px",
-                        borderRadius: "8px",
-                      }}
-                      renderInput={(params) => (
-                        <TextField {...params} label="To" />
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-row gap-2">
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DateTimePicker
-                        label="Start Time"
-                        value={startTime}
-                        minDate={new Date()}
-                        maxDate={maxDate}
-                        onChange={(newValue) => {
-                          setStartTime(newValue);
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            sx={{
-                              width: "200px",
-                              borderRadius: "8px",
-                            }}
-                            {...params}
-                          />
-                        )}
-                      />
-                    </LocalizationProvider>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DateTimePicker
-                        label="End Time"
-                        value={endTime}
-                        minDate={new Date()}
-                        maxDate={maxDate}
-                        onChange={(newValue) => {
-                          setEndTime(newValue);
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            sx={{
-                              width: "200px",
-                              borderRadius: "8px",
-                            }}
-                            {...params}
-                          />
-                        )}
-                      />
-                    </LocalizationProvider>
-                  </div>
-                  
+            <div className="collapse-content p-0 w-[90vw] sm:w-full">
+              <div className="flex flex-col gap-3">
+                <p className="text-[.9rem] md:text-[1rem] text-center mx-auto sm:mx-0 w-fit">
+                  Filter based on times,
+                  <br className="sm:hidden" /> locations or both <br />
+                </p>
+                <div className="flex flex-col md:flex-row gap-2  items-center sm:mr-auto">
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={places}
+                    value={fromValue}
+                    onChange={(event, newValue) => {
+                      setFromValue(newValue);
+                    }}
+                    sx={{
+                      width: "200px",
+                      borderRadius: "8px",
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="From" />
+                    )}
+                  />
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={places}
+                    value={toValue}
+                    onChange={(event, newValue) => {
+                      setToValue(newValue);
+                    }}
+                    sx={{
+                      width: "200px",
+                      borderRadius: "8px",
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="To" />
+                    )}
+                  />
                 </div>
-                <DialogActions sx={{mb:"2rem"}}>
-                  <button
-                    onClick={handleDialogClose}
-                    className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
-                  >
-                    Cancel
-                  </button>
+                <div className="flex flex-col md:flex-row gap-2 items-center sm:mr-auto">
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="Start Time"
+                      value={startTime}
+                      minDate={new Date()}
+                      maxDate={maxDate}
+                      onChange={(newValue) => {
+                        setStartTime(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            width: "200px",
+                            borderRadius: "8px",
+                          }}
+                          {...params}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      label="End Time"
+                      value={endTime}
+                      minDate={new Date()}
+                      maxDate={maxDate}
+                      onChange={(newValue) => {
+                        setEndTime(newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            width: "200px",
+                            borderRadius: "8px",
+                          }}
+                          {...params}
+                        />
+                      )}
+                    />
+                  </LocalizationProvider>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-center sm:justify-end">
+                <button
+                  onClick={handleDialogClose}
+                  className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+                >
+                  Cancel
+                </button>
 
-                  <button
-                    onClick={fetchFilteredBookings}
-                    className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
-                    disabled={
-                      (startTime === null || endTime === null) &&
-                      (toValue === null || fromValue === null) &&
-                      (startTime === null || endTime === null || toValue === null || fromValue === null)
-                    }
-                  >
-                    Filter
-                  </button>
-                </DialogActions>
-              </DialogContent>
+                <button
+                  onClick={fetchFilteredBookings}
+                  className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
+                  disabled={
+                    (startTime === null || endTime === null) &&
+                    (toValue === null || fromValue === null) &&
+                    (startTime === null ||
+                      endTime === null ||
+                      toValue === null ||
+                      fromValue === null)
+                  }
+                >
+                  Filter
+                </button>
+              </div>
             </div>
           </div>
           <div className="my-10">
