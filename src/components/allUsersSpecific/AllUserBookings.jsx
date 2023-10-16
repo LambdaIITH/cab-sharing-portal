@@ -54,7 +54,6 @@ const AllUserBookings = () => {
   const [loaded_phone, setLoadedPhone] = useState("");
   const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
   const handleDialogOpen = () => {
     setExpand(true);
   };
@@ -250,12 +249,12 @@ const AllUserBookings = () => {
                     <button
                       className="btn bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                       onClick={() => {
+                        fetchFilteredBookings();
                         setEndTime(null);
                         setStartTime(null);
                         setToValue(null);
                         setFromValue(null);
                         setExpand(false);
-                        fetchRequests();
                       }}
                     >
                       Clear Filters
