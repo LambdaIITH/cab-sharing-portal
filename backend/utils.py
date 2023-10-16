@@ -176,7 +176,9 @@ def send_email(
     this is to prevent conflicts, and to make it clear that these are not part of the booking info.
     """
     global smtp_server
+    print("Refreshing SMTP server")
     refresh_smtp_server()
+    print("SMTP server refreshed")
     # smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
 
     booking_info = queries.get_booking_details(conn, cab_id=booking_id)
@@ -227,6 +229,8 @@ def send_email(
     message.attach(part1)
     message.attach(part2)
     try:
+        print("Sending email to", receiver)
         smtp_server.sendmail(GMAIL_USER, receiver, message.as_string())
+        print("Email sent")
     except Exception as ex:
         print("Could not send email:", ex)
