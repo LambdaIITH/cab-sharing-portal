@@ -131,24 +131,25 @@ smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
 print("Connected to SMTP server")
 
 
-def refresh_smtp_server(server):
+def refresh_smtp_server():
     """
     If the SMTP connection dies, this function will restart it.
     """
+    global smtp_server
     try:
-        server.noop()
+        smtp_server.noop()
     except smtplib.SMTPServerDisconnected as ex:
         print("SMTP connection died, trying to restart")
         print("Something went wrong", ex)
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(GMAIL_USER, GMAIL_PASSWORD)
+        smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp_server.starttls()
+        smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
         print("Connected to SMTP server")
     except Exception as ex:
         print("Something else went wrong", ex)
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(GMAIL_USER, GMAIL_PASSWORD)
+        smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp_server.starttls()
+        smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
         print("Connected to SMTP server")
 
 
@@ -175,7 +176,7 @@ def send_email(
     this is to prevent conflicts, and to make it clear that these are not part of the booking info.
     """
     global smtp_server
-    refresh_smtp_server(smtp_server)
+    refresh_smtp_server()
     # smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
 
     booking_info = queries.get_booking_details(conn, cab_id=booking_id)
@@ -227,7 +228,5 @@ def send_email(
     message.attach(part2)
     try:
         smtp_server.sendmail(GMAIL_USER, receiver, message.as_string())
-        smtp_server.quit()
-        # print ("Email sent successfully!")
     except Exception as ex:
-        print("Could not send email", ex)
+        print("Could not send email:", ex)
