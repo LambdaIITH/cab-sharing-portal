@@ -285,6 +285,8 @@ async def delete_request(booking_id: int, email: str = Depends(verify_auth_token
         raise e
     except Exception as e:
         print(e)
+        conn.rollback()
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 
 @app.post("/bookings/{booking_id}/accept")
@@ -441,6 +443,7 @@ async def exit_booking(booking_id: int, email: str = Depends(verify_auth_token))
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
     # confimation email to exiting user
     send_email(email, "exit", booking_id)
