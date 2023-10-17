@@ -84,10 +84,8 @@ const AllUserBookings = () => {
       const response = await axios.get(apiURL, {
         headers: {
           Authorization: authToken,
-          "Content-Type": "application/json",
         },
       });
-      console.log("data", response.data);
       setFilteredBookings(response.data);
       setIsLoading(false);
     } catch (error) {

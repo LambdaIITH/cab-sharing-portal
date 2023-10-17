@@ -27,8 +27,11 @@ const AllUserCardExpanded = ({
 
   const router = useRouter();
 
+  const [clicked_join, setClickedJoin] = useState(false);
+
   // handlers
   const JoinBooking = async () => {
+    setClickedJoin(true);
     const authToken = retrieveAuthToken(router);
     if (phone != loaded_phone) {
       await axios
@@ -75,6 +78,7 @@ const AllUserCardExpanded = ({
     } catch (err) {
       console.log(err);
     } finally {
+      setClickedJoin(false);
       fetchFilteredBookings();
     }
   };
@@ -250,12 +254,12 @@ const AllUserCardExpanded = ({
                     className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
                     onClick={JoinBooking}
                     disabled={
-                      joinComment.length == 0 || phone.replace("+91", "") == ""
+                      joinComment.length == 0 || phone.replace("+91", "") == "" || clicked_join
                     }
                   >
                     {phone.replace("+91", "") == ""
                       ? "Add Phone Number"
-                      : "Join"}
+                      : clicked_join? <span className="loading loading-spinner text-black"></span> : "Join" }
                   </button>
                 </div>
               </div>

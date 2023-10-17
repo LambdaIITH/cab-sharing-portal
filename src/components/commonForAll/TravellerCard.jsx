@@ -72,7 +72,7 @@ const TravellerCard = ({
           </p>
 
           <p className="tracking-wider text-[.9rem] md:text-[1rem] truncate">
-            {/* <BoldedHeading text="To:" /> {bookingData.to} */}
+            <BoldedHeading text="To:" /> {bookingData.to}
           </p>
 
           <div className="hidden 5x:inline">
@@ -88,12 +88,10 @@ const TravellerCard = ({
             {bookingData.capacity}
           </p>
         </div>
-        <div className="hidden sm:flex flex-row mt-2 items-center  gap-10 ">
-          <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate mt-2 md:mt-0 ">
-            <span className="hidden sm:inline">
-              <BoldedHeading text="Window:" />
-            </span>{" "}
-            <span className="sm:inline mt-1 md:mt-0">
+        <div className="flex flex-col sm:flex-row mt-5 sm:mt-2 sm:items-start justify-start items-start   gap-1">
+          <BoldedHeading text="Window:" />
+          <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0 ">
+            <span className="mt-[3px]">
               {new Date(bookingData.start_time).toLocaleDateString() +
                 " " +
                 new Date(bookingData.start_time).toLocaleTimeString([], {

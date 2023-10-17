@@ -1,5 +1,6 @@
 import os
 
+from google.auth import exceptions
 from google.auth.transport import requests
 from google.oauth2 import id_token
 
@@ -29,6 +30,9 @@ def authn_user(token):
         # userid = idinfo["sub"]  # noqa: F841
 
         return email, name
+    except exceptions.InvalidValue:
+        raise exceptions.InvalidValue("Token is invalid")
+
     except ValueError:
         # Invalid token
         return None
