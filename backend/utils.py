@@ -1,5 +1,6 @@
 import os
 import smtplib
+import threading
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Literal
@@ -129,35 +130,6 @@ def get_bookings(res, owner_email=None):
     return bookings
 
 
-print("Connecting to SMTP server")
-smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
-smtp_server.starttls()
-smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
-print("Connected to SMTP server")
-
-
-def refresh_smtp_server():
-    """
-    If the SMTP connection dies, this function will restart it.
-    """
-    global smtp_server
-    try:
-        smtp_server.noop()
-    except smtplib.SMTPServerDisconnected as ex:
-        print("SMTP connection died, trying to restart")
-        print("Something went wrong", ex)
-        smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
-        smtp_server.starttls()
-        smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
-        print("Connected to SMTP server")
-    except Exception as ex:
-        print("Something else went wrong", ex)
-        smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
-        smtp_server.starttls()
-        smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
-        print("Connected to SMTP server")
-
-
 def send_email(
     receiver: str,
     mail_type: Literal[
@@ -180,9 +152,6 @@ def send_email(
     all kwargs must start with "x_", for example x_requester_name, x_exiter_email, etc.
     this is to prevent conflicts, and to make it clear that these are not part of the booking info.
     """
-    global smtp_server
-    refresh_smtp_server()
-    # smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
 
     booking_info = queries.get_booking_details(conn, cab_id=booking_id)
     (
@@ -231,7 +200,16 @@ def send_email(
     part2 = MIMEText(html, "html")
     message.attach(part1)
     message.attach(part2)
-    try:
-        smtp_server.sendmail(GMAIL_USER, receiver, message.as_string())
-    except Exception as ex:
-        print("Could not send email:", ex)
+
+    def _send(msg):
+        try:
+            with smtplib.SMTP("smtp.gmail.com", 587) as smtp_server:
+                smtp_server.starttls()
+                smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
+                smtp_server.send_message(msg)
+                print("Email sent successfully!")
+        except Exception as ex:
+            print("Error sending mail:", ex)
+
+    # send email in a separate thread so that the user doesn't have to wait
+    threading.Thread(target=_send, args=(message,)).start()
