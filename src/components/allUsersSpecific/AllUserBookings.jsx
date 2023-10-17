@@ -65,7 +65,7 @@ const AllUserBookings = () => {
     setIsLoading(true);
     const authToken = retrieveAuthToken(router);
     let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
-
+    toast.dismiss();
     if (fromValue && toValue) {
       if (startTime && endTime) {
         const isoStartTime = startTime.toISOString();
@@ -90,6 +90,7 @@ const AllUserBookings = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching filtered bookings:", error);
+      
       toast("Error fetching filtered bookings", {
         type: "error",
       });
@@ -149,7 +150,7 @@ const AllUserBookings = () => {
   const fetchRequests = async () => {
     setIsLoading(true);
     const authToken = retrieveAuthToken(router);
-
+    toast.dismiss();
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/me/requests`,
@@ -163,6 +164,7 @@ const AllUserBookings = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching requests:", error);
+      
       toast("Error fetching requests", {
         type: "error",
       });
@@ -329,6 +331,8 @@ const AllUserBookings = () => {
                           {...params}
                         />
                       )}
+                      inputFormat="dd/MM/yyyy HH:mm"
+                      ampm={false}
                     />
                   </LocalizationProvider>
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -349,6 +353,8 @@ const AllUserBookings = () => {
                           {...params}
                         />
                       )}
+                      inputFormat="dd/MM/yyyy HH:mm"
+                      ampm={false}
                     />
                   </LocalizationProvider>
                 </div>

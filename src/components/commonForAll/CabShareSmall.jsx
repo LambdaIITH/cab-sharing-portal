@@ -70,6 +70,7 @@ const CabShareSmall = ({
   };
 
   const editWindow = async () => {
+    toast.dismiss();
     const authToken = retrieveAuthToken(router);
     try {
       const res = await axios.patch(
@@ -85,6 +86,7 @@ const CabShareSmall = ({
           },
         }
       );
+      
       toast("Succesfully Edited");
       fetchUserBookings();
       handleDialogClose();

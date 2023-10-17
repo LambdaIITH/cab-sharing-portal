@@ -33,6 +33,7 @@ const AllUserCardExpanded = ({
   const JoinBooking = async () => {
     setClickedJoin(true);
     const authToken = retrieveAuthToken(router);
+    toast.dismiss();
     if (phone != loaded_phone) {
       await axios
         .post(
@@ -48,13 +49,16 @@ const AllUserCardExpanded = ({
           }
         )
         .then((res) => {
+          
           toast("Phone Number Updated");
         })
         .catch((err) => {
           console.log(err);
+          
           toast("Something went wrong", { type: "error" });
         });
     }
+    toast.dismiss();
     try {
       const data = await axios
         .post(
@@ -69,10 +73,12 @@ const AllUserCardExpanded = ({
         )
         .then(() => {
           console.log("Successfully requested the user booking");
+          
           toast("Successfully requested the user booking", { type: "success" });
         })
         .catch((err) => {
           console.log(err);
+          
           toast("Something went wrong", { type: "error" });
         });
     } catch (err) {
@@ -85,6 +91,7 @@ const AllUserCardExpanded = ({
 
   const handlePhoneEdit = async () => {
     if (phone != loaded_phone) {
+      toast.dismiss();
       const authToken = retrieveAuthToken(router);
       await axios
         .post(
@@ -100,6 +107,7 @@ const AllUserCardExpanded = ({
           }
         )
         .then((res) => {
+          
           toast("Phone Number Updated");
           fetchFilteredBookings();
         })
@@ -112,6 +120,7 @@ const AllUserCardExpanded = ({
   const handleCancelRequest = async (e) => {
     e.stopPropagation();
     const authToken = retrieveAuthToken(router);
+    toast.dismiss();
     try {
       await axios
         .delete(
@@ -124,10 +133,12 @@ const AllUserCardExpanded = ({
           }
         )
         .then(() => {
+          
           toast("Succesfully Cancelled Request");
         })
         .catch((err) => {
           console.log(err);
+          
           toast("Something went wrong", { type: "error" });
         });
       fetchFilteredBookings();

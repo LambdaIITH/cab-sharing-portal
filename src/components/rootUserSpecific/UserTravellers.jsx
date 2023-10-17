@@ -21,6 +21,7 @@ const UserTravellers = ({
   };
 
   useEffect(() => {
+    toast.dismiss();
     copied &&
       toast("Sucessfully copied") &&
       setTimeout(() => {

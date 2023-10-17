@@ -215,6 +215,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const RegisterNewBooking = async () => {
     setClickedBook(true);
     const authToken = retrieveAuthToken(router);
+    toast.dismiss();
     await axios
       .post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
@@ -241,6 +242,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         setCapacityError(0);
         setToggle("from");
         fetchUserBookings();
+        
         toast("Booking Created Successfully");
       })
       .catch((err) => {
@@ -250,6 +252,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   };
 
   const handlePhoneEdit = async () => {
+    toast.dismiss();
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
       let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
@@ -269,10 +272,12 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         .then((res) => {
           setLoadedPhone(phone);
           setIsThereAPhoneNumber(true);
+          
           toast("Phone number updated successfully");
         })
         .catch((err) => {
           console.log(err);
+          
           toast("Error updating phone number", { type: "error" });
         });
     }
@@ -426,7 +431,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 <DateTimePicker
                   label=""
                   value={endTime}
-                  minDate={new Date()}
+                  minDate={startTime?startTime:new Date()}
                   name="endTime"
                   onChange={setEndTime}
                   renderInput={(params) => <TextField {...params} />}

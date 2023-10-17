@@ -30,6 +30,7 @@ const TravellerCard = ({
 
   const ExitBooking = async () => {
     const authToken = retrieveAuthToken(router);
+    toast.dismiss();
     try {
       setLoading(true);
       await axios
@@ -43,9 +44,11 @@ const TravellerCard = ({
           }
         )
         .then(() => {
+          
           toast("Succesfully exited cab");
         })
         .catch((err) => {
+          
           toast("Error exiting cab", { type: "error" });
         });
       fetchUserBookings();
