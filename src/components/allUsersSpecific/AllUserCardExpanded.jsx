@@ -33,7 +33,7 @@ const AllUserCardExpanded = ({
   const JoinBooking = async () => {
     setClickedJoin(true);
     const authToken = retrieveAuthToken(router);
-    toast.dismiss();
+    
     if (phone != loaded_phone) {
       await axios
         .post(
@@ -58,7 +58,7 @@ const AllUserCardExpanded = ({
           toast("Something went wrong", { type: "error" });
         });
     }
-    toast.dismiss();
+    
     try {
       const data = await axios
         .post(
@@ -91,7 +91,7 @@ const AllUserCardExpanded = ({
 
   const handlePhoneEdit = async () => {
     if (phone != loaded_phone) {
-      toast.dismiss();
+      
       const authToken = retrieveAuthToken(router);
       await axios
         .post(
@@ -120,7 +120,7 @@ const AllUserCardExpanded = ({
   const handleCancelRequest = async (e) => {
     e.stopPropagation();
     const authToken = retrieveAuthToken(router);
-    toast.dismiss();
+    
     try {
       await axios
         .delete(
@@ -169,7 +169,6 @@ const AllUserCardExpanded = ({
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
-      <ToastContainer />
       <div className="flex flex-col justify-center my-5">
         <div className="flex">
           <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">

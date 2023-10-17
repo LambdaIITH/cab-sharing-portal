@@ -215,7 +215,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const RegisterNewBooking = async () => {
     setClickedBook(true);
     const authToken = retrieveAuthToken(router);
-    toast.dismiss();
+    
     await axios
       .post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
@@ -252,7 +252,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   };
 
   const handlePhoneEdit = async () => {
-    toast.dismiss();
+    
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
       let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
@@ -297,7 +297,6 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
           expand ? "collapse-open" : "collapse-close"
         } collapse-close bg-secondary/10 mx-3 md:p-5 sm:mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
       >
-        <ToastContainer />
         <div className="collapse-title p-2  font-medium flex flex-col  rounded-md">
           <p className="text-secondary border-b-2 border-secondary mx-auto mb-2 tracking-wider font-semibold text-[1rem] md:text-[1.1rem] mr-auto">
             Your Profile

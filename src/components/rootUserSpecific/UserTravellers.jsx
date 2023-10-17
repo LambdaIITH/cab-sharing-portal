@@ -21,7 +21,7 @@ const UserTravellers = ({
   };
 
   useEffect(() => {
-    toast.dismiss();
+    
     copied &&
       toast("Sucessfully copied") &&
       setTimeout(() => {
@@ -70,7 +70,6 @@ const UserTravellers = ({
                     />
                   </button>
                 </CopyToClipboard>
-                <ToastContainer />
               </div>
             )}
           </div>

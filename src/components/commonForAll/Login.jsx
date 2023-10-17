@@ -43,7 +43,7 @@ function Login() {
     setLoading(false);
   };
   const responseGoogleFailure = (response, details) => {
-    toast.dismiss();
+    
     toast("Error logging in", { type: "error" });
     console.log("Log in UnSuccessful");
   };
@@ -58,7 +58,6 @@ function Login() {
 
   return (
     <div className="w-screen flex flex-col justify-center bg-purple-50 items-center h-screen gap-5">
-      <ToastContainer />
       <img
         src={"/assets/iith_cabshare_logo_no_bg.png"}
         className="w-[15rem] h-[15rem]"

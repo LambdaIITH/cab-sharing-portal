@@ -30,7 +30,7 @@ const TravellerCard = ({
 
   const ExitBooking = async () => {
     const authToken = retrieveAuthToken(router);
-    toast.dismiss();
+    
     try {
       setLoading(true);
       await axios
@@ -140,7 +140,6 @@ const TravellerCard = ({
             ExitBooking={ExitBooking}
           />
         )}
-        <ToastContainer />
       </div>
     </div>
   );

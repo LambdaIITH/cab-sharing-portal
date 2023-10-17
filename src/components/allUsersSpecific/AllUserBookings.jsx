@@ -65,7 +65,7 @@ const AllUserBookings = () => {
     setIsLoading(true);
     const authToken = retrieveAuthToken(router);
     let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
-    toast.dismiss();
+    
     if (fromValue && toValue) {
       if (startTime && endTime) {
         const isoStartTime = startTime.toISOString();
@@ -150,7 +150,7 @@ const AllUserBookings = () => {
   const fetchRequests = async () => {
     setIsLoading(true);
     const authToken = retrieveAuthToken(router);
-    toast.dismiss();
+    
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/me/requests`,
@@ -190,8 +190,6 @@ const AllUserBookings = () => {
         <UserbookingShimmer />
       ) : (
         <div>
-          <ToastContainer />
-
           <div
             tabIndex={0}
             className={`collapse   ${

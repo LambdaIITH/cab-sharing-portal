@@ -70,7 +70,7 @@ const CabShareSmall = ({
   };
 
   const editWindow = async () => {
-    toast.dismiss();
+    
     const authToken = retrieveAuthToken(router);
     try {
       const res = await axios.patch(

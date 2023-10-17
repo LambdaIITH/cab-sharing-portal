@@ -18,7 +18,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   const DeleteBooking = async (e) => {
     // e.stopPropagation();
     setClickedDelete(true);
-    toast.dismiss();
+    
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -51,7 +51,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
 
   const AcceptBooking = async (e, request_email) => {
     e.stopPropagation();
-    toast.dismiss();
+    
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -85,7 +85,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
 
   const RejectBooking = async (e, request_email) => {
     e.stopPropagation();
-    toast.dismiss();
+    
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -152,7 +152,6 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           }
         </div>
       </div>
-      <ToastContainer />
       {bookingData?.requests?.length > 0 && (
         <UserRequests
           requests={bookingData.requests}

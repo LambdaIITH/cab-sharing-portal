@@ -7,6 +7,7 @@ import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LogoutButton from "./Logout";
 import UserGuide from "./UserGuide";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function CabSharing() {
   const [tab, setTab] = useState(0);
@@ -25,6 +26,7 @@ export default function CabSharing() {
     <div className="bg-purple-100 flex flex-col">
       {/* <NavBar /> */}
       {/* controlling width */}
+      <ToastContainer />
       <div className="flex flex-row ml-auto">
         <UserGuide />
         <LogoutButton />
