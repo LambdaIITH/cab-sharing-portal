@@ -30,13 +30,13 @@ const PhoneNumberModal = ({
         <div>
           {edit
             ? `Phone: ${loaded_phone.slice(0, 3)} ${loaded_phone.slice(3)}`
-            : "Phone Number :"}
+            : "Add Phone Number :"}
         </div>
         <button
           className=" btn bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px]"
           onClick={() => showModal()}
         >
-          {edit ? "Edit" : "+ Add"}
+          {edit ? "Edit" : "+"}
         </button>
       </div>
       {isModalOpen && (

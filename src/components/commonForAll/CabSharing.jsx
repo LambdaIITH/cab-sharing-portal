@@ -5,6 +5,8 @@ import UserBookings from "components/rootUserSpecific/UserBookings";
 import AllUserBookings from "components/allUsersSpecific/AllUserBookings";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { keyframes } from "@emotion/react";
+import styled from "@emotion/styled";
 import LogoutButton from "./Logout";
 import UserGuide from "./UserGuide";
 import { ToastContainer, toast } from "react-toastify";
@@ -21,6 +23,25 @@ export default function CabSharing() {
     setUsername(localStorage.getItem("user_name"));
     retrieveAuthToken(router);
   }, []);
+
+  const pulse = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+  const HeartIcon = styled(FavoriteIcon)`
+    color: #fa366b;
+    animation: ${pulse} 1.5s infinite;
+    box-shadow: 0 0 15px rgba(250, 54, 107, 0.3);
+    border-radius: 50%;
+  `;
 
   return (
     <div className="bg-purple-100 flex flex-col">
@@ -61,7 +82,7 @@ export default function CabSharing() {
       </div>
       <footer className="flex justify-center gap-2 text-[1.1rem] items-center bg-yellow-400 text-black py-4">
         <span>Made with </span>
-        <FavoriteIcon sx={{ color: "#BF40BF" }} />
+        <HeartIcon />
         <span> By Lambda</span>
       </footer>
     </div>
