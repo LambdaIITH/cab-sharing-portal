@@ -172,7 +172,7 @@ const AllUserCardExpanded = ({
       <div className="flex flex-col justify-center my-5">
         <div className="flex">
           <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-            <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem]">
+            <h3 className=" tracking-wider text-[1rem] sm:text-[1.15rem]">
               {bookingData.travellers[0].name}
             </h3>
             <p className="text-secondary  tracking-wider font-medium text-[.9rem] sm:text-[1.1rem] mr-auto ">

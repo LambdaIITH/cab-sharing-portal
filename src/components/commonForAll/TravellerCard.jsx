@@ -30,7 +30,7 @@ const TravellerCard = ({
 
   const ExitBooking = async () => {
     const authToken = retrieveAuthToken(router);
-    
+
     try {
       setLoading(true);
       await axios
@@ -44,11 +44,9 @@ const TravellerCard = ({
           }
         )
         .then(() => {
-          
           toast("Succesfully exited cab");
         })
         .catch((err) => {
-          
           toast("Error exiting cab", { type: "error" });
         });
       fetchUserBookings();
@@ -118,7 +116,7 @@ const TravellerCard = ({
       >
         <div className="flex flex-col justify-center mt-8">
           <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-            <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
+            <h3 className=" tracking-wider text-[1rem] md:text-[1.15rem] mr-auto">
               {bookingData.travellers[0].name}
             </h3>
             <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
@@ -146,7 +144,7 @@ const TravellerCard = ({
 };
 
 const BoldedHeading = ({ text }) => (
-  <span className=" text-secondary font-semibold  tracking-widest text-[.9rem] md:text-[1.15rem]">
+  <span className=" text-secondary font-semibold  tracking-wider text-[.9rem] md:text-[1.15rem]">
     {text}
   </span>
 );

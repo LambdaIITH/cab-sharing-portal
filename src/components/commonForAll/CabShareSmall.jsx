@@ -70,7 +70,6 @@ const CabShareSmall = ({
   };
 
   const editWindow = async () => {
-    
     const authToken = retrieveAuthToken(router);
     try {
       const res = await axios.patch(
@@ -86,7 +85,7 @@ const CabShareSmall = ({
           },
         }
       );
-      
+
       toast("Succesfully Edited");
       fetchUserBookings();
       handleDialogClose();
@@ -109,9 +108,11 @@ const CabShareSmall = ({
   return (
     <div
       tabIndex={0}
-      className={`collapse collapse-arrow ${index === 0 && expand && "collapse-open"
-        }  ${expand ? "collapse-open" : "collapse-close"
-        } collapse-close bg-secondary/10  md:p-5 mx-3 sm:mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
+      className={`collapse collapse-arrow ${
+        index === 0 && expand && "collapse-open"
+      }  ${
+        expand ? "collapse-open" : "collapse-close"
+      } collapse-close bg-secondary/10  md:p-5 mx-3 sm:mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
       onClick={() => setExpand((prev) => !prev)}
     >
       <div className="collapse-title p-1 md:p-2 font-medium flex flex-col  rounded-md  cursor-pointer">
@@ -184,7 +185,7 @@ const CabShareSmall = ({
 };
 
 const BoldedHeading = ({ text }) => (
-  <span className=" text-secondary  tracking-widest font-semibold text-[.9rem] md:text-[1.15rem]">
+  <span className=" text-secondary  tracking-wider font-semibold text-[.9rem] md:text-[1.15rem]">
     {text}
   </span>
 );

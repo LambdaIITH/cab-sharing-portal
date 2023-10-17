@@ -21,7 +21,6 @@ const UserTravellers = ({
   };
 
   useEffect(() => {
-    
     copied &&
       toast("Sucessfully copied") &&
       setTimeout(() => {
@@ -39,7 +38,7 @@ const UserTravellers = ({
         <div className="flex flex-col gap-3 items-center  w-full" key={index}>
           <div className="flex flex-col sm:flex-row justify-between w-full">
             <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-              <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem] mr-auto">
+              <h3 className=" tracking-wider text-[1rem] sm:text-[1.15rem] mr-auto">
                 {item.name}
               </h3>
               <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">

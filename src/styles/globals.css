@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,6 +22,6 @@ a {
 }
 
 .three-d {
-  box-shadow: rgba(240, 224, 80, 0.8) 5px 5px, rgba(240, 224, 80, 0.3) 10px 10px, rgba(240, 224, 80, 0.1) 15px 15px, rgba(240, 224, 80, 0.05) 25px 20px;
-
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+

@@ -303,7 +303,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
           </p>
           <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
             <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-              <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
+              <h3 className=" tracking-wider text-[1rem] md:text-[1.15rem] mr-auto">
                 {username}
               </h3>
               <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">

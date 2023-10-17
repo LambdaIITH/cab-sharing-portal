@@ -18,7 +18,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   const DeleteBooking = async (e) => {
     // e.stopPropagation();
     setClickedDelete(true);
-    
+
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -33,11 +33,9 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           }
         )
         .then(() => {
-          
           toast("Succesfully Deleted");
         })
         .catch((err) => {
-          
           toast("Some Error Occured", { type: "error" });
         });
       fetchUserBookings();
@@ -51,7 +49,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
 
   const AcceptBooking = async (e, request_email) => {
     e.stopPropagation();
-    
+
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -85,7 +83,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
 
   const RejectBooking = async (e, request_email) => {
     e.stopPropagation();
-    
+
     const authToken = retrieveAuthToken(router);
     try {
       setLoading(true);
@@ -124,7 +122,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
       <div className="flex flex-row justify-between items-center my-5">
         <div className="flex flex-col justify-center">
           <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-            <h3 className=" tracking-widest text-[1rem] md:text-[1.15rem] mr-auto">
+            <h3 className=" tracking-wider text-[1rem] md:text-[1.15rem] mr-auto">
               {bookingData.travellers[0].name}
             </h3>
             <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
@@ -139,17 +137,16 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           </div>
         </div>
         <div className="hidden sm:block">
-          {!clicked_delete? (
+          {!clicked_delete ? (
             <ConformModal
               modalText={"Are you sure you want to delete this booking"}
               buttonText={"Yes"}
               buttonClickFunction={DeleteBooking}
               displayText={"Delete"}
-              
             />
-          ):
+          ) : (
             <span className="loading loading-spinner text-black"></span>
-          }
+          )}
         </div>
       </div>
       {bookingData?.requests?.length > 0 && (

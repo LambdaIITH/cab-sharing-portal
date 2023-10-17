@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import NavBar from "./NavBar";
+import PersonIcon from "@mui/icons-material/Person";
+import GroupsIcon from "@mui/icons-material/Groups";
 import UserBookings from "components/rootUserSpecific/UserBookings";
 import AllUserBookings from "components/allUsersSpecific/AllUserBookings";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
@@ -15,10 +16,6 @@ export default function CabSharing() {
   const [tab, setTab] = useState(0);
   const [username, setUsername] = useState("");
   const router = useRouter();
-  const handleTabChange = (event, value) => {
-    setTab(value);
-  };
-
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
     retrieveAuthToken(router);
@@ -39,8 +36,6 @@ export default function CabSharing() {
   const HeartIcon = styled(FavoriteIcon)`
     color: #fa366b;
     animation: ${pulse} 1.5s infinite;
-    box-shadow: 0 0 15px rgba(250, 54, 107, 0.3);
-    border-radius: 50%;
   `;
 
   return (
@@ -58,21 +53,21 @@ export default function CabSharing() {
             className={`tab tab-lg text-[1rem] md:text-lg transition-all rounded-l-lg ${
               tab == 0
                 ? "tab-active bg-secondary/80 text-white/80"
-                : "bg-secondary/20 text-black/60"
+                : "bg-secondary/20 text-black/30"
             }`}
             onClick={() => setTab(0)}
           >
-            Your Bookings
+            My Rides <span className="w-2"></span> <PersonIcon />
           </a>
           <a
             className={`tab transition-all text-[1rem] md:text-lg rounded-r-lg tab-lg ${
               tab == 1
                 ? "tab-active bg-secondary/80 text-white/80"
-                : " bg-secondary/20 text-black/60"
+                : " bg-secondary/20 text-black/30"
             }`}
             onClick={() => setTab(1)}
           >
-            All Bookings
+            All Rides <span className="w-2"></span> <GroupsIcon />
           </a>
         </div>
         <div className="flex flex-nowrap overflow-x-auto">

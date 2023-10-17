@@ -17,7 +17,7 @@ const UserRequests = ({ requests, AcceptBooking, RejectBooking, loading }) => {
           <div className="flex flex-row justify-between w-full">
             <div className="flex flex-col justify-center">
               <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-                <h3 className=" tracking-widest text-[1rem] sm:text-[1.15rem] mr-auto">
+                <h3 className=" tracking-wider text-[1rem] sm:text-[1.15rem] mr-auto">
                   {item.name}
                 </h3>
                 <p className=" text-[.9rem] sm:text-[1rem] mr-auto">
