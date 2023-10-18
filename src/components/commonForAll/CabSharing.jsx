@@ -44,7 +44,7 @@ export default function CabSharing() {
       {/* controlling width */}
       <ToastContainer />
       <div className="flex flex-row ml-auto">
-        <UserGuide />
+        {/* <UserGuide /> */}
         <LogoutButton />
       </div>
       <div className="flex bg-purple-100 flex-col overflow-x-auto min-h-screen ">
