@@ -130,20 +130,16 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           <div className="">
             {!clicked_delete ? (
               <ConformModal
-                modalText={
-                  "Are you sure you want to delete this ride"
-                }
+                modalText={"Are you sure you want to delete this ride"}
                 buttonText={"Yes"}
                 buttonClickFunction={DeleteBooking}
-                displayText={"Delete Ride"}
-                
+                displayText={"Delete"}
               />
             ) : (
               <span className="loading loading-spinner text-black"></span>
             )}
           </div>
         </div>
-        
       </div>
       {bookingData?.requests?.length > 0 && (
         <UserRequests
@@ -154,7 +150,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
         />
       )}
       {bookingData.travellers.length > 0 && (
-        <UserTravellers 
+        <UserTravellers
           travellers={bookingData.travellers}
           owner_email={bookingData.owner_email}
           DeleteBooking={DeleteBooking}

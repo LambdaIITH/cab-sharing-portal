@@ -299,7 +299,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         tabIndex={0}
         className={`collapse  ${
           expand ? "collapse-open" : "collapse-close"
-        } collapse-close bg-secondary/10 sm:mx-auto md:p-5 border-black/20 border-t-2  mt-3 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
+        } collapse-close bg-secondary/10 sm:mx-auto md:p-5 border-black/20 border-t-2  mt-3 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
       >
         <div className="collapse-title p-2  font-medium flex flex-col  rounded-md">
           <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">

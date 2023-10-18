@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ConformModal from "components/modals/ConformModal";
 import StarIcon from "@mui/icons-material/Star";
+import ViewProfile from "components/modals/ViewProfile";
 // List of traverllers in TravellerCard, this is a child of TravellerCard(parent)
 
 const UserTravellers = ({
@@ -36,48 +37,46 @@ const UserTravellers = ({
       </p>
 
       {travellers.map((item, index) => (
-        <div className="flex flex-col gap-3 items-center  w-full" key={index}>
-          <div className="flex flex-col sm:flex-row justify-between w-full">
-            <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
+        <div className="flex flex-col w-full" key={index}>
+          <div
+            className={`${
+              item.email !== owner_email ? "pl-7 sm:pl-7" : ""
+            } flex flex-row  items-center justify-between gap-1 sm:gap-3`}
+          >
+            <div className="flex flex-row gap-1 justify-center">
               {item.email === owner_email && (
-                <span className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+                <span className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1rem] ">
                   <StarIcon sx={{ fontSize: "1.5rem" }} />
                 </span>
               )}
-              <h3 className=" tracking-wider text-[1rem] sm:text-[1.15rem] mr-auto">
+              <h3 className="tracking-wider text-[.9rem] sm:text-[1rem] ">
                 {item.name}
               </h3>
-              <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+              <p className="sm:block hidden text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1rem] ">
                 {item.email}
               </p>
+            </div>
+            <div className="flex flex-row gap-3 ">
+              <div className="sm:hidden block">
+                <ViewProfile
+                  name={item.name}
+                  email={item.email}
+                  hidePhoneNumber={hidePhoneNumber}
+                  phone_number={item.phone_number}
+                  handleCopy={handleCopy}
+                  copied={copied}
+                />
+              </div>
 
               {item.email === user_email && (
                 <ConformModal
                   modalText={"Are you sure you want to exit from this booking"}
                   buttonText={"Exit"}
                   buttonClickFunction={ExitBooking}
-                  displayText={"Exit"}
+                  displayText={"Exit Ride"}
                 />
               )}
             </div>
-            {!hidePhoneNumber && (
-              <div className="flex flex-row gap-3 items-center">
-                <p className="text-[.9rem] sm:text-[1rem]">
-                  {item.phone_number}
-                </p>
-                <CopyToClipboard text={item.phone_number} onCopy={handleCopy}>
-                  <button
-                    onClick={(e) => e.stopPropagation()}
-                    disabled={copied}
-                    className="bg-white/20 rounded-md p-1 disabled:opacity-[.2]"
-                  >
-                    <ContentCopyIcon
-                      sx={{ fontSize: "1rem", marginBottom: 0.5 }}
-                    />
-                  </button>
-                </CopyToClipboard>
-              </div>
-            )}
           </div>
         </div>
       ))}

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import UserTravellers from "../rootUserSpecific/UserTravellers";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Traveller card in user bookings
@@ -63,7 +63,7 @@ const TravellerCard = ({
         index === 0 && expand && "collapse-open"
       }  ${
         expand ? "collapse-open" : "collapse-close"
-      } collapse-close bg-secondary/10 md:p-5 mx-3 sm:mx-auto mt-5 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
+      } collapse-close bg-secondary/10 px-2  md:p-5 py-2 sm:py-0 sm:mx-auto sm:mt-5 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black  rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
       onClick={() => setExpand((prev) => !prev)}
     >
       <div className="collapse-title p-1 md:p-2 font-medium flex flex-col  rounded-md  cursor-pointer">
