@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import UserTravellers from "../rootUserSpecific/UserTravellers";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Traveller card in user bookings

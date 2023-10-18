@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { matchIsValidTel } from "mui-tel-input";
 import { useRouter } from "next/router";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneNumberModal from "components/modals/PhoneNumberModal";
 import UserTravellers from "components/rootUserSpecific/UserTravellers";
@@ -79,7 +79,7 @@ const AllUserCardExpanded = ({
         .catch((err) => {
           console.log(err);
           
-          toast("Something went wrong", { type: "error" });
+          toast("Cannot join booking", { type: "error" });
         });
     } catch (err) {
       console.log(err);

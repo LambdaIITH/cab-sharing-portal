@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ConformModal from "components/modals/ConformModal";

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 
 function ProcessUser(token) {
   const decoded_token = jwt_decode(token);

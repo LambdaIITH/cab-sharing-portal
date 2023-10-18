@@ -22,7 +22,7 @@ import axios from "axios";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const places = [
@@ -59,6 +59,7 @@ const AllUserBookings = () => {
   };
   const handleDialogClose = () => {
     setExpand(false);
+    fetchFilteredBookings();
   };
 
   const fetchFilteredBookings = async () => {
@@ -127,6 +128,14 @@ const AllUserBookings = () => {
         console.log(err);
       });
   };
+
+  const clearFilters = async () => {
+    setEndTime(null);
+    setStartTime(null);
+    setToValue(null);
+    setFromValue(null);
+    // setExpand(false);
+  }
 
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
@@ -263,12 +272,8 @@ const AllUserBookings = () => {
                     <button
                       className="btn bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                       onClick={() => {
-                        fetchFilteredBookings();
-                        setEndTime(null);
-                        setStartTime(null);
-                        setToValue(null);
-                        setFromValue(null);
-                        setExpand(false);
+                        clearFilters();
+                        // fetchFilteredBookings();
                       }}
                     >
                       Clear Filters
@@ -385,9 +390,15 @@ const AllUserBookings = () => {
                   onClick={fetchFilteredBookings}
                   className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                   disabled={
-                    (startTime === null || endTime === null) &&
-                    (toValue === null || fromValue === null) &&
-                    (startTime === null ||
+                    ( startTime === null || 
+                      endTime === null ||
+                      toValue != null || 
+                      fromValue != null) &&
+                    ( toValue === null || 
+                      fromValue === null ||
+                      startTime != null ||
+                      endTime != null) &&
+                    ( startTime === null ||
                       endTime === null ||
                       toValue === null ||
                       fromValue === null)

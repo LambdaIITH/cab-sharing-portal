@@ -27,7 +27,7 @@ import PhoneNumberModal from "../modals/PhoneNumberModal";
 
 import Link from "next/link";
 
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const locations = [
@@ -339,7 +339,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               className=" btn hidden sm:block bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
               disabled={!is_there_a_phone_number}
             >
-              {expand ? "Cancel" : "+ Ride"}
+              {expand ? "Cancel" : "Add Ride"}
             </button>
           </div>
           <button
@@ -347,7 +347,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             className=" btn block sm:hidden bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
             disabled={!is_there_a_phone_number}
           >
-            {expand ? "Cancel" : "+ Ride"}
+            {expand ? "Cancel" : "Add Ride"}
           </button>
         </div>
 
@@ -456,7 +456,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               )}
             </FormControl>
             <FormControl>
-              <p className="text-xs">Capacity</p>
+              <p className="text-xs">Number of Passengers ( including yourself )</p>
               <TextField
                 id="capacity"
                 name="capacity"
@@ -482,7 +482,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </span>
             )}
             <FormControl>
-              <p className="text-xs">Comments ( max 20 characters )</p>
+              <p className="text-xs">Comments ( max 150 characters )</p>
               <TextField
                 id="comments"
                 name="comments"
@@ -490,7 +490,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 type="text"
                 value={values.comments}
                 onChange={handleChange}
-                inputProps={{ maxLength: 20 }}
+                inputProps={{ maxLength: 150 }}
+                multiline
               />
             </FormControl>
             <div className="flex justify-end gap-5 mt-10">
