@@ -165,7 +165,7 @@ const AllUserCardExpanded = ({
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
-      <div className="flex flex-row gap-3 my-5 pl-2 justify-between ">
+      <div className="flex flex-row gap-3 my-5 justify-between ">
         <div className="break-words text-[.8rem] sm:text-[.9rem]">
           <span className="text-secondary text-[.9rem] md:text-[1rem]">
             Note:
@@ -174,7 +174,7 @@ const AllUserCardExpanded = ({
         </div>
         {isValidToJoin && isInRequest == -1 && (
           <button
-            className="p-1 h-8 sm:h-10 my-auto sm:p-2 rounded-md text-[.8rem] sm:text-[1rem] bg-secondary/70 border border-black hover:bg-secondary/70 hover:text-white ease-in-out delay-150 hover:border-black text-white"
+            className="py-1 px-2 h-8 sm:h-10 my-auto sm:p-2 rounded-md text-[.8rem] sm:text-[1rem] bg-secondary/70 border border-black hover:bg-secondary/70 hover:text-white ease-in-out delay-150 hover:border-black text-white"
             onClick={() => setIsModalVisible(true)}
           >
             Join
