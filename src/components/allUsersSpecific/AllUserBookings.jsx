@@ -257,18 +257,18 @@ const AllUserBookings = () => {
                 <div className="ml-auto">
                   {!expand && (
                     <button
-                      className="btn hidden sm:block bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                      className="btn hidden sm:block bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                       onClick={handleDialogOpen}
                     >
-                      Filter Rides
+                      Filter Rides <FilterAltIcon />
                     </button>
                   )}
-                  {(startTime !== null ||
+                  {((startTime !== null ||
                     endTime !== null ||
                     toValue !== null ||
-                    fromValue !== null) && (
+                    fromValue !== null) && expand) && (
                     <button
-                      className="btn bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                      className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                       onClick={() => {
                         clearFilters();
                         // fetchFilteredBookings();
@@ -281,10 +281,10 @@ const AllUserBookings = () => {
               </div>
               {!expand && (
                 <button
-                  className="btn block sm:hidden bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                  className="btn block sm:hidden bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px] w-[90%] mx-auto"
                   onClick={handleDialogOpen}
                 >
-                  Filter Rides
+                  Filter Rides <FilterAltIcon />
                 </button>
               )}
             </div>
@@ -379,14 +379,14 @@ const AllUserBookings = () => {
               <div className="flex gap-2 justify-center sm:justify-end">
                 <button
                   onClick={handleDialogClose}
-                  className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+                  className=" btn  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
                 >
                   Cancel
                 </button>
 
                 <button
                   onClick={fetchFilteredBookings}
-                  className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
+                  className=" btn  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                   disabled={
                     (startTime === null ||
                       endTime === null ||

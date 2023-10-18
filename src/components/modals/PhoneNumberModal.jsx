@@ -2,6 +2,7 @@ import { MuiTelInput } from "mui-tel-input";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { AddBox } from "@mui/icons-material";
 
 const PhoneNumberModal = ({
   handlePhoneChange,
@@ -31,13 +32,13 @@ const PhoneNumberModal = ({
         <div>
           {edit
             ? `Phone: ${loaded_phone.slice(0, 3)} ${loaded_phone.slice(3)}`
-            : "Add Phone Number :"}
+            : ""}
         </div>
         <button
           className=" capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px]"
           onClick={() => showModal()}
         >
-          {edit ? <EditOutlinedIcon /> : "+"}
+          {edit ? <EditOutlinedIcon /> : "Add Phone Number"}
         </button>
       </div>
       {isModalOpen && (
@@ -71,7 +72,7 @@ const PhoneNumberModal = ({
                 />
               </div>
               <button
-                className="w-fit flex ml-auto btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
+                className="w-fit flex ml-auto btn bg-secondary/70 text-white/80 hover:bg-secondary/80 disabled:bg-gray-200 disabled:text-gray-300"
                 disabled={!phoneIsValid}
                 onClick={() => {
                   handlePhoneEdit().then(() => {

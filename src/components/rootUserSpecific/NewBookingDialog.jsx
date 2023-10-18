@@ -336,18 +336,18 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
             <button
               onClick={() => setExpand((prev) => !prev)}
-              className=" btn hidden sm:block ml-auto bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+              className=" btn hidden sm:block ml-auto bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
               disabled={!is_there_a_phone_number}
             >
-              {expand ? "Cancel" : "+ Ride"}
+              {expand ? "Cancel" : "Add Ride"}
             </button>
           </div>
           <button
             onClick={() => setExpand((prev) => !prev)}
-            className=" btn block sm:hidden bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+            className=" btn block sm:hidden bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
             disabled={!is_there_a_phone_number}
           >
-            {expand ? "Cancel" : "+ Ride"}
+            {expand ? "Cancel" : "Add Ride"}
           </button>
         </div>
 
@@ -370,7 +370,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               <p className="flex justify-center items-center mt-3">IITH</p>
               {toggle == "from" ? (
                 <button
-                  className="btn bg-yellow-400 text-black hover:bg-yellow-400 mt-3"
+                  className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 mt-3"
                   onClick={() => {
                     handleToggle("to");
                   }}
@@ -379,7 +379,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 </button>
               ) : (
                 <button
-                  className="btn bg-yellow-400 text-black hover:bg-yellow-400"
+                  className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80"
                   onClick={() => {
                     handleToggle("from");
                   }}
@@ -499,13 +499,13 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             <div className="flex justify-end gap-5 mt-10">
               <button
                 onClick={handleDialogClose}
-                className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+                className=" btn  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
               >
                 Cancel
               </button>
               <button
                 onClick={RegisterNewBooking}
-                className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
+                className=" btn  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                 disabled={
                   clicked_book ||
                   !values.capacity ||

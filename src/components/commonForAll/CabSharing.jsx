@@ -36,7 +36,7 @@ export default function CabSharing() {
 `;
 
   const HeartIcon = styled(FavoriteIcon)`
-    color: #fa366b;
+    color: #7e22ce;
     animation: ${pulse} 1.5s infinite;
   `;
 
@@ -77,10 +77,10 @@ export default function CabSharing() {
           {tab === 1 && <AllUserBookings />}
         </div>
       </div>
-      <footer className="flex justify-center gap-2 text-[1.1rem] items-center bg-yellow-400 text-black py-4">
-        <span>Made with </span>
+      <footer className="flex justify-center gap-2 text-[1.1rem] items-center bg-secondary/20  py-4">
+        <span className="text-secondary/80">Made with </span>
         <HeartIcon />
-        <span> By Lambda</span>
+        <span className="text-secondary/80"> By Lambda</span>
       </footer>
     </div>
   );

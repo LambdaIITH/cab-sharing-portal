@@ -118,24 +118,24 @@ const CabShareSmall = ({
       <div className="collapse-title p-1 md:p-2 font-medium flex flex-col  rounded-md  cursor-pointer">
         <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
           <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
-            <BoldedHeading text="From:" /> {bookingData.from_}
+            <BoldedHeading text="From:" /> <b>{bookingData.from_}</b>
           </p>
 
           <p className="tracking-wider text-[.9rem] md:text-[1rem] truncate">
-            <BoldedHeading text="To:" /> {bookingData.to}
+            <BoldedHeading text="To:" /> <b>{bookingData.to}</b>
           </p>
 
           <div className="hidden 5x:inline">
             <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
               <BoldedHeading text="Occupied:" />{" "}
-              {bookingData.travellers?.length}/{bookingData.capacity}
+              <b>{bookingData.travellers?.length}/{bookingData.capacity}</b>
             </p>
           </div>
         </div>
         <div className="5x:hidden inline mt-2">
           <p className=" tracking-wider text-[.9rem] md:text-[1rem] truncate">
-            <BoldedHeading text="Occupied:" /> {bookingData.travellers?.length}/
-            {bookingData.capacity}
+            <BoldedHeading text="Occupied:" /> <b>{bookingData.travellers?.length}/
+            {bookingData.capacity}</b>
           </p>
         </div>
         {/* play with window code */}
@@ -150,6 +150,7 @@ const CabShareSmall = ({
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
+                  weekday: "short",
                 }) +
                   " " +
                   new Date(bookingData.start_time).toLocaleTimeString([], {
@@ -160,13 +161,14 @@ const CabShareSmall = ({
             </p>
           </div>
           <div className="flex flex-col items-start bg-white/30 p-2 rounded-md">
-            <BoldedHeading text="Willing to leave before" />
+            <BoldedHeading text="Have to leave before" />
             <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0">
               <span className="mt-[3px]">
                 {new Date(bookingData.end_time).toLocaleDateString("en-US", {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
+                  weekday: "short",
                 }) +
                   " " +
                   new Date(bookingData.end_time).toLocaleTimeString([], {

@@ -177,7 +177,7 @@ const AllUserCardExpanded = ({
           </div>
           {isValidToJoin && isInRequest == -1 && (
             <button
-              className="btn btn-outline border-black hover:bg-yellow-400 hover:border-black text-black"
+              className="btn btn-outline border-black hover:bg-secondary/70 hover:border-black text-black hover:text-white/80"
               onClick={() => setIsModalVisible(true)}
             >
               Join Booking
@@ -188,7 +188,7 @@ const AllUserCardExpanded = ({
               onClick={(e) => {
                 handleCancelRequest(e);
               }}
-              className="btn btn-outline border-black hover:bg-yellow-400 hover:border-black text-black"
+              className="btn btn-outline border-black hover:bg-secondary/70 hover:border-black text-black hover:text-white/80"
             >
               Cancel Request
             </button>
@@ -263,13 +263,13 @@ const AllUserCardExpanded = ({
                   />
                   <div className="flex gap-5 justify-end">
                     <button
-                      className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
+                      className="w-fit flex  btn bg-secondary/70 text-white/80 hover:bg-secondary/80 disabled:bg-gray-200 disabled:text-gray-300"
                       onClick={() => setIsModalVisible(false)}
                     >
                       Close
                     </button>
                     <button
-                      className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
+                      className="w-fit flex  btn bg-secondary/70 text-white/80 hover:bg-secondary/80 disabled:bg-gray-200 disabled:text-gray-300"
                       onClick={JoinBooking}
                       disabled={
                         joinComment.length == 0 ||
