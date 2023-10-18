@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ConformModal from "components/modals/ConformModal";
-import StarIcon from '@mui/icons-material/Star';
+import StarIcon from "@mui/icons-material/Star";
 // List of traverllers in TravellerCard, this is a child of TravellerCard(parent)
 
 const UserTravellers = ({
@@ -25,7 +25,7 @@ const UserTravellers = ({
 
   useEffect(() => {
     copied &&
-      toast("Sucessfully copied", {type: "success"}) &&
+      toast("Sucessfully copied", { type: "success" }) &&
       setTimeout(() => {
         setCopied(false);
       }, 2000);
@@ -41,31 +41,36 @@ const UserTravellers = ({
         <div className="flex flex-col gap-3 items-center  w-full" key={index}>
           <div className="flex flex-col sm:flex-row justify-between w-full">
             <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
+              {item.email === owner_email && (
+                <span className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
+                  <StarIcon sx={{ fontSize: "1.5rem" }} />
+                </span>
+              )}
               <h3 className=" tracking-wider text-[1rem] sm:text-[1.15rem] mr-auto">
                 {item.name}
               </h3>
               <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
                 {item.email}
               </p>
-              {item.email === owner_email && (
-                <span className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
-                  <StarIcon sx={{fontSize:"1.5rem"}}/>
-                </span>
-              )}
-              {user_email_local === owner_email && item.email === owner_email && DeleteBooking && (
-                <div className="hidden sm:block">
-                {!clicked_delete ? (
-                  <ConformModal
-                    modalText={"Are you sure you want to delete this booking"}
-                    buttonText={"Yes"}
-                    buttonClickFunction={DeleteBooking}
-                    displayText={"Delete Ride"}
-                  />
-                ) : (
-                  <span className="loading loading-spinner text-black"></span>
+
+              {user_email_local === owner_email &&
+                item.email === owner_email &&
+                DeleteBooking && (
+                  <div className="hidden sm:block">
+                    {!clicked_delete ? (
+                      <ConformModal
+                        modalText={
+                          "Are you sure you want to delete this booking"
+                        }
+                        buttonText={"Yes"}
+                        buttonClickFunction={DeleteBooking}
+                        displayText={"Delete"}
+                      />
+                    ) : (
+                      <span className="loading loading-spinner text-black"></span>
+                    )}
+                  </div>
                 )}
-                </div>
-              )}
               {item.email === user_email && (
                 <ConformModal
                   modalText={"Are you sure you want to exit from this booking"}

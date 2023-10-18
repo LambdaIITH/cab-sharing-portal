@@ -144,9 +144,9 @@ const CabShareSmall = ({
         </div>
         {/* play with window code */}
 
-        <div className="flex flex-col sm:flex-row  mt-5 sm:mt-2 sm:items-start justify-start items-start gap-3 w-[22rem]  sm:w-[80%]">
+        <div className="flex flex-col sm:flex-row  mt-5 sm:mt-4 sm:items-start justify-start items-start gap-3 w-[22rem]  sm:w-[30rem]">
           <div className="flex flex-col items-start bg-white/30 p-2 rounded-md w-full ">
-            <BoldedHeading text="Ride Window" />
+            <BoldedHeading text="Ride window" />
             <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem]">
               <span className="mt-[3px]">
                 {new Date(bookingData.start_time).toLocaleDateString("en-US", {
@@ -159,14 +159,12 @@ const CabShareSmall = ({
                   new Date(bookingData.start_time).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
-                  }) 
-                  + " - "
-                  + new Date(bookingData.end_time).toLocaleTimeString([], {
+                  }) +
+                  " - " +
+                  new Date(bookingData.end_time).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
-                  })
-                  }
-                 
+                  })}
               </span>
             </p>
           </div>
