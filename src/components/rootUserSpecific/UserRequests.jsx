@@ -19,12 +19,6 @@ const UserRequests = ({ requests, AcceptBooking, RejectBooking, loading }) => {
                   {item.email}
                 </p>
               </div>
-              <p className="hidden sm:block ">
-                <span className="text-[.9rem] sm:text-[1rem] text-secondary">
-                  Note:
-                </span>{" "}
-                {item.comments}
-              </p>
             </div>
             <RequestProfileModel
               name={item.name}
