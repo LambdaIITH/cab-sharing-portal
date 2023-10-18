@@ -12,8 +12,10 @@ import LogoutButton from "./Logout";
 import UserGuide from "./UserGuide";
 import { ToastContainer, toast } from "react-toastify";
 
+// 1 -> All Rides, 2 -> User Rides
+
 export default function CabSharing() {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(1);
   const [username, setUsername] = useState("");
   const router = useRouter();
   useEffect(() => {
@@ -51,23 +53,23 @@ export default function CabSharing() {
         <div className="tabs flex mx-auto shadow-lg border border-black rounded-lg mb-10">
           <a
             className={`tab tab-lg text-[1rem] md:text-lg transition-all rounded-l-lg ${
-              tab == 0
+              tab == 1
                 ? "tab-active bg-secondary/80 text-white/80"
                 : "bg-secondary/20 text-black/30"
             }`}
-            onClick={() => setTab(0)}
+            onClick={() => setTab(1)}
           >
-            My Rides <span className="w-2"></span> <PersonIcon />
+            All Rides <span className="w-2"></span> <PersonIcon />
           </a>
           <a
             className={`tab transition-all text-[1rem] md:text-lg rounded-r-lg tab-lg ${
-              tab == 1
+              tab == 0
                 ? "tab-active bg-secondary/80 text-white/80"
                 : " bg-secondary/20 text-black/30"
             }`}
-            onClick={() => setTab(1)}
+            onClick={() => setTab(0)}
           >
-            All Rides <span className="w-2"></span> <GroupsIcon />
+            My Rides <span className="w-2"></span> <GroupsIcon />
           </a>
         </div>
         <div className="flex flex-nowrap overflow-x-auto">
