@@ -128,7 +128,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     } else if (capacity < 2) {
       setCapacityError(2);
       return false;
-    } else if (capacity > 256) {
+    } else if (capacity > 25) {
       setCapacityError(3);
       return false;
     } else {
@@ -472,19 +472,14 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               <p className="text-xs">
                 Number of Passengers (including yourself)
               </p>
-              <Select
+              <TextField
                 id="capacity"
                 name="capacity"
+                label=""
+                type="text"
                 value={values.capacity}
                 onChange={handleChange}
-                label=""
-              >
-                {[...Array(10).keys()].map((num) => (
-                  <MenuItem key={num + 1} value={num + 1}>
-                    {num + 1}
-                  </MenuItem>
-                ))}
-              </Select>
+              />
             </FormControl>
             {capacityError == 1 && (
               <span className="label-text-alt mt-1 text-red-600">
