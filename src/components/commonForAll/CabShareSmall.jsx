@@ -15,7 +15,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers";
 
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -141,25 +141,41 @@ const CabShareSmall = ({
         {/* play with window code */}
 
         {/* play with window code */}
-        <div className="flex flex-col sm:flex-row mt-5 sm:mt-2 sm:items-start justify-start items-start   gap-1">
-          <BoldedHeading text="Window:" />
-          <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0 ">
-            <span className="mt-[3px]">
-              {new Date(bookingData.start_time).toLocaleDateString() +
-                " " +
-                new Date(bookingData.start_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
+        <div className="flex flex-col sm:flex-row  mt-5 sm:mt-2 sm:items-start justify-start gap-3 items-start gap-1">
+          <div className="flex flex-col items-start bg-white/30 p-2 rounded-md">
+            <BoldedHeading text="Willing to leave after" />
+            <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0">
+              <span className="mt-[3px]">
+                {new Date(bookingData.start_time).toLocaleDateString("en-US", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
                 }) +
-                " - " +
-                new Date(bookingData.end_time).toLocaleDateString() +
-                " " +
-                new Date(bookingData.end_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-            </span>
-          </p>
+                  " " +
+                  new Date(bookingData.start_time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+              </span>
+            </p>
+          </div>
+          <div className="flex flex-col items-start bg-white/30 p-2 rounded-md">
+            <BoldedHeading text="Willing to leave before" />
+            <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0">
+              <span className="mt-[3px]">
+                {new Date(bookingData.end_time).toLocaleDateString("en-US", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                }) +
+                  " " +
+                  new Date(bookingData.end_time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+              </span>
+            </p>
+          </div>
         </div>
       </div>
       <div className="collapse-content p-1 md:p-2">

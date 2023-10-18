@@ -336,10 +336,10 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
             <button
               onClick={() => setExpand((prev) => !prev)}
-              className=" btn hidden sm:block bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+              className=" btn hidden sm:block ml-auto bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
               disabled={!is_there_a_phone_number}
             >
-              {expand ? "Cancel" : "Add Ride"}
+              {expand ? "Cancel" : "+ Ride"}
             </button>
           </div>
           <button
@@ -347,7 +347,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             className=" btn block sm:hidden bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
             disabled={!is_there_a_phone_number}
           >
-            {expand ? "Cancel" : "Add Ride"}
+            {expand ? "Cancel" : "+ Ride"}
           </button>
         </div>
 
@@ -456,7 +456,9 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               )}
             </FormControl>
             <FormControl>
-              <p className="text-xs">Number of Passengers ( including yourself )</p>
+              <p className="text-xs">
+                Number of Passengers ( including yourself )
+              </p>
               <TextField
                 id="capacity"
                 name="capacity"

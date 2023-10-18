@@ -22,7 +22,7 @@ import axios from "axios";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const places = [
@@ -135,7 +135,7 @@ const AllUserBookings = () => {
     setToValue(null);
     setFromValue(null);
     // setExpand(false);
-  }
+  };
 
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
@@ -210,7 +210,6 @@ const AllUserBookings = () => {
                 <FormGroup
                   sx={{
                     width: "200px",
-                    my: 2,
                     fontFamily: "Monserrat, sans-serif",
                   }}
                 >
@@ -222,7 +221,7 @@ const AllUserBookings = () => {
                     }}
                     control={
                       <Switch
-                        color="default"
+                        color="secondary"
                         checked={checked}
                         onChange={handleShowAll}
                       />
@@ -234,7 +233,6 @@ const AllUserBookings = () => {
                 <FormGroup
                   sx={{
                     width: "200px",
-                    my: 2,
                     fontFamily: "Monserrat, sans-serif",
                   }}
                 >
@@ -247,7 +245,7 @@ const AllUserBookings = () => {
                     }}
                     control={
                       <Switch
-                        color="default"
+                        color="secondary"
                         checked={request_checked}
                         onChange={handleRequests}
                       />
@@ -262,7 +260,7 @@ const AllUserBookings = () => {
                       className="btn hidden sm:block bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                       onClick={handleDialogOpen}
                     >
-                      Filter
+                      Filter Rides
                     </button>
                   )}
                   {(startTime !== null ||
@@ -286,7 +284,7 @@ const AllUserBookings = () => {
                   className="btn block sm:hidden bg-yellow-400 hover:bg-yellow-400 text-black capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                   onClick={handleDialogOpen}
                 >
-                  Filter
+                  Filter Rides
                 </button>
               )}
             </div>
@@ -390,21 +388,21 @@ const AllUserBookings = () => {
                   onClick={fetchFilteredBookings}
                   className=" btn  bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                   disabled={
-                    ( startTime === null || 
+                    (startTime === null ||
                       endTime === null ||
-                      toValue != null || 
+                      toValue != null ||
                       fromValue != null) &&
-                    ( toValue === null || 
+                    (toValue === null ||
                       fromValue === null ||
                       startTime != null ||
                       endTime != null) &&
-                    ( startTime === null ||
+                    (startTime === null ||
                       endTime === null ||
                       toValue === null ||
                       fromValue === null)
                   }
                 >
-                  Filter
+                  Search
                 </button>
               </div>
             </div>

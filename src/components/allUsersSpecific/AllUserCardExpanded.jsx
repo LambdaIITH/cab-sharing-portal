@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { matchIsValidTel } from "mui-tel-input";
 import { useRouter } from "next/router";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneNumberModal from "components/modals/PhoneNumberModal";
 import UserTravellers from "components/rootUserSpecific/UserTravellers";
@@ -33,7 +33,7 @@ const AllUserCardExpanded = ({
   const JoinBooking = async () => {
     setClickedJoin(true);
     const authToken = retrieveAuthToken(router);
-    
+
     if (phone != loaded_phone) {
       await axios
         .post(
@@ -49,16 +49,15 @@ const AllUserCardExpanded = ({
           }
         )
         .then((res) => {
-          
           toast("Phone Number Updated");
         })
         .catch((err) => {
           console.log(err);
-          
+
           toast("Something went wrong", { type: "error" });
         });
     }
-    
+
     try {
       const data = await axios
         .post(
@@ -73,12 +72,12 @@ const AllUserCardExpanded = ({
         )
         .then(() => {
           console.log("Successfully requested the user booking");
-          
+
           toast("Successfully requested the user booking", { type: "success" });
         })
         .catch((err) => {
           console.log(err);
-          
+
           toast("Cannot join booking", { type: "error" });
         });
     } catch (err) {
@@ -91,7 +90,6 @@ const AllUserCardExpanded = ({
 
   const handlePhoneEdit = async () => {
     if (phone != loaded_phone) {
-      
       const authToken = retrieveAuthToken(router);
       await axios
         .post(
@@ -107,7 +105,6 @@ const AllUserCardExpanded = ({
           }
         )
         .then((res) => {
-          
           toast("Phone Number Updated");
           fetchFilteredBookings();
         })
@@ -120,7 +117,7 @@ const AllUserCardExpanded = ({
   const handleCancelRequest = async (e) => {
     e.stopPropagation();
     const authToken = retrieveAuthToken(router);
-    
+
     try {
       await axios
         .delete(
@@ -133,12 +130,11 @@ const AllUserCardExpanded = ({
           }
         )
         .then(() => {
-          
           toast("Succesfully Cancelled Request");
         })
         .catch((err) => {
           console.log(err);
-          
+
           toast("Something went wrong", { type: "error" });
         });
       fetchFilteredBookings();
@@ -205,22 +201,7 @@ const AllUserCardExpanded = ({
           {bookingData.travellers[0].comments}
         </div>
       </div>
-      {
-        <div className="flex flex-row justify-between items-center">
-          <div>
-            {!is_there_a_phone_number && (
-              <PhoneNumberModal
-                handlePhoneEdit={handlePhoneEdit}
-                handlePhoneChange={handlePhoneChange}
-                phone={phone}
-                loaded_phone={loaded_phone}
-                setPhone={setPhone}
-                phoneIsValid={phoneIsValid}
-              />
-            )}
-          </div>
-        </div>
-      }
+      {}
       <div className="mt-5">
         {bookingData.travellers.length > 0 && (
           <UserTravellers
@@ -229,56 +210,90 @@ const AllUserCardExpanded = ({
           />
         )}
       </div>
-      {isModalVisible && (
-        <dialog
-          id="my_modal_3"
-          className="modal modal-open"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <form method="dialog" className="modal-box bg-white text-black">
-            <button
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-              onClick={() => setIsModalVisible(false)}
-            >
-              ✕
-            </button>
-            {isValidToJoin && isInRequest == -1 ? (
-              <div className="flex flex-col gap-5">
-                <p>Add a Comment</p>
-                <input
-                  disabled={!isValidToJoin && !is_there_a_phone_number}
-                  onClick={(e) => e.stopPropagation()}
-                  value={joinComment}
-                  name="comment"
-                  onChange={(e) => setJoinComment(e.target.value)}
-                  className="bg-transparent w-[60%] txt-black text-[.8rem] sm:text-[1.1rem] py-3 pl-2 rounded-md border border-gray-100 shadow-md"
-                />
-                <div className="flex gap-5 justify-end">
-                  <button
-                    className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
-                    onClick={() => setIsModalVisible(false)}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
-                    onClick={JoinBooking}
-                    disabled={
-                      joinComment.length == 0 || phone.replace("+91", "") == "" || clicked_join
-                    }
-                  >
-                    {phone.replace("+91", "") == ""
-                      ? "Add Phone Number"
-                      : clicked_join? <span className="loading loading-spinner text-black"></span> : "Join" }
-                  </button>
+      {isModalVisible ? (
+        !is_there_a_phone_number ? (
+          <dialog
+            id="my_modal_3"
+            className="modal modal-open"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <form method="dialog" className="modal-box bg-white text-black">
+              <button
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 "
+                onClick={() => setIsModalVisible(false)}
+              >
+                ✕
+              </button>
+              <h3 className="font-bold text-lg text-secondary/80 w-fit mb-5">
+                Add phone number to join/create ride.
+              </h3>
+              <PhoneNumberModal
+                handlePhoneEdit={handlePhoneEdit}
+                handlePhoneChange={handlePhoneChange}
+                phone={phone}
+                loaded_phone={loaded_phone}
+                setPhone={setPhone}
+                phoneIsValid={phoneIsValid}
+              />
+            </form>
+          </dialog>
+        ) : (
+          <dialog
+            id="my_modal_3"
+            className="modal modal-open"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <form method="dialog" className="modal-box bg-white text-black">
+              <button
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                onClick={() => setIsModalVisible(false)}
+              >
+                ✕
+              </button>
+              {isValidToJoin && isInRequest == -1 ? (
+                <div className="flex flex-col gap-5">
+                  <p>Add a Comment</p>
+                  <input
+                    disabled={!isValidToJoin && !is_there_a_phone_number}
+                    onClick={(e) => e.stopPropagation()}
+                    value={joinComment}
+                    name="comment"
+                    onChange={(e) => setJoinComment(e.target.value)}
+                    className="bg-transparent w-[60%] txt-black text-[.8rem] sm:text-[1.1rem] py-3 pl-2 rounded-md border border-gray-100 shadow-md"
+                  />
+                  <div className="flex gap-5 justify-end">
+                    <button
+                      className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
+                      onClick={() => setIsModalVisible(false)}
+                    >
+                      Close
+                    </button>
+                    <button
+                      className="w-fit flex  btn bg-yellow-400 text-black hover:bg-yellow-400 disabled:bg-gray-200 disabled:text-gray-300"
+                      onClick={JoinBooking}
+                      disabled={
+                        joinComment.length == 0 ||
+                        phone.replace("+91", "") == "" ||
+                        clicked_join
+                      }
+                    >
+                      {phone.replace("+91", "") == "" ? (
+                        "Add Phone Number"
+                      ) : clicked_join ? (
+                        <span className="loading loading-spinner text-black"></span>
+                      ) : (
+                        "Join"
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <p></p>
-            )}
-          </form>
-        </dialog>
-      )}
+              ) : (
+                <p></p>
+              )}
+            </form>
+          </dialog>
+        )
+      ) : null}
     </div>
   );
 };

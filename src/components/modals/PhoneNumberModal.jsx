@@ -34,7 +34,7 @@ const PhoneNumberModal = ({
             : "Add Phone Number :"}
         </div>
         <button
-          className=" btn bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px]"
+          className=" capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px]"
           onClick={() => showModal()}
         >
           {edit ? <EditOutlinedIcon /> : "+"}

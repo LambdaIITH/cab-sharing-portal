@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import ConformModal from "components/modals/ConformModal";
@@ -129,7 +129,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
               {bookingData.travellers[0].email}
             </p>
           </div>
-          <div>
+          <div className="w-[85vw] sm:w-[30rem] break-words">
             <span className="text-secondary text-[.9rem] md:text-[1rem]">
               Note:
             </span>{" "}
