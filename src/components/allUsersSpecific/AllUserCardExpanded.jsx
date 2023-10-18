@@ -243,8 +243,9 @@ const AllUserCardExpanded = ({
               </button>
               {isValidToJoin && isInRequest == -1 ? (
                 <div className="flex flex-col gap-5">
-                  <p>Add a Comment</p>
+                  <p>Add a Comment ( max 50 characters )</p>
                   <input
+                    maxLength={50}
                     disabled={!isValidToJoin && !is_there_a_phone_number}
                     onClick={(e) => e.stopPropagation()}
                     value={joinComment}
@@ -255,7 +256,10 @@ const AllUserCardExpanded = ({
                   <div className="flex gap-5 justify-end">
                     <button
                       className="w-fit flex  btn bg-secondary/70 text-white/80 hover:bg-secondary/80 disabled:bg-gray-200 disabled:text-gray-300"
-                      onClick={() => setIsModalVisible(false)}
+                      onClick={() => {
+                        setIsModalVisible(false);
+                        setJoinComment("I am interested to join.");
+                      }}
                     >
                       Close
                     </button>
