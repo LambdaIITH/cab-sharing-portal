@@ -71,7 +71,7 @@ const UserBookings = () => {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
@@ -80,23 +80,18 @@ const UserBookings = () => {
   }, []);
 
   return (
-    <div className="flex flex-col  mx-auto pb-5 rounded-box md:py-10">
+    <div className="flex flex-col  mx-auto sm:pb-5 rounded-box md:py-10">
       {isLoading ? (
         <UserbookingShimmer />
       ) : (
         <div className="">
-          <Stack
-            sx={{
-              width: "100%",
-              marginBottom: "2rem",
-            }}
-          >
+          <div className="w-[100%] sm:mb-[2rem]">
             <NewBookingDialog
               fetchUserBookings={fetchUserBookings}
               username={username}
               email={email}
             />
-          </Stack>
+          </div>
 
           <div className="">
             {bookings?.length > 0 &&

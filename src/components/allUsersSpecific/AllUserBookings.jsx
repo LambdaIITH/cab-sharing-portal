@@ -194,7 +194,7 @@ const AllUserBookings = () => {
   };
 
   return (
-    <div className="flex flex-col  rounded-box py-10 mx-auto">
+    <div className="flex flex-col  rounded-box sm:py-10 mx-auto">
       {isLoading ? (
         <UserbookingShimmer />
       ) : (
@@ -203,7 +203,7 @@ const AllUserBookings = () => {
             tabIndex={0}
             className={`collapse   ${
               expand ? "collapse-open" : "collapse-close"
-            } collapse-close bg-secondary/10 mx-3 md:p-5 sm:mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
+            } collapse-close bg-secondary/10  md:p-5 sm:mx-auto mt-3 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
           >
             <div className="collapse-title p-2 font-medium flex flex-col  rounded-md w-[90vw] sm:w-full">
               <div className="flex flex-col sm:flex-row justify-center items-center rounded-md ">
@@ -260,23 +260,24 @@ const AllUserBookings = () => {
                       className="btn hidden sm:block bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                       onClick={handleDialogOpen}
                     >
-                      Filter Rides <FilterAltIcon />
+                      Filter Rides
                     </button>
                   )}
-                  {((startTime !== null ||
+                  {(startTime !== null ||
                     endTime !== null ||
                     toValue !== null ||
-                    fromValue !== null) && expand) && (
-                    <button
-                      className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
-                      onClick={() => {
-                        clearFilters();
-                        // fetchFilteredBookings();
-                      }}
-                    >
-                      Clear Filters
-                    </button>
-                  )}
+                    fromValue !== null) &&
+                    expand && (
+                      <button
+                        className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                        onClick={() => {
+                          clearFilters();
+                          // fetchFilteredBookings();
+                        }}
+                      >
+                        Clear Filters
+                      </button>
+                    )}
                 </div>
               </div>
               {!expand && (
@@ -284,7 +285,7 @@ const AllUserBookings = () => {
                   className="btn block sm:hidden bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px] w-[90%] mx-auto"
                   onClick={handleDialogOpen}
                 >
-                  Filter Rides <FilterAltIcon />
+                  Filter Rides
                 </button>
               )}
             </div>
@@ -407,7 +408,7 @@ const AllUserBookings = () => {
               </div>
             </div>
           </div>
-          <div className="my-10">
+          <div className="sm:my-10">
             {filteredBookings?.map((item, index) => {
               if (show_all || item.capacity > item.travellers.length) {
                 return (

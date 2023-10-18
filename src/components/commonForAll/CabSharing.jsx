@@ -77,7 +77,7 @@ export default function CabSharing() {
           {tab === 1 && <AllUserBookings />}
         </div>
       </div>
-      <footer className="flex justify-center gap-2 text-[1.1rem] items-center bg-secondary/20  py-4">
+      <footer className="flex justify-center gap-2 text-[1.1rem] border-t-2 border-black/20 items-center bg-secondary/20  py-4">
         <span className="text-secondary/80">Made with </span>
         <HeartIcon />
         <span className="text-secondary/80"> By Lambda</span>
