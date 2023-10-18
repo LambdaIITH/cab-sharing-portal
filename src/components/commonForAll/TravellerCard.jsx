@@ -89,25 +89,31 @@ const TravellerCard = ({
             {bookingData.capacity}
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row mt-5 sm:mt-2 sm:items-start justify-start items-start   gap-1">
-          <BoldedHeading text="Window:" />
-          <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0 ">
-            <span className="mt-[3px]">
-              {new Date(bookingData.start_time).toLocaleDateString() +
-                " " +
-                new Date(bookingData.start_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
+        <div className="flex flex-col sm:flex-row  mt-5 sm:mt-4 sm:items-start justify-start items-start gap-3  w-[22rem]  sm:w-[30rem] md:w-[35rem]">
+          <div className="flex flex-col md:gap-3 md:flex-row items-start bg-white/30 p-2 rounded-md w-full ">
+            <BoldedHeading text="Leaving window" />
+            <span className="hidden md:block">-</span>
+            <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem]">
+              <span className="mt-[3px]">
+                {new Date(bookingData.start_time).toLocaleDateString("en-US", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                  weekday: "short",
                 }) +
-                " - " +
-                new Date(bookingData.end_time).toLocaleDateString() +
-                " " +
-                new Date(bookingData.end_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-            </span>
-          </p>
+                  " " +
+                  new Date(bookingData.start_time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }) +
+                  " - " +
+                  new Date(bookingData.end_time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+              </span>
+            </p>
+          </div>
         </div>
       </div>
       <div
@@ -115,8 +121,8 @@ const TravellerCard = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col justify-center mt-8">
-          <div>
-            <span className="text-secondary  font-medium text-[.9rem] md:text-[1.1rem]">
+          <div className="break-words text-[.8rem] sm:text-[.9rem]">
+            <span className="text-secondary text-[.9rem] md:text-[1rem]">
               Note:
             </span>{" "}
             {bookingData.travellers[0].comments}

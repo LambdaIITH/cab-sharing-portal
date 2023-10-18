@@ -121,7 +121,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     >
       <div className="flex flex-row justify-between items-center mb-5">
         <div className="flex flex-row gap-3 pl-2 justify-between w-[100%]">
-          <div className="break-words">
+          <div className="break-words text-[.8rem] sm:text-[.9rem]">
             <span className="text-secondary text-[.9rem] md:text-[1rem]">
               Note:
             </span>{" "}

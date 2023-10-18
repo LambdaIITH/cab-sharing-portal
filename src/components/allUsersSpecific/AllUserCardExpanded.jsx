@@ -165,31 +165,31 @@ const AllUserCardExpanded = ({
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
-      <div className="flex flex-row gap-3 my-5 pl-2 justify-between">
-          <div>
-            <span className="text-secondary text-[.9rem] sm:text-[1.1rem] ">
-              Note:
-            </span>{" "}
-            {bookingData.travellers[0].comments}
-          </div>
-          {isValidToJoin && isInRequest == -1 && (
-            <button
-              className="btn btn-outline border-black hover:bg-secondary/70 hover:border-black text-black hover:text-white/80"
-              onClick={() => setIsModalVisible(true)}
-            >
-              Join Ride
-            </button>
-          )}
-          {isInRequest != -1 && (
-            <button
-              onClick={(e) => {
-                handleCancelRequest(e);
-              }}
-              className="btn btn-outline border-black hover:bg-secondary/70 hover:border-black text-black hover:text-white/80"
-            >
-              Cancel Request
-            </button>
-          )}
+      <div className="flex flex-row gap-3 my-5 pl-2 justify-between ">
+        <div className="break-words text-[.8rem] sm:text-[.9rem]">
+          <span className="text-secondary text-[.9rem] md:text-[1rem]">
+            Note:
+          </span>{" "}
+          {bookingData.travellers[0].comments}
+        </div>
+        {isValidToJoin && isInRequest == -1 && (
+          <button
+            className="p-1 h-8 sm:h-10 my-auto sm:p-2 rounded-md text-[.8rem] sm:text-[1rem] bg-secondary/70 border border-black hover:bg-secondary/70 hover:text-white ease-in-out delay-150 hover:border-black text-white"
+            onClick={() => setIsModalVisible(true)}
+          >
+            Join
+          </button>
+        )}
+        {isInRequest != -1 && (
+          <button
+            onClick={(e) => {
+              handleCancelRequest(e);
+            }}
+            className="p-1 sm:p-2 rounded-md text-[.8rem] sm:text-[1rem] bg-transparent border border-black hover:bg-secondary/70 hover:text-white ease-in-out delay-150 hover:border-black text-black/80"
+          >
+            Cancel Request
+          </button>
+        )}
       </div>
       {}
       <div className="mt-5 px-2">

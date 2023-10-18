@@ -169,24 +169,6 @@ const CabShareSmall = ({
               </span>
             </p>
           </div>
-          {/* <div className="flex flex-col items-start bg-white/30 p-2 rounded-md w-full">
-            <BoldedHeading text="Have to leave before" />
-            <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0">
-              <span className="mt-[3px]">
-                {new Date(bookingData.end_time).toLocaleDateString("en-US", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                  weekday: "short",
-                }) +
-                  " " +
-                  new Date(bookingData.end_time).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-              </span>
-            </p>
-          </div> */}
         </div>
       </div>
       <div className="collapse-content p-1 md:p-2">
