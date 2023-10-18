@@ -36,7 +36,7 @@ export default function CabSharing() {
 `;
 
   const HeartIcon = styled(FavoriteIcon)`
-    color: #7e22ce;
+    color: #fa366b;
     animation: ${pulse} 1.5s infinite;
   `;
 
@@ -59,7 +59,7 @@ export default function CabSharing() {
             }`}
             onClick={() => setTab(1)}
           >
-            All Rides <span className="w-2"></span> <PersonIcon />
+            All Rides <span className="w-2"></span> <GroupsIcon />
           </a>
           <a
             className={`tab transition-all text-[1rem] md:text-lg rounded-r-lg tab-lg ${
@@ -69,7 +69,7 @@ export default function CabSharing() {
             }`}
             onClick={() => setTab(0)}
           >
-            My Rides <span className="w-2"></span> <GroupsIcon />
+            My Rides <span className="w-2"></span> <PersonIcon />
           </a>
         </div>
         <div className="flex flex-nowrap overflow-x-auto">

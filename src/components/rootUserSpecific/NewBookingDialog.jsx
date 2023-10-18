@@ -334,21 +334,25 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               />
             )}
 
+            {!expand && (
+              <button
+                onClick={() => setExpand((prev) => !prev)}
+                className={` btn hidden sm:block ml-auto bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300`}
+                disabled={!is_there_a_phone_number}
+              >
+                Add Ride
+              </button>
+            )}
+          </div>
+          {!expand && (
             <button
               onClick={() => setExpand((prev) => !prev)}
-              className=" btn hidden sm:block ml-auto bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
+              className=" btn block sm:hidden bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
               disabled={!is_there_a_phone_number}
             >
-              {expand ? "Cancel" : "Add Ride"}
+              Add Ride
             </button>
-          </div>
-          <button
-            onClick={() => setExpand((prev) => !prev)}
-            className=" btn block sm:hidden bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
-            disabled={!is_there_a_phone_number}
-          >
-            {expand ? "Cancel" : "Add Ride"}
-          </button>
+          )}
         </div>
 
         {is_there_a_phone_number === false ? (
@@ -363,30 +367,33 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             className="flex flex-col gap-1 collapse-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="font-bold text-[1.1rem] text-black/80 mb-2   w-fit">
+            <p className="font-bold text-[1.1rem] text-black/80 mb-2  w-fit">
               Please fill the form to create a new booking. <br />
             </p>
-            <div className="flex flex-row gap-3 items-center justify-center">
+            <div className="flex flex-row items-center justify-center gap-2 ">
               <p className="flex justify-center items-center mt-3">IITH</p>
-              {toggle == "from" ? (
-                <button
-                  className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 mt-3"
-                  onClick={() => {
-                    handleToggle("to");
-                  }}
-                >
-                  <ArrowForwardIcon />
-                </button>
-              ) : (
-                <button
-                  className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80"
-                  onClick={() => {
-                    handleToggle("from");
-                  }}
-                >
-                  <ArrowBackIcon />
-                </button>
-              )}
+              <div className="flex flex-col ">
+                <p className="text-xs text-center">To/From</p>
+                {toggle == "from" ? (
+                  <button
+                    className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 mt-1"
+                    onClick={() => {
+                      handleToggle("to");
+                    }}
+                  >
+                    <ArrowForwardIcon />
+                  </button>
+                ) : (
+                  <button
+                    className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 mt-1"
+                    onClick={() => {
+                      handleToggle("from");
+                    }}
+                  >
+                    <ArrowBackIcon />
+                  </button>
+                )}
+              </div>
               <FormControl fullWidth>
                 <p className="text-xs">Location</p>
                 <Select
@@ -406,67 +413,78 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 )}
               </FormControl>
             </div>
-            <FormControl>
-              <p className="text-xs">Willing to leave after</p>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  label=""
-                  name="startTime"
-                  value={startTime}
-                  minDate={new Date()}
-                  onChange={setStartTime}
-                  renderInput={(params) => <TextField {...params} />}
-                  onClose={handleTime1Close}
-                  inputFormat="dd/MM/yyyy HH:mm"
-                  ampm={false}
-                />
-              </LocalizationProvider>
-            </FormControl>
-            <FormControl>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <p className="text-xs">Have to leave before</p>
-                <DateTimePicker
-                  label=""
-                  value={endTime}
-                  minDate={startTime ? startTime : new Date()}
-                  name="endTime"
-                  onChange={setEndTime}
-                  renderInput={(params) => <TextField {...params} />}
-                  onClose={handleTime2Close}
-                  inputFormat="dd/MM/yyyy HH:mm"
-                  ampm={false}
-                />
-              </LocalizationProvider>
-              {endTimeError == 1 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Have to leave before &quot; should be more than &quot;
-                  Leave after &quot;
-                </span>
-              )}
-              {endTimeError == 2 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Have to leave before &quot; should be after current
-                  time
-                </span>
-              )}
-              {endTimeError == 3 && (
-                <span className="label-text-alt mt-1 text-red-600">
-                  Cab window should be within 24 hours
-                </span>
-              )}
-            </FormControl>
-            <FormControl>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-10 my-3 w-full">
+              <FormControl fullWidth>
+                <p className="text-xs">
+                  Willing to leave after ( 24 hr format )
+                </p>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DateTimePicker
+                    label=""
+                    name="startTime"
+                    value={startTime}
+                    minDate={new Date()}
+                    onChange={setStartTime}
+                    renderInput={(params) => <TextField {...params} />}
+                    onClose={handleTime1Close}
+                    inputFormat="dd/MM/yyyy HH:mm"
+                    ampm={false}
+                  />
+                </LocalizationProvider>
+              </FormControl>
+              <FormControl fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <p className="text-xs">
+                    Have to leave before ( 24 hr format )
+                  </p>
+                  <DateTimePicker
+                    label=""
+                    value={endTime}
+                    minDate={startTime ? startTime : new Date()}
+                    name="endTime"
+                    onChange={setEndTime}
+                    renderInput={(params) => <TextField {...params} />}
+                    onClose={handleTime2Close}
+                    inputFormat="dd/MM/yyyy HH:mm"
+                    ampm={false}
+                  />
+                </LocalizationProvider>
+                {endTimeError == 1 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    &quot; Have to leave before &quot; should be more than
+                    &quot; Leave after &quot;
+                  </span>
+                )}
+                {endTimeError == 2 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    &quot; Have to leave before &quot; should be after current
+                    time
+                  </span>
+                )}
+                {endTimeError == 3 && (
+                  <span className="label-text-alt mt-1 text-red-600">
+                    Cab window should be within 24 hours
+                  </span>
+                )}
+              </FormControl>
+            </div>
+            <FormControl variant="outlined" className="w-full">
               <p className="text-xs">
-                Number of Passengers ( including yourself )
+                Number of Passengers (including yourself)
               </p>
-              <TextField
+              <Select
                 id="capacity"
                 name="capacity"
-                label=""
-                type="text"
                 value={values.capacity}
                 onChange={handleChange}
-              />
+                label=""
+              >
+                {[...Array(10).keys()].map((num) => (
+                  <MenuItem key={num + 1} value={num + 1}>
+                    {num + 1}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
             {capacityError == 1 && (
               <span className="label-text-alt mt-1 text-red-600">
@@ -484,7 +502,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </span>
             )}
             <FormControl>
-              <p className="text-xs">Comments ( max 150 characters )</p>
+              <p className="text-xs">Comments ( max 50 characters )</p>
               <TextField
                 id="comments"
                 name="comments"
@@ -492,7 +510,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 type="text"
                 value={values.comments}
                 onChange={handleChange}
-                inputProps={{ maxLength: 150 }}
+                inputProps={{ maxLength: 50 }}
                 multiline
               />
             </FormControl>
