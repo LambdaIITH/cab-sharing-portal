@@ -14,8 +14,6 @@ const UserTravellers = ({
   user_email = "",
   ExitBooking = null,
   owner_email = "",
-  DeleteBooking = null,
-  clicked_delete = false,
 }) => {
   const [copied, setCopied] = useState(false);
   const user_email_local = localStorage.getItem("user_email");
@@ -53,24 +51,6 @@ const UserTravellers = ({
                 {item.email}
               </p>
 
-              {user_email_local === owner_email &&
-                item.email === owner_email &&
-                DeleteBooking && (
-                  <div className="hidden sm:block">
-                    {!clicked_delete ? (
-                      <ConformModal
-                        modalText={
-                          "Are you sure you want to delete this booking"
-                        }
-                        buttonText={"Yes"}
-                        buttonClickFunction={DeleteBooking}
-                        displayText={"Delete"}
-                      />
-                    ) : (
-                      <span className="loading loading-spinner text-black"></span>
-                    )}
-                  </div>
-                )}
               {item.email === user_email && (
                 <ConformModal
                   modalText={"Are you sure you want to exit from this booking"}

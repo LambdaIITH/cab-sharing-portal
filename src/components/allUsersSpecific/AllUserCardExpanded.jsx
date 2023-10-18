@@ -165,7 +165,7 @@ const AllUserCardExpanded = ({
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
-      <div className="flex flex-row gap-3 my-5 pl-2">
+      <div className="flex flex-row gap-3 my-5 pl-2 justify-between">
           <div>
             <span className="text-secondary text-[.9rem] sm:text-[1.1rem] ">
               Note:
@@ -177,7 +177,7 @@ const AllUserCardExpanded = ({
               className="btn btn-outline border-black hover:bg-secondary/70 hover:border-black text-black hover:text-white/80"
               onClick={() => setIsModalVisible(true)}
             >
-              Join Booking
+              Join Ride
             </button>
           )}
           {isInRequest != -1 && (

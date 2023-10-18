@@ -248,7 +248,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         setToggle("from");
         fetchUserBookings();
 
-        toast("Booking Created Successfully", { type: "success" });
+        toast("Ride Created Successfully", { type: "success" });
       })
       .catch((err) => {
         console.log(err);
@@ -493,7 +493,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             )}
             {capacityError == 3 && (
               <span className="label-text-alt mt-1 text-red-600">
-                Capacity more than 256, Seriously ?
+                Capacity more than 25, Seriously ?
               </span>
             )}
             <FormControl>
@@ -505,7 +505,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 type="text"
                 value={values.comments}
                 onChange={handleChange}
-                inputProps={{ maxLength: 50 }}
+                inputProps={{ maxLength: 250 }}
                 multiline
               />
             </FormControl>

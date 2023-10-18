@@ -44,7 +44,7 @@ const ConformModal = ({
             </button>
             <div className="flex flex-col gap-4">
               <h3 className="font-bold text-lg text-secondary/80 border-secondary border-b-2 w-fit">
-                Conformation
+                Confirmation
               </h3>
               {modalText}
               <button

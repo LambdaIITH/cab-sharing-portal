@@ -119,13 +119,28 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
       className="flex flex-col w-[100%]  "
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="flex flex-row justify-between items-center my-5">
-        <div className="flex flex-col justify-center">
-          <div className="w-[85vw] sm:w-[30rem] break-words">
+      <div className="flex flex-row justify-between items-center mb-5">
+        <div className="flex flex-row gap-3 pl-2 justify-between w-[100%]">
+          <div className="break-words">
             <span className="text-secondary text-[.9rem] md:text-[1rem]">
               Note:
             </span>{" "}
             {bookingData.travellers[0].comments}
+          </div>
+          <div className="">
+            {!clicked_delete ? (
+              <ConformModal
+                modalText={
+                  "Are you sure you want to delete this ride"
+                }
+                buttonText={"Yes"}
+                buttonClickFunction={DeleteBooking}
+                displayText={"Delete Ride"}
+                
+              />
+            ) : (
+              <span className="loading loading-spinner text-black"></span>
+            )}
           </div>
         </div>
         
