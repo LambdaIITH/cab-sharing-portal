@@ -48,19 +48,14 @@ const AllUserBookings = () => {
   const [request_checked, setRequestChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // for clearing filters
+  const [clickClearFilter, setClickClearFilter] = useState(false);
+
   const [expand, setExpand] = useState(false);
 
   const [phone, setPhone] = useState("");
   const [loaded_phone, setLoadedPhone] = useState("");
   const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
-
-  const handleDialogOpen = () => {
-    setExpand(true);
-  };
-  const handleDialogClose = () => {
-    setExpand(false);
-    fetchFilteredBookings();
-  };
 
   const fetchFilteredBookings = async () => {
     setIsLoading(true);
@@ -129,12 +124,23 @@ const AllUserBookings = () => {
       });
   };
 
-  const clearFilters = async () => {
+  useEffect(() => {
+    if (
+      endTime === null &&
+      startTime === null &&
+      toValue === null &&
+      fromValue === null
+    ) {
+      fetchFilteredBookings();
+    }
+  }, [endTime, startTime, toValue, fromValue, clickClearFilter]);
+
+  const clearFilters = () => {
     setEndTime(null);
     setStartTime(null);
     setToValue(null);
     setFromValue(null);
-    // setExpand(false);
+    setClickClearFilter((prev) => !prev);
   };
 
   useEffect(() => {
@@ -203,73 +209,64 @@ const AllUserBookings = () => {
             tabIndex={0}
             className={`collapse   ${
               expand ? "collapse-open" : "collapse-close"
-            } collapse-close bg-secondary/10  md:p-5 sm:mx-auto mt-3 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
+            } collapse-close bg-secondary/10  md:p-5 overflow-auto sm:mx-auto mt-3 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
           >
             <div className="collapse-title p-2 font-medium flex flex-col  rounded-md w-[100vw] sm:w-full">
-              <div className="flex flex-col sm:flex-row justify-center items-center rounded-md ">
-                <FormGroup
-                  sx={{
-                    width: "200px",
-                    fontFamily: "Monserrat, sans-serif",
-                  }}
-                >
-                  <FormControlLabel
+              <div className="flex flex-row justify-between mx-auto gap-2 items-center rounded-md w-full">
+                <div className="flex gap-2">
+                  <FormGroup
                     sx={{
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.05)",
-                      },
+                      width: "200px",
                     }}
-                    control={
-                      <Switch
-                        color="secondary"
-                        checked={checked}
-                        onChange={handleShowAll}
-                      />
-                    }
-                    label="Include filled cabs"
-                  />
-                </FormGroup>
+                  >
+                    <FormControlLabel
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "rgba(0, 0, 0, 0.05)",
+                        },
+                      }}
+                      control={
+                        <Switch
+                          color="secondary"
+                          checked={checked}
+                          onChange={handleShowAll}
+                        />
+                      }
+                      label="Include filled cabs"
+                    />
+                  </FormGroup>
 
-                <FormGroup
-                  sx={{
-                    width: "200px",
-                    fontFamily: "Monserrat, sans-serif",
-                  }}
-                >
-                  <FormControlLabel
+                  <FormGroup
                     sx={{
-                      color: "black",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.05)",
-                      },
+                      width: "200px",
                     }}
-                    control={
-                      <Switch
-                        color="secondary"
-                        checked={request_checked}
-                        onChange={handleRequests}
-                      />
-                    }
-                    label="Pending requests"
-                  />
-                </FormGroup>
-
+                  >
+                    <FormControlLabel
+                      sx={{
+                        color: "black",
+                        "&:hover": {
+                          backgroundColor: "rgba(0, 0, 0, 0.05)",
+                        },
+                      }}
+                      control={
+                        <Switch
+                          color="secondary"
+                          checked={request_checked}
+                          onChange={handleRequests}
+                        />
+                      }
+                      label="Pending requests"
+                    />
+                  </FormGroup>
+                </div>
                 <div className="ml-auto">
-                  {!expand && (
-                    <button
-                      className="btn hidden sm:block bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
-                      onClick={handleDialogOpen}
-                    >
-                      Filter Rides
-                    </button>
-                  )}
                   {(startTime !== null ||
                     endTime !== null ||
                     toValue !== null ||
                     fromValue !== null) &&
                     expand && (
                       <button
-                        className="btn bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                        className="btn hidden sm:block bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
                         onClick={() => {
                           clearFilters();
                           // fetchFilteredBookings();
@@ -280,23 +277,15 @@ const AllUserBookings = () => {
                     )}
                 </div>
               </div>
-              {!expand && (
-                <button
-                  className="btn block sm:hidden bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px] w-[90%] mx-auto"
-                  onClick={handleDialogOpen}
-                >
-                  Filter Rides
-                </button>
-              )}
             </div>
 
-            <div className="collapse-content p-0 w-[90vw] sm:w-full">
-              <div className="flex flex-col gap-3">
-                <p className="text-[.9rem] md:text-[1rem] text-center mx-auto sm:mx-0 w-fit">
-                  Filter based on times,
-                  <br className="sm:hidden" /> locations or both <br />
-                </p>
-                <div className="flex flex-col md:flex-row gap-2  items-center sm:mr-auto">
+            <div className=" p-0 w-[100vw] sm:w-full">
+              <p className="text-[.9rem] md:text-[1rem] text-center mx-auto sm:mr-auto sm:ml-0  w-fit mt-2 mb-5">
+                Filter based on times,
+                <br className="4x:hidden" /> locations or both <br />
+              </p>
+              <div className="flex flex-col lg:flex-row gap-3">
+                <div className="flex flex-col  4x:flex-row gap-2 items-center mx-auto sm:mr-auto sm:ml-0 lg:m-0">
                   <Autocomplete
                     disablePortal
                     id="combo-box-demo"
@@ -330,7 +319,7 @@ const AllUserBookings = () => {
                     )}
                   />
                 </div>
-                <div className="flex flex-col md:flex-row gap-2 items-center sm:mr-auto">
+                <div className="flex flex-col 4x:flex-row gap-2 items-center mx-auto sm:mr-auto sm:ml-0">
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DateTimePicker
                       label="Start Time"
@@ -378,16 +367,24 @@ const AllUserBookings = () => {
                 </div>
               </div>
               <div className="flex gap-2 justify-center sm:justify-end">
-                <button
-                  onClick={handleDialogClose}
-                  className=" btn  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
-                >
-                  Cancel
-                </button>
+                {(startTime !== null ||
+                  endTime !== null ||
+                  toValue !== null ||
+                  fromValue !== null) && (
+                  <button
+                    className="btn block  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                    onClick={() => {
+                      clearFilters();
+                      fetchFilteredBookings();
+                    }}
+                  >
+                    Clear Filters
+                  </button>
+                )}
 
                 <button
                   onClick={fetchFilteredBookings}
-                  className=" btn  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
+                  className=" btn  bg-secondary/70  text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                   disabled={
                     (startTime === null ||
                       endTime === null ||
