@@ -49,7 +49,7 @@ const AllUserCardExpanded = ({
           }
         )
         .then((res) => {
-          toast("Phone Number Updated");
+          toast("Phone Number Updated", { type: "success" });
         })
         .catch((err) => {
           console.log(err);
@@ -105,7 +105,7 @@ const AllUserCardExpanded = ({
           }
         )
         .then((res) => {
-          toast("Phone Number Updated");
+          toast("Phone Number Updated", { type: "success" });
           fetchFilteredBookings();
         })
         .catch((err) => {
@@ -130,7 +130,7 @@ const AllUserCardExpanded = ({
           }
         )
         .then(() => {
-          toast("Succesfully Cancelled Request");
+          toast("Succesfully Cancelled Request", { type: "success" });
         })
         .catch((err) => {
           console.log(err);
@@ -165,15 +165,12 @@ const AllUserCardExpanded = ({
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="mt-5 w-full">
-      <div className="flex flex-col justify-center my-5">
-        <div className="flex">
-          <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-            <h3 className=" tracking-wider text-[1rem] sm:text-[1.15rem]">
-              {bookingData.travellers[0].name}
-            </h3>
-            <p className="text-secondary  tracking-wider font-medium text-[.9rem] sm:text-[1.1rem] mr-auto ">
-              {bookingData.travellers[0].email}
-            </p>
+      <div className="flex flex-row gap-3 my-5 pl-2">
+          <div>
+            <span className="text-secondary text-[.9rem] sm:text-[1.1rem] ">
+              Note:
+            </span>{" "}
+            {bookingData.travellers[0].comments}
           </div>
           {isValidToJoin && isInRequest == -1 && (
             <button
@@ -193,20 +190,14 @@ const AllUserCardExpanded = ({
               Cancel Request
             </button>
           )}
-        </div>
-        <div>
-          <span className="text-secondary text-[.9rem] sm:text-[1.1rem] ">
-            Note:
-          </span>{" "}
-          {bookingData.travellers[0].comments}
-        </div>
       </div>
       {}
-      <div className="mt-5">
+      <div className="mt-5 px-2">
         {bookingData.travellers.length > 0 && (
           <UserTravellers
             travellers={bookingData.travellers}
             hidePhoneNumber={true}
+            owner_email={bookingData.owner_email}
           />
         )}
       </div>

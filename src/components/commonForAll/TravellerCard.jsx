@@ -44,7 +44,7 @@ const TravellerCard = ({
           }
         )
         .then(() => {
-          toast("Succesfully exited cab");
+          toast("Succesfully exited cab", { type: "success" });
         })
         .catch((err) => {
           toast("Error exiting cab", { type: "error" });
@@ -115,14 +115,6 @@ const TravellerCard = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col justify-center mt-8">
-          <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-            <h3 className=" tracking-wider text-[1rem] md:text-[1.15rem] mr-auto">
-              {bookingData.travellers[0].name}
-            </h3>
-            <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
-              {bookingData.travellers[0].email}
-            </p>
-          </div>
           <div>
             <span className="text-secondary  font-medium text-[.9rem] md:text-[1.1rem]">
               Note:
@@ -136,6 +128,7 @@ const TravellerCard = ({
             travellers={bookingData.travellers}
             user_email={user_email}
             ExitBooking={ExitBooking}
+            owner_email={bookingData.owner_email}
           />
         )}
       </div>

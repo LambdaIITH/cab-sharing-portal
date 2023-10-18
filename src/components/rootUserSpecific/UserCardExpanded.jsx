@@ -33,7 +33,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           }
         )
         .then(() => {
-          toast("Succesfully Deleted");
+          toast("Succesfully Deleted", { type: "success" });
         })
         .catch((err) => {
           toast("Some Error Occured", { type: "error" });
@@ -67,7 +67,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           }
         )
         .then(() => {
-          toast("Succesfully Accepted");
+          toast("Succesfully Accepted", { type: "success" });
         })
         .catch((err) => {
           toast("Some Error Occured", { type: "error" });
@@ -101,7 +101,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           }
         )
         .then(() => {
-          toast("Succesfully Rejected");
+          toast("Succesfully Rejected", { type: "success" });
         })
         .catch((err) => {
           toast("Some Error Occured", { type: "error" });
@@ -121,14 +121,6 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
     >
       <div className="flex flex-row justify-between items-center my-5">
         <div className="flex flex-col justify-center">
-          <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
-            <h3 className=" tracking-wider text-[1rem] md:text-[1.15rem] mr-auto">
-              {bookingData.travellers[0].name}
-            </h3>
-            <p className="text-secondary  tracking-wider font-medium text-[.9rem] md:text-[1.1rem] mr-auto">
-              {bookingData.travellers[0].email}
-            </p>
-          </div>
           <div className="w-[85vw] sm:w-[30rem] break-words">
             <span className="text-secondary text-[.9rem] md:text-[1rem]">
               Note:
@@ -136,18 +128,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
             {bookingData.travellers[0].comments}
           </div>
         </div>
-        <div className="hidden sm:block">
-          {!clicked_delete ? (
-            <ConformModal
-              modalText={"Are you sure you want to delete this booking"}
-              buttonText={"Yes"}
-              buttonClickFunction={DeleteBooking}
-              displayText={"Delete"}
-            />
-          ) : (
-            <span className="loading loading-spinner text-black"></span>
-          )}
-        </div>
+        
       </div>
       {bookingData?.requests?.length > 0 && (
         <UserRequests
@@ -158,7 +139,12 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
         />
       )}
       {bookingData.travellers.length > 0 && (
-        <UserTravellers travellers={bookingData.travellers} />
+        <UserTravellers 
+          travellers={bookingData.travellers}
+          owner_email={bookingData.owner_email}
+          DeleteBooking={DeleteBooking}
+          clicked_delete={clicked_delete}
+        />
       )}
     </div>
   );

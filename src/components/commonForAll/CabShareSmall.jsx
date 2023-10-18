@@ -86,7 +86,7 @@ const CabShareSmall = ({
         }
       );
 
-      toast("Succesfully Edited");
+      toast("Succesfully Edited", { type: "success" });
       fetchUserBookings();
       handleDialogClose();
     } catch (err) {
@@ -146,8 +146,8 @@ const CabShareSmall = ({
 
         <div className="flex flex-col sm:flex-row  mt-5 sm:mt-2 sm:items-start justify-start items-start gap-3 w-[15rem] sm:w-[80%]">
           <div className="flex flex-col items-start bg-white/30 p-2 rounded-md w-full ">
-            <BoldedHeading text="Willing to leave after" />
-            <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0">
+            <BoldedHeading text="Ride Window" />
+            <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem]">
               <span className="mt-[3px]">
                 {new Date(bookingData.start_time).toLocaleDateString("en-US", {
                   day: "2-digit",
@@ -159,11 +159,18 @@ const CabShareSmall = ({
                   new Date(bookingData.start_time).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
-                  })}
+                  }) 
+                  + " - "
+                  + new Date(bookingData.end_time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                  }
+                 
               </span>
             </p>
           </div>
-          <div className="flex flex-col items-start bg-white/30 p-2 rounded-md w-full">
+          {/* <div className="flex flex-col items-start bg-white/30 p-2 rounded-md w-full">
             <BoldedHeading text="Have to leave before" />
             <p className="flex flex-row items-center justify-center tracking-wider text-[.9rem] md:text-[1rem] truncate md:mt-0">
               <span className="mt-[3px]">
@@ -180,7 +187,7 @@ const CabShareSmall = ({
                   })}
               </span>
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="collapse-content p-1 md:p-2">

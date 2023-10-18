@@ -248,7 +248,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         setToggle("from");
         fetchUserBookings();
 
-        toast("Booking Created Successfully");
+        toast("Booking Created Successfully", { type: "success" });
       })
       .catch((err) => {
         console.log(err);
@@ -277,7 +277,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
           setLoadedPhone(phone);
           setIsThereAPhoneNumber(true);
 
-          toast("Phone number updated successfully");
+          toast("Phone number updated successfully", { type: "success" });
         })
         .catch((err) => {
           console.log(err);
