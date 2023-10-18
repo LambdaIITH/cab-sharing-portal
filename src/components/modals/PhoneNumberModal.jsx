@@ -1,6 +1,7 @@
 import { MuiTelInput } from "mui-tel-input";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 const PhoneNumberModal = ({
   handlePhoneChange,
@@ -36,7 +37,7 @@ const PhoneNumberModal = ({
           className=" btn bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px]"
           onClick={() => showModal()}
         >
-          {edit ? "Edit" : "+"}
+          {edit ? <EditOutlinedIcon /> : "+"}
         </button>
       </div>
       {isModalOpen && (

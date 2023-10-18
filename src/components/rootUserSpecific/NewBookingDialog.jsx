@@ -20,7 +20,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { matchIsValidTel } from "mui-tel-input";
-import { set } from "date-fns";
 import axios from "axios";
 import { useRouter } from "next/router";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
@@ -31,7 +30,13 @@ import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const locations = ["RGIA", "Secun. Railway Stn.", "Lingampally Stn.", "Kacheguda Stn.", "Hyd. Deccan Stn."];
+const locations = [
+  "RGIA",
+  "Secun. Railway Stn.",
+  "Lingampally Stn.",
+  "Kacheguda Stn.",
+  "Hyd. Deccan Stn.",
+];
 
 export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const initData = {
@@ -215,7 +220,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const RegisterNewBooking = async () => {
     setClickedBook(true);
     const authToken = retrieveAuthToken(router);
-    
+
     await axios
       .post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
@@ -242,17 +247,16 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         setCapacityError(0);
         setToggle("from");
         fetchUserBookings();
-        
+
         toast("Booking Created Successfully");
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
       });
-      setClickedBook(false);
+    setClickedBook(false);
   };
 
   const handlePhoneEdit = async () => {
-    
     if (phone != loaded_phone) {
       const authToken = retrieveAuthToken(router);
       let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
@@ -272,12 +276,12 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         .then((res) => {
           setLoadedPhone(phone);
           setIsThereAPhoneNumber(true);
-          
+
           toast("Phone number updated successfully");
         })
         .catch((err) => {
           console.log(err);
-          
+
           toast("Error updating phone number", { type: "error" });
         });
     }
@@ -298,9 +302,6 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         } collapse-close bg-secondary/10 mx-3 md:p-5 sm:mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
       >
         <div className="collapse-title p-2  font-medium flex flex-col  rounded-md">
-          <p className="text-secondary border-b-2 border-secondary mx-auto mb-2 tracking-wider font-semibold text-[1rem] md:text-[1.1rem] mr-auto">
-            Your Profile
-          </p>
           <div className="flex flex-row justify-normal mt-2 gap-2 md:gap-10 ">
             <div className="flex flex-col sm:flex-row justify-center items-center mr-auto sm:gap-3">
               <h3 className=" tracking-wider text-[1rem] md:text-[1.15rem] mr-auto">
@@ -338,18 +339,15 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               className=" btn hidden sm:block bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
               disabled={!is_there_a_phone_number}
             >
-              {expand ? "Cancel" : "Create Booking"}
+              {expand ? "Cancel" : "+ Ride"}
             </button>
-            {/* <button className="btn bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] ml-[auto]">
-              Logout
-            </button> */}
           </div>
           <button
             onClick={() => setExpand((prev) => !prev)}
             className=" btn block sm:hidden bg-yellow-400 text-black hover:bg-yellow-400 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:text-gray-300"
             disabled={!is_there_a_phone_number}
           >
-            {expand ? "Cancel" : "Create Booking"}
+            {expand ? "Cancel" : "+ Ride"}
           </button>
         </div>
 
@@ -430,7 +428,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 <DateTimePicker
                   label=""
                   value={endTime}
-                  minDate={startTime?startTime:new Date()}
+                  minDate={startTime ? startTime : new Date()}
                   name="endTime"
                   onChange={setEndTime}
                   renderInput={(params) => <TextField {...params} />}
@@ -441,13 +439,14 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </LocalizationProvider>
               {endTimeError == 1 && (
                 <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Have to leave before &quot; should be more than &quot; Leave
-                  after &quot;
+                  &quot; Have to leave before &quot; should be more than &quot;
+                  Leave after &quot;
                 </span>
               )}
               {endTimeError == 2 && (
                 <span className="label-text-alt mt-1 text-red-600">
-                  &quot; Have to leave before &quot; should be after current time
+                  &quot; Have to leave before &quot; should be after current
+                  time
                 </span>
               )}
               {endTimeError == 3 && (

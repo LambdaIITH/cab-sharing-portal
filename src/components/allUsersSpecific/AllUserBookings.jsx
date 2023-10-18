@@ -197,18 +197,23 @@ const AllUserBookings = () => {
             } collapse-close bg-secondary/10 mx-3 md:p-5 sm:mx-auto mt-3 border-2 three-d shadow-md border-black text-black rounded-md w-[90vw] lg:w-[60rem]`}
           >
             <div className="collapse-title p-2 font-medium flex flex-col  rounded-md w-[90vw] sm:w-full">
-              <p className="text-secondary border-b-2 border-secondary mx-auto mb-2 tracking-wider font-semibold text-[1rem] md:text-[1.1rem] mr-auto">
-                Sort & Filter
-              </p>
               <div className="flex flex-col sm:flex-row justify-center items-center rounded-md ">
-                <FormGroup sx={{ width: "200px" }}>
+                <FormGroup
+                  sx={{
+                    width: "200px",
+                    my: 2,
+                    fontFamily: "Monserrat, sans-serif",
+                  }}
+                >
                   <FormControlLabel
                     sx={{
-                      color: "black",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.05)",
+                      },
                     }}
                     control={
                       <Switch
-                        // defaultChecked
+                        color="default"
                         checked={checked}
                         onChange={handleShowAll}
                       />
@@ -216,14 +221,24 @@ const AllUserBookings = () => {
                     label="Include filled cabs"
                   />
                 </FormGroup>
-                <FormGroup sx={{ width: "200px" }}>
+
+                <FormGroup
+                  sx={{
+                    width: "200px",
+                    my: 2,
+                    fontFamily: "Monserrat, sans-serif",
+                  }}
+                >
                   <FormControlLabel
                     sx={{
                       color: "black",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.05)",
+                      },
                     }}
                     control={
                       <Switch
-                        // defaultChecked
+                        color="default"
                         checked={request_checked}
                         onChange={handleRequests}
                       />
@@ -231,6 +246,7 @@ const AllUserBookings = () => {
                     label="Pending requests"
                   />
                 </FormGroup>
+
                 <div className="ml-auto">
                   {!expand && (
                     <button
