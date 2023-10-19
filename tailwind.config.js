@@ -15,6 +15,7 @@ module.exports = {
       "5x": "500px",
       "4.3x": "430px",
       "4x": "400px",
+      "4.1x": "410px",
       ...defaultTheme.screens,
     },
     extend: {

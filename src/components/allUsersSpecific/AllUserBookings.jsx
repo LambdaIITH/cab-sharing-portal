@@ -21,6 +21,8 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
+import { useMediaQuery } from '@mui/material';
+
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -56,6 +58,9 @@ const AllUserBookings = () => {
   const [phone, setPhone] = useState("");
   const [loaded_phone, setLoadedPhone] = useState("");
   const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
+
+  // responsive ness for the switch 
+  const isLargeScreen = useMediaQuery('(min-width: 430px)');
 
   const fetchFilteredBookings = async () => {
     setIsLoading(true);
@@ -207,22 +212,27 @@ const AllUserBookings = () => {
         <div>
           <div
             tabIndex={0}
-            className={`collapse   ${
-              expand ? "collapse-open" : "collapse-close"
-            } collapse-close bg-secondary/10  md:p-5 overflow-auto sm:mx-auto mt-3 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
+            className={`collapse   ${expand ? "collapse-open" : "collapse-close"
+              } collapse-close bg-secondary/10  md:p-5 overflow-auto sm:mx-auto mt-3 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
           >
             <div className="collapse-title p-2 font-medium flex flex-col  rounded-md w-[100vw] sm:w-full">
-              <div className="flex flex-row justify-between mx-auto gap-2 items-center rounded-md w-full">
-                <div className="flex flex-row gap-2 mx-auto">
+              <div className="flex flex-row justify-between mx-auto gap-2 items-center rounded-md w-full ">
+                <div className="flex flex-col 4.1x:flex-row sm:gap-2 ml-auto 4x:mx-auto sm:mr-auto sm:ml-0">
                   <FormGroup
                     sx={{
                       width: "200px",
+                      margin: 0,
+                      padding: 0,
                     }}
                   >
                     <FormControlLabel
                       sx={{
                         "&:hover": {
                           backgroundColor: "rgba(0, 0, 0, 0.05)",
+                        },
+                        label: {
+                          margin: 0,
+                          padding: 0,
                         },
                       }}
                       control={
@@ -239,6 +249,8 @@ const AllUserBookings = () => {
                   <FormGroup
                     sx={{
                       width: "200px",
+                      margin: 0,
+                      padding: 0,
                     }}
                   >
                     <FormControlLabel
@@ -246,6 +258,10 @@ const AllUserBookings = () => {
                         color: "black",
                         "&:hover": {
                           backgroundColor: "rgba(0, 0, 0, 0.05)",
+                        },
+                        label: {
+                          margin: 0,
+                          padding: 0,
                         },
                       }}
                       control={
@@ -259,6 +275,7 @@ const AllUserBookings = () => {
                     />
                   </FormGroup>
                 </div>
+
                 <div className="ml-auto">
                   {(startTime !== null ||
                     endTime !== null ||
@@ -272,7 +289,7 @@ const AllUserBookings = () => {
                           // fetchFilteredBookings();
                         }}
                       >
-                        Clear Filters
+                        Clear
                       </button>
                     )}
                 </div>
@@ -282,7 +299,7 @@ const AllUserBookings = () => {
             <div className=" p-0 w-[100vw] sm:w-full">
               <p className="text-[.9rem] md:text-[1rem] text-center mx-auto sm:mr-auto sm:ml-0  w-fit mt-2 mb-5">
                 Filter based on times,
-                <br className="4x:hidden" /> locations or both <br />
+                locations or both <br />
               </p>
               <div className="flex flex-col lg:flex-row gap-3">
                 <div className="flex flex-col  4x:flex-row gap-2 items-center mx-auto sm:mr-auto sm:ml-0 lg:m-0">
@@ -295,7 +312,7 @@ const AllUserBookings = () => {
                       setFromValue(newValue);
                     }}
                     sx={{
-                      width: "200px",
+                      width: "180px",
                       borderRadius: "8px",
                     }}
                     renderInput={(params) => (
@@ -311,7 +328,7 @@ const AllUserBookings = () => {
                       setToValue(newValue);
                     }}
                     sx={{
-                      width: "200px",
+                      width: "180px",
                       borderRadius: "8px",
                     }}
                     renderInput={(params) => (
@@ -332,7 +349,7 @@ const AllUserBookings = () => {
                       renderInput={(params) => (
                         <TextField
                           sx={{
-                            width: "200px",
+                            width: "180px",
                             borderRadius: "8px",
                           }}
                           {...params}
@@ -354,7 +371,7 @@ const AllUserBookings = () => {
                       renderInput={(params) => (
                         <TextField
                           sx={{
-                            width: "200px",
+                            width: "180px",
                             borderRadius: "8px",
                           }}
                           {...params}
@@ -371,16 +388,16 @@ const AllUserBookings = () => {
                   endTime !== null ||
                   toValue !== null ||
                   fromValue !== null) && (
-                  <button
-                    className="btn block  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
-                    onClick={() => {
-                      clearFilters();
-                      fetchFilteredBookings();
-                    }}
-                  >
-                    Clear Filters
-                  </button>
-                )}
+                    <button
+                      className="btn block  bg-secondary/70 text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[0.5px]"
+                      onClick={() => {
+                        clearFilters();
+                        fetchFilteredBookings();
+                      }}
+                    >
+                      Clear
+                    </button>
+                  )}
 
                 <button
                   onClick={fetchFilteredBookings}
