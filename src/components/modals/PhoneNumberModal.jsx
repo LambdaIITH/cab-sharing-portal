@@ -77,8 +77,8 @@ const PhoneNumberModal = ({
                 disabled={!phoneIsValid}
                 onClick={() => {
                   handlePhoneEdit().then(() => {
-                    // router.reload();
-                    fetchBookings();
+                    router.reload();
+                    // fetchBookings();
                     closeModal();
                   });
                 }}
