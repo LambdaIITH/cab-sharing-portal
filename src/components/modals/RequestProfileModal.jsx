@@ -9,6 +9,8 @@ const RequestProfileModel = ({
   AcceptBooking,
   loading,
   RejectBooking,
+  comment,
+  phone_number,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -47,10 +49,12 @@ const RequestProfileModel = ({
             </button>
             <div className="flex flex-col gap-4">
               <h3 className="font-bold text-[1rem] sm:text-lg text-secondary/80 border-secondary border-b-2 w-fit">
-                Someone requested to join your cab
+                {name} has requested to join your cab
               </h3>
-              <p className="text-[.9rem] sm:text-[1rem]">Name: {name}</p>
+              {/* <p className="text-[.9rem] sm:text-[1rem]">Name: {name}</p> */}
               <p className="text-[.9rem] sm:text-[1rem]">Email: {email}</p>
+              <p className="text-[.9rem] sm:text-[1rem]">Phone: {phone_number}</p>
+              <p className="text-[.9rem] sm:text-[1rem]">Comment: {comment}</p>
               <div className="flex flex-row gap-3 items-end justify-end">
                 <button
                   className="btn btn-success flex-start w-fit"

@@ -133,7 +133,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
                 modalText={"Are you sure you want to delete this ride"}
                 buttonText={"Yes"}
                 buttonClickFunction={DeleteBooking}
-                displayText={"Delete"}
+                displayText={"Delete Ride"}
               />
             ) : (
               <span className="loading loading-spinner text-black"></span>

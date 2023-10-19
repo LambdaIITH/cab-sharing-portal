@@ -215,6 +215,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     setEndTime(null);
     setLocation("");
     setEndTimeError(0);
+    setCapacityError(0);
+    setToggle("from");
   };
 
   const RegisterNewBooking = async () => {
@@ -497,7 +499,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
               </span>
             )}
             <FormControl>
-              <p className="text-xs">Comments ( max 50 characters )</p>
+              <p className="text-xs">Comments ( max 250 characters )</p>
               <TextField
                 id="comments"
                 name="comments"

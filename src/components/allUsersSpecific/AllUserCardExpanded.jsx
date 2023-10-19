@@ -243,15 +243,15 @@ const AllUserCardExpanded = ({
               </button>
               {isValidToJoin && isInRequest == -1 ? (
                 <div className="flex flex-col gap-5">
-                  <p>Add a Comment ( max 50 characters )</p>
-                  <input
-                    maxLength={50}
+                  <p>Add a Comment ( max 250 characters )</p>
+                  <textarea
+                    maxLength={250}
                     disabled={!isValidToJoin && !is_there_a_phone_number}
                     onClick={(e) => e.stopPropagation()}
                     value={joinComment}
                     name="comment"
                     onChange={(e) => setJoinComment(e.target.value)}
-                    className="bg-transparent w-[60%] txt-black text-[.8rem] sm:text-[1.1rem] py-3 pl-2 rounded-md border border-gray-100 shadow-md"
+                    className="bg-transparent w-[80%] txt-black text-[.8rem] sm:text-[1.1rem] py-3 pl-2 rounded-md border border-gray-100 shadow-md"
                   />
                   <div className="flex gap-5 justify-end">
                     <button

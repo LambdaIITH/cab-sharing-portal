@@ -213,7 +213,7 @@ const AllUserBookings = () => {
           >
             <div className="collapse-title p-2 font-medium flex flex-col  rounded-md w-[100vw] sm:w-full">
               <div className="flex flex-row justify-between mx-auto gap-2 items-center rounded-md w-full">
-                <div className="flex gap-2">
+                <div className="flex flex-row gap-2 mx-auto">
                   <FormGroup
                     sx={{
                       width: "200px",

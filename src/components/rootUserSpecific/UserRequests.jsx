@@ -2,6 +2,7 @@ import React from "react";
 import RequestProfileModel from "components/modals/RequestProfileModal";
 
 const UserRequests = ({ requests, AcceptBooking, RejectBooking, loading }) => {
+  console.log(requests);
   return (
     <div className="flex flex-col gap-2 items-center justify-center my-2">
       <p className="border-b-2 font-semibold text-[1.1rem] text-secondary border-secondary ">
@@ -26,6 +27,8 @@ const UserRequests = ({ requests, AcceptBooking, RejectBooking, loading }) => {
               AcceptBooking={AcceptBooking}
               loading={loading}
               RejectBooking={RejectBooking}
+              comment={item.comments}
+              phone_number={item.phone_number}
             />
           </div>
         </div>
