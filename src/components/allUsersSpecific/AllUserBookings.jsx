@@ -212,8 +212,7 @@ const AllUserBookings = () => {
         <div>
           <div
             tabIndex={0}
-            className={`collapse   ${expand ? "collapse-open" : "collapse-close"
-              } collapse-close bg-secondary/10  md:p-5 overflow-auto sm:mx-auto mt-3 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
+            className={` bg-secondary/10  md:p-5 sm:mx-auto mt-3 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
           >
             <div className="collapse-title p-2 font-medium flex flex-col  rounded-md w-[100vw] sm:w-full">
               <div className="flex flex-row justify-between mx-auto gap-2 items-center rounded-md w-full ">

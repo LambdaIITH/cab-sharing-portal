@@ -12,6 +12,7 @@ const PhoneNumberModal = ({
   edit = false,
   loaded_phone,
   setPhone,
+  fetchBookings,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -76,7 +77,8 @@ const PhoneNumberModal = ({
                 disabled={!phoneIsValid}
                 onClick={() => {
                   handlePhoneEdit().then(() => {
-                    router.reload();
+                    // router.reload();
+                    fetchBookings();
                     closeModal();
                   });
                 }}

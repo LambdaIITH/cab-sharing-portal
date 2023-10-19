@@ -324,6 +324,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 edit={true}
                 loaded_phone={loaded_phone}
                 setPhone={setPhone}
+                fetchBookings={fetchUserBookings}
               />
             ) : (
               <PhoneNumberModal
@@ -333,6 +334,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 phoneIsValid={phoneIsValid}
                 loaded_phone={loaded_phone}
                 setPhone={setPhone}
+                fetchBookings={fetchUserBookings}
               />
             )}
 

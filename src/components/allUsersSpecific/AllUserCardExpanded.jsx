@@ -205,10 +205,10 @@ const AllUserCardExpanded = ({
         !is_there_a_phone_number ? (
           <dialog
             id="my_modal_3"
-            className="modal modal-open"
+            className="modal modal-open "
             onClick={(e) => e.stopPropagation()}
           >
-            <form method="dialog" className="modal-box bg-white text-black">
+            <form method="dialog" className="modal-box bg-white text-black pb-[6.5rem]">
               <button
                 className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 "
                 onClick={() => setIsModalVisible(false)}
@@ -225,6 +225,7 @@ const AllUserCardExpanded = ({
                 loaded_phone={loaded_phone}
                 setPhone={setPhone}
                 phoneIsValid={phoneIsValid}
+                fetchBookings={fetchFilteredBookings}
               />
             </form>
           </dialog>
