@@ -38,7 +38,8 @@ SELECT c.id, c.start_time, c.end_time, c.capacity, fl.place, tl.place, c.owner_e
   WHERE c.end_time > (SELECT CURRENT_TIMESTAMP)
     AND ((c.start_time <= :start_time AND c.end_time >= :start_time)
       OR (c.end_time >= :end_time AND c.start_time <= :end_time)
-      OR (:start_time <= c.start_time AND :end_time >= c.end_time));
+      OR (:start_time <= c.start_time AND :end_time >= c.end_time))
+  ORDER BY c.start_time, c.end_time ASC;
 
 -- name: filter_all
 SELECT c.id, c.start_time, c.end_time, c.capacity, fl.place, tl.place, c.owner_email, u.name, u.phone_number
@@ -50,7 +51,8 @@ SELECT c.id, c.start_time, c.end_time, c.capacity, fl.place, tl.place, c.owner_e
     AND fl.id= :from_loc AND tl.id = :to_loc
     AND ((c.start_time <= :start_time AND c.end_time >= :start_time)
       OR (c.end_time >= :end_time AND c.start_time <= :end_time)
-      OR (:start_time <= c.start_time AND :end_time >= c.end_time));
+      OR (:start_time <= c.start_time AND :end_time >= c.end_time))
+  ORDER BY c.start_time, c.end_time ASC;
 
 -- name: get_travellers
 SELECT t.user_email, t.comments, u.name, u.phone_number
