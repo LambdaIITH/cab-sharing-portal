@@ -278,7 +278,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         .then((res) => {
           setLoadedPhone(phone);
           setIsThereAPhoneNumber(true);
-
+          fetchUserBookings();
           toast("Phone number updated successfully", { type: "success" });
         })
         .catch((err) => {
@@ -324,7 +324,6 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 edit={true}
                 loaded_phone={loaded_phone}
                 setPhone={setPhone}
-                fetchBookings={fetchUserBookings}
               />
             ) : (
               <PhoneNumberModal
@@ -334,7 +333,6 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 phoneIsValid={phoneIsValid}
                 loaded_phone={loaded_phone}
                 setPhone={setPhone}
-                fetchBookings={fetchUserBookings}
               />
             )}
 

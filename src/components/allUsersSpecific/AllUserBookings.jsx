@@ -436,7 +436,9 @@ const AllUserBookings = () => {
                     phone={phone}
                     loaded_phone={loaded_phone}
                     is_there_a_phone_number={is_there_a_phone_number}
+                    setIsThereAPhoneNumber={setIsThereAPhoneNumber}
                     setPhone={setPhone}
+                    setLoadedPhone={setLoadedPhone}
                   />
                 );
               }

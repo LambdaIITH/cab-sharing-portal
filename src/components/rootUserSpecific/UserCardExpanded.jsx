@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
-import ConformModal from "components/modals/ConformModal";
+import ConfirmModal from "components/modals/ConfirmModal";
 import UserRequests from "./UserRequests";
 import UserTravellers from "./UserTravellers";
 
@@ -129,7 +129,7 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           </div>
           <div className="">
             {!clicked_delete ? (
-              <ConformModal
+              <ConfirmModal
                 modalText={"Are you sure you want to delete this ride"}
                 buttonText={"Yes"}
                 buttonClickFunction={DeleteBooking}

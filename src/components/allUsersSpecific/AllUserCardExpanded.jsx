@@ -17,6 +17,8 @@ const AllUserCardExpanded = ({
   phone,
   setPhone,
   is_there_a_phone_number,
+  setIsThereAPhoneNumber,
+  setLoadedPhone,
 }) => {
   const [isValidToJoin, setIsValidToJoin] = useState(false);
   const [joinComment, setJoinComment] = useState("I am interested to join.");
@@ -50,6 +52,8 @@ const AllUserCardExpanded = ({
         )
         .then((res) => {
           toast("Phone Number Updated", { type: "success" });
+          setLoadedPhone(phone);
+          setIsThereAPhoneNumber(true);
         })
         .catch((err) => {
           console.log(err);
@@ -88,31 +92,33 @@ const AllUserCardExpanded = ({
     }
   };
 
-  const handlePhoneEdit = async () => {
-    if (phone != loaded_phone) {
-      const authToken = retrieveAuthToken(router);
-      await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
-          JSON.stringify({
-            phone_number: phone,
-          }),
-          {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          toast("Phone Number Updated", { type: "success" });
-          fetchFilteredBookings();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
+  // const handlePhoneEdit = async () => {
+  //   if (phone != loaded_phone) {
+  //     const authToken = retrieveAuthToken(router);
+  //     await axios
+  //       .post(
+  //         `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
+  //         JSON.stringify({
+  //           phone_number: phone,
+  //         }),
+  //         {
+  //           headers: {
+  //             Authorization: authToken,
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       )
+  //       .then((res) => {
+  //         setIsThereAPhoneNumber(true);
+  //         toast("Phone Number Updated", { type: "success" });
+  //         fetchFilteredBookings();
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //     setIsThereAPhoneNumber(true);
+  //   }
+  // };
 
   const handleCancelRequest = async (e) => {
     e.stopPropagation();
@@ -219,13 +225,13 @@ const AllUserCardExpanded = ({
                 Add phone number to join/create ride.
               </h3>
               <PhoneNumberModal
-                handlePhoneEdit={handlePhoneEdit}
+                // handlePhoneEdit={handlePhoneEdit}
                 handlePhoneChange={handlePhoneChange}
                 phone={phone}
                 loaded_phone={loaded_phone}
                 setPhone={setPhone}
                 phoneIsValid={phoneIsValid}
-                fetchBookings={fetchFilteredBookings}
+                setIsThereAPhoneNumber={setIsThereAPhoneNumber}
               />
             </form>
           </dialog>

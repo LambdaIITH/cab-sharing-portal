@@ -4,7 +4,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import ConformModal from "components/modals/ConformModal";
+import ConfirmModal from "components/modals/ConfirmModal";
 import StarIcon from "@mui/icons-material/Star";
 import ViewProfile from "components/modals/ViewProfile";
 // List of traverllers in TravellerCard, this is a child of TravellerCard(parent)
@@ -57,7 +57,7 @@ const UserTravellers = ({
               </p>
             </div>
             <div className="flex flex-row gap-3 ">
-              <div className="sm:hidden block">
+              <div className="block">
                 <ViewProfile
                   name={item.name}
                   email={item.email}
@@ -69,7 +69,7 @@ const UserTravellers = ({
               </div>
 
               {item.email === user_email && (
-                <ConformModal
+                <ConfirmModal
                   modalText={"Are you sure you want to exit from this booking"}
                   buttonText={"Exit"}
                   buttonClickFunction={ExitBooking}

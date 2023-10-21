@@ -33,6 +33,8 @@ const CabShareSmall = ({
   phone,
   setPhone,
   is_there_a_phone_number,
+  setIsThereAPhoneNumber,
+  setLoadedPhone,
 }) => {
   const router = useRouter();
 
@@ -186,6 +188,8 @@ const CabShareSmall = ({
             phone={phone}
             setPhone={setPhone}
             is_there_a_phone_number={is_there_a_phone_number}
+            setIsThereAPhoneNumber={setIsThereAPhoneNumber}
+            setLoadedPhone={setLoadedPhone}
           />
         )}
       </div>

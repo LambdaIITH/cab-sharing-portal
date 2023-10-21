@@ -8,11 +8,11 @@ const PhoneNumberModal = ({
   handlePhoneChange,
   phone,
   phoneIsValid,
-  handlePhoneEdit,
+  handlePhoneEdit = null,
   edit = false,
   loaded_phone,
   setPhone,
-  fetchBookings,
+  setIsThereAPhoneNumber,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -76,11 +76,14 @@ const PhoneNumberModal = ({
                 className="w-fit flex ml-auto btn bg-secondary/70 text-white/80 hover:bg-secondary/80 disabled:bg-gray-200 disabled:text-gray-300"
                 disabled={!phoneIsValid}
                 onClick={() => {
-                  handlePhoneEdit().then(() => {
-                    router.reload();
-                    // fetchBookings();
+                  if (handlePhoneEdit) { // from NewBookingDialog.jsx
+                    handlePhoneEdit();
                     closeModal();
-                  });
+                  }
+                  else {
+                    setIsThereAPhoneNumber(true);
+                    closeModal();
+                  }
                 }}
               >
                 Save
