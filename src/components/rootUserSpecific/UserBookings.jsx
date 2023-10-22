@@ -25,6 +25,7 @@ const UserBookings = () => {
 
   const fetchUserBookings = async () => {
     const authToken = retrieveAuthToken(router);
+    if (authToken == null) return;
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/me/bookings`,
@@ -43,6 +44,7 @@ const UserBookings = () => {
 
   const getMe = async () => {
     const authToken = retrieveAuthToken(router);
+    if (authToken == null) return;
     await axios
       .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {

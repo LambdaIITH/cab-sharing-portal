@@ -58,6 +58,9 @@ const AllUserBookings = () => {
   const fetchFilteredBookings = async () => {
     setIsLoading(true);
     const authToken = retrieveAuthToken(router);
+    if (authToken === null) {
+      return;
+    }
     let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
 
     if (fromValue && toValue) {
@@ -110,6 +113,9 @@ const AllUserBookings = () => {
 
   const getMe = async () => {
     const authToken = retrieveAuthToken(router);
+    if (authToken === null) {
+      return;
+    }
     await axios
       .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
