@@ -139,6 +139,9 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
 
   async function getMe() {
     const authToken = retrieveAuthToken(router);
+    if (authToken == null) {
+      return;
+    }
     await axios
       .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
