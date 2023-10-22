@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Email(BaseModel):
@@ -10,11 +10,11 @@ class Email(BaseModel):
 class UserDetails(BaseModel):
     phone_number: str
 
-
+MAX_CAPACITY = 7
 class Booking(BaseModel):
     start_time: datetime
     end_time: datetime
-    capacity: int
+    capacity: int = Field(le=MAX_CAPACITY)
     from_loc: str
     to_loc: str
     comments: str
