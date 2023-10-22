@@ -1,15 +1,9 @@
 import {
   Autocomplete,
-  Dialog,
   TextField,
   FormControlLabel,
   FormGroup,
   Switch,
-  DialogActions,
-  Button,
-  DialogTitle,
-  DialogContent,
-  Stack,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -19,7 +13,6 @@ import CabShareSmall from "components/commonForAll/CabShareSmall";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import axios from "axios";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 import { useMediaQuery } from '@mui/material';
 
@@ -68,17 +61,30 @@ const AllUserBookings = () => {
     let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
 
     if (fromValue && toValue) {
-      if (startTime && endTime) {
-        const isoStartTime = startTime.toISOString();
-        const isoEndTime = endTime.toISOString();
-        apiURL += `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}&end_time=${isoEndTime}`;
+      if (startTime || endTime) {
+        const isoStartTime = startTime?.toISOString();
+        const isoEndTime = endTime?.toISOString();
+
+        // makes sure that the query string takes care of null values
+        const queryString = (isoStartTime && isoEndTime) ? `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}&end_time=${isoEndTime}` 
+                          : isoStartTime ? `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}` 
+                          : `?from_loc=${fromValue}&to_loc=${toValue}&end_time=${isoEndTime}`;
+        
+        apiURL += queryString;
+
       } else {
         apiURL += `?from_loc=${fromValue}&to_loc=${toValue}`;
       }
-    } else if (startTime && endTime) {
-      const isoStartTime = startTime.toISOString();
-      const isoEndTime = endTime.toISOString();
-      apiURL += `?start_time=${isoStartTime}&end_time=${isoEndTime}`;
+    } else if (startTime || endTime) {
+      const isoStartTime = startTime?.toISOString();
+      const isoEndTime = endTime?.toISOString();
+
+      // makes sure that the query string takes care of null values
+      const queryString = (isoStartTime && isoEndTime) ? `?start_time=${isoStartTime}&end_time=${isoEndTime}` 
+                        : isoStartTime ? `?start_time=${isoStartTime}` 
+                        : `?end_time=${isoEndTime}`;
+      
+      apiURL += queryString;
     }
 
     try {
@@ -400,19 +406,15 @@ const AllUserBookings = () => {
 
                 <button
                   onClick={fetchFilteredBookings}
-                  className=" btn  bg-secondary/70  text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
+                  className=" btn bg-secondary/70  text-white/80 hover:bg-secondary/80 capitalize font-[400] text-lg my-3 transition-all hover:-translate-y-[.5px] disabled:bg-gray-300 disabled:text-gray-400"
                   disabled={
-                    (startTime === null ||
-                      endTime === null ||
-                      toValue != null ||
-                      fromValue != null) &&
-                    (toValue === null ||
-                      fromValue === null ||
-                      startTime != null ||
-                      endTime != null) &&
-                    (startTime === null ||
-                      endTime === null ||
-                      toValue === null ||
+                    (toValue != null &&
+                      fromValue === null) ||
+                    (toValue === null &&
+                      fromValue != null) ||
+                    (startTime === null &&
+                      endTime === null &&
+                      toValue === null &&
                       fromValue === null)
                   }
                 >
