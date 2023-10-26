@@ -17,8 +17,20 @@ import { ToastContainer, toast } from "react-toastify";
 
 export default function CabSharing() {
   const [tab, setTab] = useState(1);
+  // Tab 1 - All Rides, Tab 0 - My Rides
   const [username, setUsername] = useState("");
   const router = useRouter();
+  console.log(router.query);
+  const findRides = router.query.findRides;
+  useEffect(() => {
+    if(findRides == false) setTab(0);
+    else setTab(1);
+  }, [findRides]);
+  const startTimeProp = router.query.startTimeProp|| null;
+  const endTimeProp = router.query.endTimeProp || null;
+  const fromValueProp = router.query.fromValueProp || null;
+  const toValueProp = router.query.toValueProp || null;
+
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
     retrieveAuthToken(router);
@@ -48,8 +60,8 @@ export default function CabSharing() {
       <ToastContainer />
       <div className="flex flex-row ml-auto">
         {/* <UserGuide /> */}
-        <LogoutButton />
         <ReportBugButton />
+        <LogoutButton />
       </div>
       <div className="flex bg-purple-100 flex-col overflow-x-auto min-h-screen ">
         <div className="tabs flex mx-auto shadow-lg border border-black rounded-lg mb-10">
@@ -76,7 +88,12 @@ export default function CabSharing() {
         </div>
         <div className="flex flex-nowrap overflow-x-auto">
           {tab === 0 && <UserBookings />}
-          {tab === 1 && <AllUserBookings />}
+          {tab === 1 && <AllUserBookings 
+            startTimeProp={startTimeProp}
+            endTimeProp={endTimeProp}
+            fromValueProp={fromValueProp}
+            toValueProp={toValueProp}
+          />}
         </div>
       </div>
       <footer className="flex justify-center gap-2 text-[1.1rem] border-t-2 border-black/20 items-center bg-secondary/20  py-4">

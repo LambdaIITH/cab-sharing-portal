@@ -29,15 +29,15 @@ const places = [
   "Hyd. Deccan Stn.",
 ];
 
-const AllUserBookings = () => {
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
-  const [fromValue, setFromValue] = useState(null);
-  const [toValue, setToValue] = useState(null);
+const AllUserBookings = ({startTimeProp, endTimeProp, fromValueProp, toValueProp}) => {
+  const router = useRouter();
+  const [startTime, setStartTime] = useState(startTimeProp);
+  const [endTime, setEndTime] = useState(endTimeProp);
+  const [fromValue, setFromValue] = useState(fromValueProp);
+  const [toValue, setToValue] = useState(toValueProp);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const router = useRouter();
   const [show_all, setShowAll] = useState(false);
   const [checked, setChecked] = useState(false);
   const [request_checked, setRequestChecked] = useState(false);
@@ -68,8 +68,8 @@ const AllUserBookings = () => {
         toast.warn("End Time can't be before Start Time");
       }
       if (startTime || endTime) {
-        const isoStartTime = startTime?.toISOString();
-        const isoEndTime = endTime?.toISOString();
+        const isoStartTime = startTime ? new Date(startTime).toISOString() : null;
+        const isoEndTime = endTime ? new Date(endTime).toISOString() : null;
 
         // makes sure that the query string takes care of null values
         const queryString = (isoStartTime && isoEndTime) ? `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}&end_time=${isoEndTime}` 
@@ -82,8 +82,8 @@ const AllUserBookings = () => {
         apiURL += `?from_loc=${fromValue}&to_loc=${toValue}`;
       }
     } else if (startTime || endTime) {
-      const isoStartTime = startTime?.toISOString();
-      const isoEndTime = endTime?.toISOString();
+      const isoStartTime = startTime ? new Date(startTime).toISOString() : null;
+      const isoEndTime = endTime ? new Date(endTime).toISOString() : null;
 
       // makes sure that the query string takes care of null values
       const queryString = (isoStartTime && isoEndTime) ? `?start_time=${isoStartTime}&end_time=${isoEndTime}` 
@@ -438,7 +438,7 @@ const AllUserBookings = () => {
               <div
                 className={`bg-secondary/10 px-2  md:p-5 py-2 sm:py-0 sm:mx-auto sm:mt-5 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black text-center rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
               >
-              Ooops! No Ride Available
+              Oops! No Ride Available
               </div>
             </div>
           ) : (
