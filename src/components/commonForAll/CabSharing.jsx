@@ -9,6 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import LogoutButton from "./Logout";
+import ReportBugButton from "./ReportBug";
 import UserGuide from "./UserGuide";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -48,6 +49,7 @@ export default function CabSharing() {
       <div className="flex flex-row ml-auto">
         {/* <UserGuide /> */}
         <LogoutButton />
+        <ReportBugButton />
       </div>
       <div className="flex bg-purple-100 flex-col overflow-x-auto min-h-screen ">
         <div className="tabs flex mx-auto shadow-lg border border-black rounded-lg mb-10">

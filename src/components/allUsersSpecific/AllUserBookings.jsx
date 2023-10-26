@@ -64,6 +64,9 @@ const AllUserBookings = () => {
     let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
 
     if (fromValue && toValue) {
+      if(endTime < startTime) {
+        toast.warn("End Time can't be before Start Time");
+      }
       if (startTime || endTime) {
         const isoStartTime = startTime?.toISOString();
         const isoEndTime = endTime?.toISOString();
@@ -421,7 +424,8 @@ const AllUserBookings = () => {
                     (startTime === null &&
                       endTime === null &&
                       toValue === null &&
-                      fromValue === null)
+                      fromValue === null) ||
+                    (fromValue === toValue)
                   }
                 >
                   Search
@@ -429,29 +433,39 @@ const AllUserBookings = () => {
               </div>
             </div>
           </div>
-          <div className="sm:my-10">
-            {filteredBookings?.map((item, index) => {
-              if (show_all || item.capacity > item.travellers.length) {
-                return (
-                  <CabShareSmall
-                    fetchFilteredBookings={fetchFilteredBookings}
-                    userSpecific={false}
-                    key={index}
-                    index={index}
-                    bookingData={item}
-                    username={username}
-                    email={email}
-                    phone={phone}
-                    loaded_phone={loaded_phone}
-                    is_there_a_phone_number={is_there_a_phone_number}
-                    setIsThereAPhoneNumber={setIsThereAPhoneNumber}
-                    setPhone={setPhone}
-                    setLoadedPhone={setLoadedPhone}
-                  />
-                );
-              }
-            })}
-          </div>
+          {filteredBookings.length == 0 ? (
+            <div className="sm:my-10">
+              <div
+                className={`bg-secondary/10 px-2  md:p-5 py-2 sm:py-0 sm:mx-auto sm:mt-5 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black text-center rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
+              >
+              Ooops! No Ride Available
+              </div>
+            </div>
+          ) : (
+            <div className="sm:my-10">
+              {filteredBookings?.map((item, index) => {
+                if (show_all || item.capacity > item.travellers.length) {
+                  return (
+                    <CabShareSmall
+                      fetchFilteredBookings={fetchFilteredBookings}
+                      userSpecific={false}
+                      key={index}
+                      index={index}
+                      bookingData={item}
+                      username={username}
+                      email={email}
+                      phone={phone}
+                      loaded_phone={loaded_phone}
+                      is_there_a_phone_number={is_there_a_phone_number}
+                      setIsThereAPhoneNumber={setIsThereAPhoneNumber}
+                      setPhone={setPhone}
+                      setLoadedPhone={setLoadedPhone}
+                    />
+                  );
+                }
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>
