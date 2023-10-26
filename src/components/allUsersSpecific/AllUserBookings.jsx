@@ -438,7 +438,7 @@ const AllUserBookings = () => {
               <div
                 className={`bg-secondary/10 px-2  md:p-5 py-2 sm:py-0 sm:mx-auto sm:mt-5 border-t-2 border-black/20 sm:border-2 sm:three-d sm:shadow-md sm:border-black text-black text-center rounded-none sm:rounded-md w-[100vw] sm:w-[90vw] lg:w-[60rem]`}
               >
-              Ooops! No Ride Available
+              Oops! No Ride Available
               </div>
             </div>
           ) : (
