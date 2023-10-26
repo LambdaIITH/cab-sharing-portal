@@ -24,6 +24,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import PhoneNumberModal from "../modals/PhoneNumberModal";
+import OverlappingModal from "components/modals/OverlappingModal";
 
 import Link from "next/link";
 
@@ -62,7 +63,8 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(null);
 
   const [clicked_book, setClickedBook] = useState(false);
-
+  const [num_overlapping, setNumOverlapping] = useState(0);
+  const [isRequiredToRegister, setIsRequiredToRegister] = useState(false);
   const [endTimeError, setEndTimeError] = useState(0);
   // 0 -> no error
   // 1 -> end time before start time
@@ -222,13 +224,26 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
     setToggle("from");
   };
 
+  const findOverlappingRides = () => {
+    router.push({
+      pathname: '/cab-sharing',
+      query: {
+        findRides : true,
+        startTimeProp : startTime.toISOString(),
+        endTimeProp : endTime.toISOString(),
+        fromValueProp : values.from_loc,
+        toValueProp : values.to_loc
+      }
+    });
+
+  }
+
   const RegisterNewBooking = async () => {
     setClickedBook(true);
     const authToken = retrieveAuthToken(router);
-
     await axios
       .post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/find_overlapping`,
         {
           ...values,
           start_time: startTime,
@@ -241,24 +256,47 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
           },
         }
       )
-      .then(() => {
-        setExpand(false);
-        setRegisterData(initState);
-        setTouched(false);
-        setStartTime(null);
-        setEndTime(null);
-        setLocation("");
-        setEndTimeError(0);
-        setCapacityError(0);
-        setToggle("from");
-        fetchUserBookings();
-
-        toast("Ride Created Successfully", { type: "success" });
+      .then((response) => {
+      
+        const overlappingRides = response.data.overlapping_bookings_count;
+        setNumOverlapping(overlappingRides);
+        if(overlappingRides == 0 || isRequiredToRegister) {
+          axios
+          .post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
+            {
+              ...values,
+              start_time: startTime,
+              end_time: endTime,
+            },
+            {
+              headers: {
+                Authorization: authToken,
+                "Content-Type": "application/json",
+              },
+            }
+          ).then(() => {
+            setExpand(false);
+            setRegisterData(initState);
+            setTouched(false);
+            setStartTime(null);
+            setEndTime(null);
+            setLocation("");
+            setEndTimeError(0);
+            setCapacityError(0);
+            setToggle("from");
+            fetchUserBookings();
+            toast("Ride Created Successfully", { type: "success" });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        }
       })
       .catch((err) => {
         console.log(err);
       });
-    setClickedBook(false);
+      setClickedBook(false);
   };
 
   const handlePhoneEdit = async () => {
@@ -514,6 +552,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 multiline
               />
             </FormControl>
+            <OverlappingModal
+              numOverlapping = {num_overlapping}
+              findFunction={findOverlappingRides}
+              bookFunction={() => {setIsRequiredToRegister(true);}}
+            />
             <div className="flex justify-end gap-5 mt-10">
               <button
                 onClick={handleDialogClose}

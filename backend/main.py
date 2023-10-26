@@ -66,6 +66,41 @@ async def create_user(
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
+@app.post("/find_overlapping")
+async def find_overlapping_rides(
+    booking: schemas.Booking, email: str = Depends(verify_auth_token)
+):
+    """
+    Check if overlapping rides exist when user tries to create a new ride
+    """
+    print(booking)
+    # get respected ids for locations
+    from_id = queries.get_loc_id(conn, place=booking.from_loc)
+    to_id = queries.get_loc_id(conn, place=booking.to_loc)
+    if from_id is None or to_id is None:
+        raise HTTPException(status_code=400, detail="Invalid Location")
+    
+    verify_exists(email)
+
+    try:
+        start_time=booking.start_time.astimezone(timezone("Asia/Kolkata"))
+        end_time=booking.end_time.astimezone(timezone("Asia/Kolkata"))
+
+        res = queries.filter_all(
+            conn,
+            from_loc=from_id,
+            to_loc=to_id,
+            start_time=start_time,
+            end_time=end_time,
+        )
+
+        bookings = get_bookings(res)
+        return {"overlapping_bookings_count": len(bookings)}
+    
+    except Exception as e:
+        print(e)  # TODO: Replace with logger
+        conn.rollback()
+        raise HTTPException(status_code=500, detail="Some Error Occured")
 
 @app.post("/bookings")
 async def create_booking(

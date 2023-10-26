@@ -1,8 +1,8 @@
 import CabSharing from "components/commonForAll/CabSharing";
 import React from "react";
 
-const index = () => {
+const CabSharingPage = () => {
   return <CabSharing />;
 };
 ;
-export default index;
+export default CabSharingPage;
