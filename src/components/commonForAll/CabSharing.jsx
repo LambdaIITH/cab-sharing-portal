@@ -20,12 +20,7 @@ export default function CabSharing() {
   // Tab 1 - All Rides, Tab 0 - My Rides
   const [username, setUsername] = useState("");
   const router = useRouter();
-  console.log(router.query);
   const findRides = router.query.findRides;
-  useEffect(() => {
-    if(findRides == false) setTab(0);
-    else setTab(1);
-  }, [findRides]);
   const startTimeProp = router.query.startTimeProp|| null;
   const endTimeProp = router.query.endTimeProp || null;
   const fromValueProp = router.query.fromValueProp || null;
@@ -34,7 +29,9 @@ export default function CabSharing() {
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
     retrieveAuthToken(router);
-  }, []);
+    if(findRides === 'true' || findRides==null) setTab(1);
+    else setTab(0);
+  }, [findRides]);
 
   const pulse = keyframes`
   0% {
