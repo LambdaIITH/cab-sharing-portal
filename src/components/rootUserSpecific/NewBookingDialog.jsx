@@ -225,7 +225,9 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const RegisterNewBooking = async () => {
     setClickedBook(true);
     const authToken = retrieveAuthToken(router);
-
+    if (authToken == null) {
+      return;
+    }
     await axios
       .post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
@@ -257,6 +259,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       })
       .catch((err) => {
         console.log(err);
+        toast("Error creating ride", { type: "error" });
       });
     setClickedBook(false);
   };

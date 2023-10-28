@@ -57,8 +57,7 @@ const AllUserCardExpanded = ({
         })
         .catch((err) => {
           console.log(err);
-
-          toast("Something went wrong", { type: "error" });
+          toast("Phone Number Update Failed", { type: "error" });
         });
     }
 
