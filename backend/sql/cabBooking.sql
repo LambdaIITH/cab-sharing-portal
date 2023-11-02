@@ -6,7 +6,7 @@ returning id;
 -- name:update_booking!
 update cab_booking
   set start_time=:start_time, end_time=:end_time
-  where id=:cab_id and owner_email=:owner_email;
+  where id=:cab_id;
 
 -- name:add_traveller!
 insert into traveller (user_email, cab_id, comments)

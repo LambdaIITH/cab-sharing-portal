@@ -119,7 +119,7 @@ async def create_booking(
         print(e)  # TODO: Replace with logger
 
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @app.patch("/bookings/{booking_id}")
@@ -134,23 +134,27 @@ async def update_booking(
 
     verify_exists(email)
 
+    owner_email = queries.get_owner_email(conn, cab_id=booking_id)
+    if owner_email is None:
+        raise HTTPException(status_code=400, detail="Invalid Booking ID")
+    elif owner_email != email:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
     try:
-        res = queries.update_booking(
+
+        queries.update_booking(
             conn,
             start_time=patch.start_time.astimezone(timezone("Asia/Kolkata")),
             end_time=patch.end_time.astimezone(timezone("Asia/Kolkata")),
             cab_id=booking_id,
-            owner_email=email,
         )
-        if res == 0:
-            raise HTTPException(status_code=400, detail="Invalid Booking ID")
         conn.commit()
     except HTTPException as e:
         raise e
     except Exception as e:
         print(e)
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
     # TODO: Send Email to Travellers
 
@@ -206,7 +210,7 @@ async def search_bookings(
         to_id = queries.get_loc_id(conn, place=to_loc)
 
         if from_id is None or to_id is None:
-            raise HTTPException(status_code=400, detail="Invalid Location")
+            raise HTTPException(status_code=400, detail="Invalid Filter Location")
 
         res = queries.filter_all(
             conn,
@@ -234,15 +238,15 @@ async def request_to_join_booking(
     owner_email = queries.get_owner_email(conn, cab_id=booking_id)
     if owner_email is None:
         # booking doesn't exist
-        raise HTTPException(status_code=400, detail="Invalid Booking ID")
+        raise HTTPException(status_code=400, detail="Invalid Ride ID")
     elif owner_email == email:
         # user is owner
-        raise HTTPException(status_code=400, detail="You cannot join your own booking")
+        raise HTTPException(status_code=400, detail="You cannot join your own ride")
 
     verify_exists(email)
 
     if queries.is_cab_full(conn, cab_id=booking_id):
-        raise HTTPException(status_code=400, detail="Booking is full")
+        raise HTTPException(status_code=400, detail="Ride is full")
 
     # check if request already sent
     request_status = queries.get_request_status(
@@ -282,7 +286,7 @@ async def request_to_join_booking(
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @app.delete("/bookings/{booking_id}/request")
@@ -297,16 +301,12 @@ async def delete_request(booking_id: int, email: str = Depends(verify_auth_token
         raise HTTPException(status_code=400, detail="No pending request found")
 
     try:
-        res = queries.delete_request(conn, cab_id=booking_id, email=email)
-        if res == 0:
-            raise HTTPException(status_code=400, detail="Request does not exist")
+        queries.delete_request(conn, cab_id=booking_id, email=email)
         conn.commit()
-    except HTTPException as e:
-        raise e
     except Exception as e:
         print(e)
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @app.post("/bookings/{booking_id}/accept")
@@ -328,6 +328,12 @@ async def accept_request(
 
     if queries.is_cab_full(conn, cab_id=booking_id):
         raise HTTPException(status_code=400, detail="Cab is already full")
+
+    status = queries.get_request_status(
+        conn, booking_id=booking_id, email=response.requester_email
+    )
+    if status != "pending":
+        raise HTTPException(status_code=400, detail="No pending request found")
 
     try:
         comments = queries.update_request(
@@ -354,7 +360,7 @@ async def accept_request(
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
     send_email(response.requester_email, "accept", booking_id)
 
@@ -387,7 +393,7 @@ async def reject_request(
     """
     owner_email = queries.get_owner_email(conn, cab_id=booking_id)
     if owner_email is None:
-        raise HTTPException(status_code=400, detail="Booking does not exist")
+        raise HTTPException(status_code=400, detail="Ride does not exist")
     elif owner_email != email:
         raise HTTPException(
             status_code=403, detail="You are not the owner of this booking"
@@ -401,7 +407,7 @@ async def reject_request(
             val="rejected",
         )
         if res is None:
-            raise HTTPException(status_code=400, detail="There is no request to accept")
+            raise HTTPException(status_code=400, detail="No pending request found")
 
         conn.commit()
     except HTTPException as e:
@@ -409,7 +415,7 @@ async def reject_request(
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
     send_email(response.requester_email, "reject", booking_id)
 
@@ -439,7 +445,7 @@ async def delete_existing_booking(
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @app.delete("/bookings/{booking_id}/self")
@@ -449,10 +455,10 @@ async def exit_booking(booking_id: int, email: str = Depends(verify_auth_token))
     """
     owner_email = queries.get_owner_email(conn, cab_id=booking_id)
     if owner_email is None:
-        raise HTTPException(status_code=400, detail="Booking does not exist")
+        raise HTTPException(status_code=400, detail="Ride does not exist")
     elif owner_email == email:
         raise HTTPException(
-            status_code=400, detail="Owner cannot exit a booking, but you can delete it"
+            status_code=400, detail="Owner cannot exit a ride, but you can delete it"
         )
 
     try:
@@ -463,7 +469,7 @@ async def exit_booking(booking_id: int, email: str = Depends(verify_auth_token))
     except Exception as e:
         print(e)  # TODO: Replace with logger
         conn.rollback()
-        raise HTTPException(status_code=500, detail="Some Error Occured")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
     # confimation email to exiting user
     send_email(email, "exit", booking_id)

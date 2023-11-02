@@ -70,12 +70,10 @@ def try_details(Authorization: str):
     try:
         details = authn_user(Authorization)
         if details is None:
-            raise HTTPException(
-                status_code=401, detail="We are not able to authenticate you."
-            )
+            raise HTTPException(status_code=401, detail="You are not logged in")
     except exceptions.InvalidValue:
         raise HTTPException(
-            status_code=498, detail="Invalid Token, please login again."
+            status_code=498, detail="Token invalid or expired, please login again."
         )
     return details
 
@@ -97,9 +95,7 @@ def verify_exists(email):
     phone_number = queries.get_phone_number(conn, email=email)
     if phone_number is None:
         # return 401
-        raise HTTPException(
-            status_code=403, detail="Phone number not found for this email."
-        )
+        raise HTTPException(status_code=403, detail="Please provide a phone number")
 
 
 def get_bookings(res, owner_email=None):
