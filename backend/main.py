@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Dict, List, Union
 
@@ -7,6 +8,7 @@ from pytz import timezone
 
 import schemas
 from utils import (
+    CustomFormatter,
     conn,
     get_bookings,
     queries,
@@ -15,6 +17,16 @@ from utils import (
     verify_auth_token_with_name,
     verify_exists,
 )
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+console_handler = logging.FileHandler("/tmp/cabsharing_error.log")
+console_handler.setLevel(logging.ERROR)
+console_handler.setFormatter(CustomFormatter())
+
+logger.addHandler(console_handler)
+
 
 app = FastAPI()
 
@@ -62,7 +74,11 @@ async def create_user(
         )
         conn.commit()
     except Exception as e:
-        print(e)
+
+        logger.error(
+            e, exc_info=True
+        )  # use this to log the error, stack_info=True for stack trace
+
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -101,6 +117,7 @@ async def create_booking(
         send_email(email, "create", booking_id)
     except Exception as e:
         print(e)  # TODO: Replace with logger
+
         conn.rollback()
         raise HTTPException(status_code=500, detail="Some Error Occured")
 
@@ -468,4 +485,4 @@ async def exit_booking(booking_id: int, email: str = Depends(verify_auth_token))
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)  # noqa: F821
+    uvicorn.run(app, host="0.0.0.0", port=8000)

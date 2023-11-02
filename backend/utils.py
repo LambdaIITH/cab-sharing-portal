@@ -1,3 +1,4 @@
+import logging
 import os
 import smtplib
 import threading
@@ -12,8 +13,33 @@ from dotenv import load_dotenv
 from fastapi import Header, HTTPException
 from google.auth import exceptions
 from pytz import timezone
+from uvicorn.workers import UvicornWorker
 
 from auth import authn_user
+
+
+class MyUvicornWorker(UvicornWorker):
+    CONFIG_KWARGS = {"log_config": "logging.yml"}
+
+
+class CustomFormatter(logging.Formatter):
+
+    yellow = "\x1b[33;20m"  # warning
+    red = "\x1b[31;20m"  # error
+    reset = "\x1b[0m"
+    format = (
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
+    )
+
+    FORMATS = {
+        logging.ERROR: red + format + reset,
+    }
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
 
 load_dotenv()
 
