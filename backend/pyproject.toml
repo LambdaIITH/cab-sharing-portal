@@ -19,6 +19,7 @@ flake8 = "^5.0.4"
 mypy = "^0.971"
 html2text = "^2020.1.16"
 pytz = "^2023.3.post1"
+gunicorn = "^21.2.0"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"
