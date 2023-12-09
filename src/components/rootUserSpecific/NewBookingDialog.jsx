@@ -29,6 +29,8 @@ import Link from "next/link";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import toastError from "components/utils/toastError";
+import logout from "components/utils/logout";
 
 const locations = [
   "RGIA",
@@ -164,6 +166,12 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       })
       .catch((err) => {
         console.log(err);
+        toastError(err.response.data.detail);
+        if (err.response.status == 498) {
+          logout(router);
+          return;
+        }
+        toast("Error fetching user data", { type: "error" });
       });
   }
 
@@ -259,6 +267,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
       })
       .catch((err) => {
         console.log(err);
+        toastError(err.response.data.detail);
+        if (err.response.status == 498) {
+          logout(router);
+          return;
+        }
         toast("Error creating ride", { type: "error" });
       });
     setClickedBook(false);
@@ -289,7 +302,11 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
         })
         .catch((err) => {
           console.log(err);
-
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Error updating phone number", { type: "error" });
         });
     }

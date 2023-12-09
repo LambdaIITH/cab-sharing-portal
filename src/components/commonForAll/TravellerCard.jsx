@@ -6,6 +6,8 @@ import retrieveAuthToken from "components/utils/retrieveAuthToken";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import toastError from "components/utils/toastError";
+import logout from "components/utils/logout";
 
 // Traveller card in user bookings
 
@@ -47,11 +49,14 @@ const TravellerCard = ({
           toast("Succesfully exited cab", { type: "success" });
         })
         .catch((err) => {
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Error exiting cab", { type: "error" });
         });
       fetchUserBookings();
-    } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import PhoneNumberModal from "components/modals/PhoneNumberModal";
 import UserTravellers from "components/rootUserSpecific/UserTravellers";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
+import toastError from "components/utils/toastError";
+import logout from "components/utils/logout";
 
 const AllUserCardExpanded = ({
   bookingData,
@@ -57,6 +59,11 @@ const AllUserCardExpanded = ({
         })
         .catch((err) => {
           console.log(err);
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Phone Number Update Failed", { type: "error" });
         });
     }
@@ -80,7 +87,11 @@ const AllUserCardExpanded = ({
         })
         .catch((err) => {
           console.log(err);
-
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Cannot join booking", { type: "error" });
         });
     } catch (err) {
@@ -139,7 +150,11 @@ const AllUserCardExpanded = ({
         })
         .catch((err) => {
           console.log(err);
-
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Something went wrong", { type: "error" });
         });
       fetchFilteredBookings();

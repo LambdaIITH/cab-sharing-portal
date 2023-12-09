@@ -7,7 +7,9 @@ import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import axios from "axios";
-import {  toast } from "react-toastify";
+import {  toast, ToastContainer } from "react-toastify";
+import toastError from "components/utils/toastError";
+import logout from "components/utils/logout";
 
 function ProcessUser(token) {
   const decoded_token = jwt_decode(token);
@@ -39,6 +41,12 @@ function Login() {
       })
       .catch((err) => {
         console.log(err);
+        toastError(err.response.data.detail);
+        if (err.response.status == 498){
+          logout(router);
+          return;
+        }
+        toastError("Error logging in");
       });
     setLoading(false);
   };
@@ -71,6 +79,7 @@ function Login() {
         onError={responseGoogleFailure}
         shape="pill"
       />
+      {/* <ToastContainer /> */}
       {loading && (
         <span className="loading loading-spinner text-black"></span>
       )}

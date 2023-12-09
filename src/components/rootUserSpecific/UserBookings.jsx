@@ -7,6 +7,8 @@ import CabShareSmall from "components/commonForAll/CabShareSmall";
 import TravellerCard from "components/commonForAll/TravellerCard";
 import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
+import logout from "components/utils/logout";
+import toastError from "components/utils/toastError";
 
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -39,6 +41,12 @@ const UserBookings = () => {
       setBookings(res.data.future_bookings);
     } catch (err) {
       console.log(err);
+      toastError(err.response.data.detail);
+      if (err.response.status == 498) {
+        logout(router);
+        return;
+      }
+      toastError("Error fetching bookings");
     }
   };
 
@@ -71,6 +79,8 @@ const UserBookings = () => {
         });
       })
       .catch((err) => {
+        toastError(err.response.data.detail);
+        logout(router);
         console.log(err);
       });
   };

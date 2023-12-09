@@ -8,6 +8,8 @@ import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import ConfirmModal from "components/modals/ConfirmModal";
 import UserRequests from "./UserRequests";
 import UserTravellers from "./UserTravellers";
+import toastError from "components/utils/toastError";
+import logout from "components/utils/logout";
 
 const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   const [loading, setLoading] = useState(false);
@@ -36,11 +38,14 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           toast("Succesfully Deleted", { type: "success" });
         })
         .catch((err) => {
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Some Error Occured", { type: "error" });
         });
       fetchUserBookings();
-    } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -70,12 +75,15 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           toast("Succesfully Accepted", { type: "success" });
         })
         .catch((err) => {
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Some Error Occured", { type: "error" });
         });
 
       fetchUserBookings();
-    } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -104,11 +112,14 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
           toast("Succesfully Rejected", { type: "success" });
         })
         .catch((err) => {
+          toastError(err.response.data.detail);
+          if (err.response.status == 498) {
+            logout(router);
+            return;
+          }
           toast("Some Error Occured", { type: "error" });
         });
       fetchUserBookings();
-    } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }

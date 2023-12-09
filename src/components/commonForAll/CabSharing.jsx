@@ -44,7 +44,7 @@ export default function CabSharing() {
     <div className="bg-purple-100 flex flex-col">
       {/* <NavBar /> */}
       {/* controlling width */}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div className="flex flex-row ml-auto">
         {/* <UserGuide /> */}
         <LogoutButton />

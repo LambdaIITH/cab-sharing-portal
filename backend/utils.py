@@ -70,12 +70,14 @@ def try_details(Authorization: str):
     try:
         details = authn_user(Authorization)
         if details is None:
-            raise HTTPException(status_code=401, detail="You are not logged in")
+            raise HTTPException(
+                status_code=498, detail="You are not logged in, please login again."
+            )
 
         GSUITE_DOMAIN_NAME = "iith.ac.in"
         if details[0].split("@")[-1] != GSUITE_DOMAIN_NAME:
             raise HTTPException(
-                status_code=403, detail="Please use your IITH email address"
+                status_code=498, detail="Please use your IITH email address to login."
             )
     except exceptions.InvalidValue:
         raise HTTPException(

@@ -21,6 +21,8 @@ import "react-toastify/dist/ReactToastify.css";
 import EditIcon from "@mui/icons-material/Edit";
 import UserCardExpanded from "components/rootUserSpecific/UserCardExpanded";
 import AllUserCardExpanded from "components/allUsersSpecific/AllUserCardExpanded";
+import toastError from "components/utils/toastError";
+import logout from "components/utils/logout";
 const CabShareSmall = ({
   userSpecific,
   bookingData,
@@ -93,6 +95,12 @@ const CabShareSmall = ({
       handleDialogClose();
     } catch (err) {
       console.log(err);
+      toastError(err.response.data.detail);
+      if (err.response.status == 498){
+        logout(router);
+        return;
+      }
+      toastError("Error editing window");
     }
   };
 

@@ -13,6 +13,8 @@ import CabShareSmall from "components/commonForAll/CabShareSmall";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import axios from "axios";
+import logout from "components/utils/logout";
+import toastError from "components/utils/toastError";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 import { useMediaQuery } from '@mui/material';
 
@@ -97,13 +99,17 @@ const AllUserBookings = () => {
         },
       });
       setFilteredBookings(response.data);
-      setIsLoading(false);
+      setIsLoading(false);  
     } catch (error) {
-      console.error("Error fetching filtered bookings:", error);
+      toastError(error.response.data.detail);
 
-      toast("Error fetching filtered bookings", {
-        type: "error",
-      });
+      if (error.response.status === 498) {
+        logout(router);
+        return;
+      }
+
+      console.error("Error fetching filtered bookings:", error);
+      toastError("Error fetching filtered bookings");
       setIsLoading(false);
     }
   };
@@ -138,6 +144,11 @@ const AllUserBookings = () => {
       })
       .catch((err) => {
         console.log(err);
+        toastError(err.response.data.detail);
+        if (err.response.status === 498){
+          logout(router);
+          return;
+        }
       });
   };
 
@@ -191,15 +202,18 @@ const AllUserBookings = () => {
             Authorization: authToken,
           },
         }
-      );
+      )
       setFilteredBookings(response.data);
       setIsLoading(false);
     } catch (error) {
-      console.error("Error fetching requests:", error);
+      toastError(error.response.data.detail);
 
-      toast("Error fetching requests", {
-        type: "error",
-      });
+      if (error.response.status === 498) {
+        logout(router);
+        return;
+      }
+      console.error("Error fetching requests:", error);
+      toastError("Error fetching requests");
       setIsLoading(false);
     }
   };
