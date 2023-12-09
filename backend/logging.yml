@@ -15,11 +15,11 @@ handlers:
   access:
     class: logging.FileHandler
     formatter: access
-    filename: /tmp/cabsharing_access.log
+    filename: logs/access.log
   error:
     class: logging.FileHandler
     formatter: default
-    filename: /tmp/cabsharing_error.log
+    filename: logs/error.log
 loggers:
   uvicorn:
     level: INFO

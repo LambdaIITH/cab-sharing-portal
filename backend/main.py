@@ -21,7 +21,7 @@ from utils import (
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-console_handler = logging.FileHandler("/tmp/cabsharing_error.log")
+console_handler = logging.FileHandler("logs/error.log")
 console_handler.setLevel(logging.ERROR)
 console_handler.setFormatter(CustomFormatter())
 
