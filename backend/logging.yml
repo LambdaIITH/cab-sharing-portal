@@ -13,13 +13,17 @@ handlers:
     formatter: default
     stream: ext://sys.stdout
   access:
-    class: logging.FileHandler
+    class: logging.handlers.RotatingFileHandler
     formatter: access
     filename: logs/access.log
+    maxBytes: 5000000
+    backupCount: 5
   error:
-    class: logging.FileHandler
+    class: logging.handlers.RotatingFileHandler
     formatter: default
     filename: logs/error.log
+    maxBytes: 5000000
+    backupCount: 5
 loggers:
   uvicorn:
     level: INFO
