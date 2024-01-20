@@ -385,7 +385,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
             className="font-bold text-[1.1rem] text-black/80 mb-2 collapse-content  w-fit"
             onClick={(e) => e.stopPropagation()}
           >
-            Please Add phone number to create a new booking. <br />
+            Please Add phone number to create a new ride. <br />
           </p>
         ) : (
           <div
@@ -555,7 +555,7 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
                 }
               >
                 {!clicked_book ? (
-                  "Book"
+                  "Post"
                 ) : (
                   <span className="loading loading-spinner text-black"></span>
                 )}
