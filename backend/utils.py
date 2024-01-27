@@ -75,7 +75,11 @@ def try_details(Authorization: str):
             )
 
         GSUITE_DOMAIN_NAME = "iith.ac.in"
-        if details[0].split("@")[-1] != GSUITE_DOMAIN_NAME:
+        domain = details[0].split("@")[-1]
+        # allow domain or subdomains
+        if domain != GSUITE_DOMAIN_NAME and not domain.endswith(
+            "." + GSUITE_DOMAIN_NAME
+        ):
             raise HTTPException(
                 status_code=498, detail="Please use your IITH email address to login."
             )
