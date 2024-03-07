@@ -10,7 +10,10 @@ class Email(BaseModel):
 class UserDetails(BaseModel):
     phone_number: str
 
-MAX_CAPACITY = 7
+
+MAX_CAPACITY = 25
+
+
 class Booking(BaseModel):
     start_time: datetime
     end_time: datetime
