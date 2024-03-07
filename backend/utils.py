@@ -241,7 +241,6 @@ def send_email(
                 smtp_server.starttls()
                 smtp_server.login(GMAIL_USER, GMAIL_PASSWORD)
                 smtp_server.send_message(msg)
-                print("Email sent successfully!")
         except Exception as ex:
             print("Error sending mail:", ex)
 

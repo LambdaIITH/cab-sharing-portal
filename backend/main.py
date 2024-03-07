@@ -74,11 +74,7 @@ async def create_user(
         )
         conn.commit()
     except Exception as e:
-
-        logger.error(
-            e, exc_info=True
-        )  # use this to log the error, stack_info=True for stack trace
-
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -116,7 +112,7 @@ async def create_booking(
         conn.commit()
         send_email(email, "create", booking_id)
     except Exception as e:
-        print(e)  # TODO: Replace with logger
+        logger.error(e, exc_info=True)
 
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
@@ -152,7 +148,7 @@ async def update_booking(
     except HTTPException as e:
         raise e
     except Exception as e:
-        print(e)
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -284,7 +280,7 @@ async def request_to_join_booking(
         )
         conn.commit()
     except Exception as e:
-        print(e)  # TODO: Replace with logger
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -304,7 +300,7 @@ async def delete_request(booking_id: int, email: str = Depends(verify_auth_token
         queries.delete_request(conn, cab_id=booking_id, email=email)
         conn.commit()
     except Exception as e:
-        print(e)
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -358,7 +354,7 @@ async def accept_request(
     except HTTPException as e:
         raise e
     except Exception as e:
-        print(e)  # TODO: Replace with logger
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -413,7 +409,7 @@ async def reject_request(
     except HTTPException as e:
         raise e
     except Exception as e:
-        print(e)  # TODO: Replace with logger
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -443,7 +439,7 @@ async def delete_existing_booking(
         queries.delete_booking(conn, cab_id=booking_id)
         conn.commit()
     except Exception as e:
-        print(e)  # TODO: Replace with logger
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
@@ -467,7 +463,7 @@ async def exit_booking(booking_id: int, email: str = Depends(verify_auth_token))
         )
         conn.commit()
     except Exception as e:
-        print(e)  # TODO: Replace with logger
+        logger.error(e, exc_info=True)
         conn.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
