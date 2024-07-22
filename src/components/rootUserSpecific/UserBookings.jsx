@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { NewBookingDialog } from "./NewBookingDialog";
 import CabShareSmall from "components/commonForAll/CabShareSmall";
 import TravellerCard from "components/commonForAll/TravellerCard";
-import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import UserbookingShimmer from "components/commonForAll/UserbookingShimmer";
 import logout from "components/utils/logout";
 import toastError from "components/utils/toastError";
@@ -26,24 +25,22 @@ const UserBookings = () => {
   const [is_there_a_phone_number, setIsThereAPhoneNumber] = useState(true);
 
   const fetchUserBookings = async () => {
-    const authToken = retrieveAuthToken(router);
-    if (authToken == null) return;
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/me/bookings`,
         {
           headers: {
-            Authorization: authToken,
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
       setBookings(res.data.future_bookings);
     } catch (err) {
       console.log(err);
       toastError(err.response.data.detail);
-      if (err.response.status == 498) {
-        logout(router);
+      if (err.response.status == 401) {
+        await logout(router);
         return;
       }
       toastError("Error fetching bookings");
@@ -51,39 +48,30 @@ const UserBookings = () => {
   };
 
   const getMe = async () => {
-    const authToken = retrieveAuthToken(router);
-    if (authToken == null) return;
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((data) => {
-        if (
-          data.data["phone_number"] == null ||
-          data.data["phone_number"] == ""
-        ) {
-          setPhone("");
-          setLoadedPhone("");
-          setIsThereAPhoneNumber(false);
-        } else {
-          setPhone(data.data["phone_number"]);
-          setLoadedPhone(data.data["phone_number"]);
-          setIsThereAPhoneNumber(true);
-        }
-      })
-      .then(() => {
-        fetchUserBookings().then(() => {
-          setIsLoading(false);
-        });
-      })
-      .catch((err) => {
-        toastError(err.response.data.detail);
-        logout(router);
-        console.log(err);
+    try {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+        withCredentials: true,
       });
+
+      if (data["phone_number"] == null || data["phone_number"] === "") {
+        setPhone("");
+        setLoadedPhone("");
+        setIsThereAPhoneNumber(false);
+      } else {
+        setPhone(data["phone_number"]);
+        setLoadedPhone(data["phone_number"]);
+        setIsThereAPhoneNumber(true);
+      }
+      await fetchUserBookings();
+    } catch (err) {
+      toastError(err.response?.data?.detail || "Error fetching user data");
+      await logout(router);
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
 
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));

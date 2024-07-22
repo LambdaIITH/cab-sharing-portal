@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import ConfirmModal from "components/modals/ConfirmModal";
 import UserRequests from "./UserRequests";
 import UserTravellers from "./UserTravellers";
@@ -20,110 +19,97 @@ const UserCardExpanded = ({ bookingData, fetchUserBookings }) => {
   const DeleteBooking = async (e) => {
     // e.stopPropagation();
     setClickedDelete(true);
-
-    const authToken = retrieveAuthToken(router);
+  
     try {
       setLoading(true);
-      await axios
-        .delete(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`,
-          {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then(() => {
-          toast("Succesfully Deleted", { type: "success" });
-        })
-        .catch((err) => {
-          toastError(err.response.data.detail);
-          if (err.response.status == 498) {
-            logout(router);
-            return;
-          }
-          toast("Some Error Occured", { type: "error" });
-        });
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+  
+      toast("Successfully Deleted", { type: "success" });
       fetchUserBookings();
+    } catch (err) {
+      toastError(err.response?.data?.detail || "Some error occurred");
+      if (err.response?.status === 401) {
+        await logout(router);
+      }
+      toast("Some Error Occurred", { type: "error" });
     } finally {
       setLoading(false);
+      setClickedDelete(false);
     }
-    setClickedDelete(false);
   };
+  
 
   const AcceptBooking = async (e, request_email) => {
     e.stopPropagation();
-
-    const authToken = retrieveAuthToken(router);
+  
     try {
       setLoading(true);
-      await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/accept`,
-          {
-            requester_email: request_email,
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/accept`,
+        {
+          requester_email: request_email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then(() => {
-          toast("Succesfully Accepted", { type: "success" });
-        })
-        .catch((err) => {
-          toastError(err.response.data.detail);
-          if (err.response.status == 498) {
-            logout(router);
-            return;
-          }
-          toast("Some Error Occured", { type: "error" });
-        });
-
+          withCredentials: true,
+        }
+      );
+  
+      toast("Successfully Accepted", { type: "success" });
       fetchUserBookings();
+    } catch (err) {
+      toastError(err.response?.data?.detail || "Some error occurred");
+      if (err.response?.status === 401) {
+        await logout(router);
+      }
+      toast("Some Error Occurred", { type: "error" });
     } finally {
       setLoading(false);
     }
   };
+  
 
   const RejectBooking = async (e, request_email) => {
     e.stopPropagation();
-
-    const authToken = retrieveAuthToken(router);
+  
     try {
       setLoading(true);
-      await axios
-        .post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/reject`,
-          {
-            requester_email: request_email,
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}/reject`,
+        {
+          requester_email: request_email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then(() => {
-          toast("Succesfully Rejected", { type: "success" });
-        })
-        .catch((err) => {
-          toastError(err.response.data.detail);
-          if (err.response.status == 498) {
-            logout(router);
-            return;
-          }
-          toast("Some Error Occured", { type: "error" });
-        });
+          withCredentials: true,
+        }
+      );
+  
+      toast("Successfully Rejected", { type: "success" });
       fetchUserBookings();
+    } catch (err) {
+      toastError(err.response?.data?.detail || "Some error occurred");
+      if (err.response?.status === 401) {
+        await logout(router);
+      }
+      toast("Some Error Occurred", { type: "error" });
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div

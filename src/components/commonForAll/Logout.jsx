@@ -1,17 +1,20 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Logout } from "@mui/icons-material";
+import logout from "components/utils/logout";
 
 function LogoutButton() {
   const router = useRouter();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user_name");
-    localStorage.removeItem("user_email");
-    localStorage.removeItem("user_pic_url");
-    localStorage.removeItem("credential");
+  const handleLogout = async () => {
 
-    router.push("/");
+    await logout(router)
+    // localStorage.removeItem("user_name");
+    // localStorage.removeItem("user_email");
+    // localStorage.removeItem("user_pic_url");
+    // // localStorage.removeItem("credential");
+
+    // router.push("/");
   };
 
   return (

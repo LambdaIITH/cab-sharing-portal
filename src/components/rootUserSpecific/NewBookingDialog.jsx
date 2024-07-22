@@ -22,7 +22,6 @@ import { DateTimePicker, MobileDateTimePicker } from "@mui/x-date-pickers";
 import { matchIsValidTel } from "mui-tel-input";
 import axios from "axios";
 import { useRouter } from "next/router";
-import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import PhoneNumberModal from "../modals/PhoneNumberModal";
 
 import Link from "next/link";
@@ -140,40 +139,33 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   };
 
   async function getMe() {
-    const authToken = retrieveAuthToken(router);
-    if (authToken == null) {
-      return;
-    }
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
+    try {
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
         headers: {
-          Authorization: authToken,
+          "Content-Type": "application/json",
         },
-      })
-      .then((data) => {
-        if (
-          data.data["phone_number"] == null ||
-          data.data["phone_number"] == ""
-        ) {
-          setPhone("");
-          setLoadedPhone("");
-          setIsThereAPhoneNumber(false);
-        } else {
-          setPhone(data.data["phone_number"]);
-          setLoadedPhone(data.data["phone_number"]);
-          setIsThereAPhoneNumber(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        toastError(err.response.data.detail);
-        if (err.response.status == 498) {
-          logout(router);
-          return;
-        }
-        toast("Error fetching user data", { type: "error" });
+        withCredentials: true,
       });
+  
+      if (data["phone_number"] == null || data["phone_number"] === "") {
+        setPhone("");
+        setLoadedPhone("");
+        setIsThereAPhoneNumber(false);
+      } else {
+        setPhone(data["phone_number"]);
+        setLoadedPhone(data["phone_number"]);
+        setIsThereAPhoneNumber(true);
+      }
+    } catch (err) {
+      console.log(err);
+      toastError(err.response?.data?.detail || "Error fetching user data");
+      if (err.response?.status === 401) {
+        await logout(router);
+      }
+      toast("Error fetching user data", { type: "error" });
+    }
   }
+  
 
   useEffect(() => {
     getMe();
@@ -231,86 +223,83 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   };
 
   const RegisterNewBooking = async () => {
-    setClickedBook(true);
-    const authToken = retrieveAuthToken(router);
-    if (authToken == null) {
+  setClickedBook(true);
+  try {
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
+      {
+        ...values,
+        start_time: startTime,
+        end_time: endTime,
+      },
+      {
+        headers: {
+          // Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+
+    setExpand(false);
+    setRegisterData(initState);
+    setTouched(false);
+    setStartTime(null);
+    setEndTime(null);
+    setLocation("");
+    setEndTimeError(0);
+    setCapacityError(0);
+    setToggle("from");
+    fetchUserBookings();
+
+    toast("Ride Created Successfully", { type: "success" });
+  } catch (err) {
+    console.log(err);
+    toastError(err.response?.data?.detail || "Error creating ride");
+    if (err.response?.status === 401) {
+      await logout(router);
       return;
     }
-    await axios
-      .post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
+    toast("Error creating ride", { type: "error" });
+  } finally {
+    setClickedBook(false);
+  }
+};
+
+
+const handlePhoneEdit = async () => {
+  if (phone !== loaded_phone) {
+    const apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL_BASE}/user/update`;
+    try {
+      await axios.patch(
+        apiURL,
         {
-          ...values,
-          start_time: startTime,
-          end_time: endTime,
+          phone_number: phone,
         },
         {
           headers: {
-            Authorization: authToken,
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
-      )
-      .then(() => {
-        setExpand(false);
-        setRegisterData(initState);
-        setTouched(false);
-        setStartTime(null);
-        setEndTime(null);
-        setLocation("");
-        setEndTimeError(0);
-        setCapacityError(0);
-        setToggle("from");
-        fetchUserBookings();
+      );
 
-        toast("Ride Created Successfully", { type: "success" });
-      })
-      .catch((err) => {
-        console.log(err);
-        toastError(err.response.data.detail);
-        if (err.response.status == 498) {
-          logout(router);
-          return;
-        }
-        toast("Error creating ride", { type: "error" });
-      });
-    setClickedBook(false);
-  };
-
-  const handlePhoneEdit = async () => {
-    if (phone != loaded_phone) {
-      const authToken = retrieveAuthToken(router);
-      let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`;
-      await axios
-        .post(
-          apiURL,
-          JSON.stringify({
-            phone_number: phone,
-          }),
-          {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          setLoadedPhone(phone);
-          setIsThereAPhoneNumber(true);
-          fetchUserBookings();
-          toast("Phone number updated successfully", { type: "success" });
-        })
-        .catch((err) => {
-          console.log(err);
-          toastError(err.response.data.detail);
-          if (err.response.status == 498) {
-            logout(router);
-            return;
-          }
-          toast("Error updating phone number", { type: "error" });
-        });
+      setLoadedPhone(phone);
+      setIsThereAPhoneNumber(true);
+      fetchUserBookings();
+      toast("Phone number updated successfully", { type: "success" });
+    } catch (err) {
+      console.log(err);
+      toastError(err.response?.data?.detail || "Error updating phone number");
+      if (err.response?.status === 401) {
+        await logout(router);
+        return;
+      }
+      toast("Error updating phone number", { type: "error" });
     }
-  };
+  }
+};
+
 
   const destinations = locations.map((loc, i) => (
     <MenuItem key={i} value={loc}>

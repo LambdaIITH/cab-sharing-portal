@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container } from "@mui/material";
-import logo from "assets/media/logo.png";
-import Image from "next/image";
 import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
-import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import axios from "axios";
-import {  toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import toastError from "components/utils/toastError";
 import logout from "components/utils/logout";
+import getSessionInfo from "../utils/sessionInfo";
 
 function ProcessUser(token) {
   const decoded_token = jwt_decode(token);
@@ -20,55 +17,69 @@ function ProcessUser(token) {
 
 function Login() {
   const router = useRouter();
-
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const responseGoogleSuccess = async (response) => {
     setLoading(true);
     console.log("Successful Log in");
-    //response has profile object and stuff
 
-    localStorage.setItem("credential", response.credential);
-    await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
-      headers: {
-        Authorization: response.credential,
-      },
-    })
-      .then((data) => {
-        ProcessUser(response.credential);
-
-        router.push("/cab-sharing");
-      })
-      .catch((err) => {
-        console.log(err);
-        toastError(err.response.data.detail);
-        if (err.response.status == 498){
-          logout(router);
-          return;
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL_BASE}/auth/login`,
+        { id_token: response.credential },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
         }
-        toastError("Error logging in");
-      });
-    setLoading(false);
+      );
+
+      ProcessUser(response.credential);
+      console.log(data.headers);
+      router.replace("/cab-sharing");
+    } catch (err) {
+      await logout(router);
+      console.log(err);
+      toastError(err.response?.data?.detail || "Error logging in");
+    } finally {
+      setLoading(false);
+    }
   };
+
   const responseGoogleFailure = (response, details) => {
-    
     toast("Error logging in", { type: "error" });
-    console.log("Log in UnSuccessful");
+    console.log("Log in Unsuccessful");
+  };
+
+  const checkSession = async () => {
+    const info = await getSessionInfo(router);
+    if (info) {
+      router.replace('/cab-sharing')
+    } else {
+      setPageLoading(false);
+    }
   };
 
   useEffect(() => {
-    let token = retrieveAuthToken(router);
-    if (token != null) {
-      router.push("/cab-sharing");
-    }
-  } , []);
+    checkSession();
+  }, []);
 
+  if (pageLoading) {
+    return (
+      <div className="w-screen flex flex-col justify-center bg-purple-50 items-center h-screen gap-5">
+        <span className="loading loading-spinner text-black"></span>
+      </div>
+    );
+  }
 
   return (
     <div className="w-screen flex flex-col justify-center bg-purple-50 items-center h-screen gap-5">
       <img
         src={"/assets/iith_cabshare_logo_no_bg.png"}
         className="w-[15rem] h-[15rem]"
+        alt="IITH Cabsharing Logo"
       />
       <p className="text-[.9rem] md:text-[1.3rem] text-black">
         Welcome to IITH Cabsharing Portal
@@ -79,7 +90,6 @@ function Login() {
         onError={responseGoogleFailure}
         shape="pill"
       />
-      {/* <ToastContainer /> */}
       {loading && (
         <span className="loading loading-spinner text-black"></span>
       )}

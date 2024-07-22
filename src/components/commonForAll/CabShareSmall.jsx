@@ -74,7 +74,6 @@ const CabShareSmall = ({
   };
 
   const editWindow = async () => {
-    const authToken = retrieveAuthToken(router);
     try {
       const res = await axios.patch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings/${bookingData?.id}`,
@@ -84,9 +83,9 @@ const CabShareSmall = ({
         },
         {
           headers: {
-            Authorization: authToken,
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
 
@@ -96,8 +95,8 @@ const CabShareSmall = ({
     } catch (err) {
       console.log(err);
       toastError(err.response.data.detail);
-      if (err.response.status == 498){
-        logout(router);
+      if (err.response.status == 401){
+        await logout(router);
         return;
       }
       toastError("Error editing window");

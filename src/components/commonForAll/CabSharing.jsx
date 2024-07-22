@@ -4,13 +4,13 @@ import PersonIcon from "@mui/icons-material/Person";
 import GroupsIcon from "@mui/icons-material/Groups";
 import UserBookings from "components/rootUserSpecific/UserBookings";
 import AllUserBookings from "components/allUsersSpecific/AllUserBookings";
-import retrieveAuthToken from "components/utils/retrieveAuthToken";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import LogoutButton from "./Logout";
 import UserGuide from "./UserGuide";
 import { ToastContainer, toast } from "react-toastify";
+import getSessionInfo from "components/utils/sessionInfo";
 
 // 1 -> All Rides, 2 -> User Rides
 
@@ -20,7 +20,10 @@ export default function CabSharing() {
   const router = useRouter();
   useEffect(() => {
     setUsername(localStorage.getItem("user_name"));
-    retrieveAuthToken(router);
+    const checkSession = async () => {
+      await getSessionInfo(router);
+    };
+    checkSession();
   }, []);
 
   const pulse = keyframes`

@@ -8,7 +8,6 @@ import {
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useEffect, useState } from "react";
-import retrieveAuthToken from "../utils/retrieveAuthToken";
 import CabShareSmall from "components/commonForAll/CabShareSmall";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
@@ -56,101 +55,85 @@ const AllUserBookings = () => {
 
   // responsive ness for the switch 
   const isLargeScreen = useMediaQuery('(min-width: 430px)');
-
+  
   const fetchFilteredBookings = async () => {
-    setIsLoading(true);
-    const authToken = retrieveAuthToken(router);
-    if (authToken === null) {
-      return;
-    }
-    let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
-
-    if (fromValue && toValue) {
-      if (startTime || endTime) {
-        const isoStartTime = startTime?.toISOString();
-        const isoEndTime = endTime?.toISOString();
-
-        // makes sure that the query string takes care of null values
-        const queryString = (isoStartTime && isoEndTime) ? `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}&end_time=${isoEndTime}` 
-                          : isoStartTime ? `?from_loc=${fromValue}&to_loc=${toValue}&start_time=${isoStartTime}` 
-                          : `?from_loc=${fromValue}&to_loc=${toValue}&end_time=${isoEndTime}`;
-        
-        apiURL += queryString;
-
-      } else {
-        apiURL += `?from_loc=${fromValue}&to_loc=${toValue}`;
-      }
-    } else if (startTime || endTime) {
+      setIsLoading(true);
+      let apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`;
+  
       const isoStartTime = startTime?.toISOString();
       const isoEndTime = endTime?.toISOString();
-
-      // makes sure that the query string takes care of null values
-      const queryString = (isoStartTime && isoEndTime) ? `?start_time=${isoStartTime}&end_time=${isoEndTime}` 
-                        : isoStartTime ? `?start_time=${isoStartTime}` 
-                        : `?end_time=${isoEndTime}`;
       
-      apiURL += queryString;
-    }
-
-    try {
-      const response = await axios.get(apiURL, {
-        headers: {
-          Authorization: authToken,
-        },
-      });
-      setFilteredBookings(response.data);
-      setIsLoading(false);  
-    } catch (error) {
-      toastError(error.response.data.detail);
-
-      if (error.response.status === 498) {
-        logout(router);
-        return;
+      const fromToQuery = fromValue && toValue ? `from_loc=${fromValue}&to_loc=${toValue}` : '';
+      const timeQuery = isoStartTime && isoEndTime ? `start_time=${isoStartTime}&end_time=${isoEndTime}`
+                      : isoStartTime ? `start_time=${isoStartTime}`
+                      : isoEndTime ? `end_time=${isoEndTime}`
+                      : '';
+  
+      const queryString = [fromToQuery, timeQuery].filter(Boolean).join('&');
+      
+      if (queryString) {
+          apiURL += `?${queryString}`;
       }
-
-      console.error("Error fetching filtered bookings:", error);
-      toastError("Error fetching filtered bookings");
-      setIsLoading(false);
-    }
+  
+      try {
+          const response = await axios.get(apiURL, {
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              withCredentials: true
+          });
+          setFilteredBookings(response.data);
+      } catch (error) {
+          if (error.response) {
+            if (error.response.status === 401) {
+              await logout(router);
+              return;
+            }
+            toastError(error.response.data.detail);
+          } else {
+              // toastError("Error fetching filtered bookings");
+          }
+          console.error("Error fetching filtered bookings:", error);
+      } finally {
+          setIsLoading(false);
+      }
   };
+  
 
   const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() + 10);
 
   const getMe = async () => {
-    const authToken = retrieveAuthToken(router);
-    if (authToken === null) {
-      return;
-    }
-    await axios
-      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/me`, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((data) => {
-        if (
-          data.data["phone_number"] == null ||
-          data.data["phone_number"] == ""
-        ) {
-          setPhone("");
-          setLoadedPhone("");
-          setIsThereAPhoneNumber(false);
+    try {
+        const { data } = await axios.get(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/me`,
+            {
+                withCredentials: true,
+            }
+        );
+
+        if (!data.phone_number) {
+            setPhone("");
+            setLoadedPhone("");
+            setIsThereAPhoneNumber(false);
         } else {
-          setPhone(data.data["phone_number"]);
-          setLoadedPhone(data.data["phone_number"]);
-          setIsThereAPhoneNumber(true);
+            setPhone(data.phone_number);
+            setLoadedPhone(data.phone_number);
+            setIsThereAPhoneNumber(true);
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        toastError(err.response.data.detail);
-        if (err.response.status === 498){
-          logout(router);
-          return;
+    } catch (err) {
+        console.error(err);
+        if (err.response) {
+          if (err.response.status === 401) {
+            await logout(router);
+            return;
+          }
+          toastError(err.response.data.detail);
+        } else {
+            // toastError("Error fetching user data");
         }
-      });
-  };
+    }
+};
 
   useEffect(() => {
     if (
@@ -192,15 +175,15 @@ const AllUserBookings = () => {
 
   const fetchRequests = async () => {
     setIsLoading(true);
-    const authToken = retrieveAuthToken(router);
 
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/me/requests`,
         {
-          headers: {
-            Authorization: authToken,
-          },
+          // headers: {
+          //   Authorization: authToken,
+          // },
+          withCredentials: true,
         }
       )
       setFilteredBookings(response.data);
@@ -208,8 +191,8 @@ const AllUserBookings = () => {
     } catch (error) {
       toastError(error.response.data.detail);
 
-      if (error.response.status === 498) {
-        logout(router);
+      if (error.response.status === 401) {
+        await logout(router);
         return;
       }
       console.error("Error fetching requests:", error);
