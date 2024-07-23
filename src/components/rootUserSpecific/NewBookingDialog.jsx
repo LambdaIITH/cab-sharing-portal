@@ -225,12 +225,14 @@ export function NewBookingDialog({ fetchUserBookings, username, email }) {
   const RegisterNewBooking = async () => {
   setClickedBook(true);
   try {
+    const updatedStartTime = new Date(startTime.getTime() + (5 * 60 + 30) * 60 * 1000);
+    const updatedEndTime = new Date(endTime.getTime() + (5 * 60 + 30) * 60 * 1000);
     await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/bookings`,
       {
         ...values,
-        start_time: startTime,
-        end_time: endTime,
+        start_time: updatedStartTime,
+        end_time: updatedEndTime,
       },
       {
         headers: {
