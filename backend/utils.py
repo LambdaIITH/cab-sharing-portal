@@ -132,8 +132,8 @@ def get_bookings(res, owner_email=None):
                 travellers_list.append(traveller_dict)
 
         # convert from utc to ist
-        start_time = tup[1].astimezone(timezone("Asia/Kolkata"))
-        end_time = tup[2].astimezone(timezone("Asia/Kolkata"))
+        start_time = tup[1]
+        end_time = tup[2]
 
         booking = {
             "id": tup[0],
