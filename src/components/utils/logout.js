@@ -8,6 +8,12 @@ export default async function logout(router) {
     localStorage.removeItem("user_pic_url");
     localStorage.removeItem("credential");
 
+    document.cookie.split(";").forEach(cookie => {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    });
+
     googleLogout();
     await serverLogout();
 
@@ -17,8 +23,8 @@ export default async function logout(router) {
 async function serverLogout() {
     const apiURL = `${process.env.NEXT_PUBLIC_BACKEND_URL_BASE}/auth/logout`;
     try {
-        axios.get(apiURL, { withCredentials: true })
+        await axios.get(apiURL, { withCredentials: true });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
